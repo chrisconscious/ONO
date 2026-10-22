@@ -1,11 +1,57 @@
-import { Document } from './types';
+import { Document, Stage } from './types';
 import { doc1, doc2, doc3, doc4 } from './documents-1';
 import { doc5, doc6, doc7, doc8 } from './documents-2';
 import { doc9, doc10, doc11, doc12, doc13 } from './documents-3';
+import { archDoc1, archDoc2, archDoc3 } from './stage2-docs-1';
+import { archDoc4, archDoc5, archDoc6, archDoc7, archDoc8 } from './stage2-docs-2';
+import { archDoc9, archDoc10, archDoc11, archDoc12, archDoc13 } from './stage2-docs-3';
 
-export const allDocuments: Document[] = [
-  doc1, doc2, doc3, doc4, doc5, doc6, doc7, doc8, doc9, doc10, doc11, doc12, doc13
+// Stage 1 documents
+const stage1Docs: Document[] = [
+  { ...doc1, stage: 1 },
+  { ...doc2, stage: 1 },
+  { ...doc3, stage: 1 },
+  { ...doc4, stage: 1 },
+  { ...doc5, stage: 1 },
+  { ...doc6, stage: 1 },
+  { ...doc7, stage: 1 },
+  { ...doc8, stage: 1 },
+  { ...doc9, stage: 1 },
+  { ...doc10, stage: 1 },
+  { ...doc11, stage: 1 },
+  { ...doc12, stage: 1 },
+  { ...doc13, stage: 1 },
+];
+
+// Stage 2 documents
+const stage2Docs: Document[] = [
+  archDoc1, archDoc2, archDoc3, archDoc4, archDoc5,
+  archDoc6, archDoc7, archDoc8, archDoc9, archDoc10,
+  archDoc11, archDoc12, archDoc13
+];
+
+// All documents combined
+export const allDocuments: Document[] = [...stage1Docs, ...stage2Docs];
+
+// Stages
+export const stages: Stage[] = [
+  {
+    number: 1,
+    title: 'Master Project Requirements, System Vision and Development Control',
+    shortTitle: 'Requirements & Vision',
+    description: 'Product specification, module inventory, industry adaptation, roles, workflows, architecture plan, database plan, AI/ML spec, UI/UX, security, roadmap, open decisions and project status.',
+    status: 'Completed',
+    documents: stage1Docs,
+  },
+  {
+    number: 2,
+    title: 'System Architecture and Technical Contracts',
+    shortTitle: 'Architecture & Contracts',
+    description: 'System architecture, ADRs, technology evaluation, module dependencies, API/event contracts, data architecture, tenancy/authorization, industry configuration, AI/ML architecture, reliability, implementation sequence, updated decisions and status.',
+    status: 'Completed',
+    documents: stage2Docs,
+  },
 ];
 
 export { allDocuments as documents };
-export type { Document, DocSection, Requirement } from './types';
+export type { Document, DocSection, Requirement, Stage } from './types';

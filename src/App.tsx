@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { allDocuments, Document, DocSection } from './data';
+import { allDocuments, stages, Document, DocSection, Stage } from './data';
 
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
@@ -7,8 +7,10 @@ function StatusBadge({ status }: { status: string }) {
     'Proposed': 'bg-amber-100 text-amber-800',
     'Approved': 'bg-green-100 text-green-800',
     'Needs clarification': 'bg-red-100 text-red-800',
+    'Updated': 'bg-purple-100 text-purple-800',
     'In Progress': 'bg-purple-100 text-purple-800',
     'Pending': 'bg-gray-100 text-gray-600',
+    'Completed': 'bg-green-100 text-green-800',
   };
   return (
     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${colors[status] || 'bg-gray-100 text-gray-600'}`}>
@@ -44,8 +46,7 @@ function renderMarkdown(content: string) {
   const formatInline = (text: string): string => {
     return text
       .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-gray-900">$1</strong>')
-      .replace(/`(.+?)`/g, '<code class="bg-gray-100 text-[#2563EB] px-1.5 py-0.5 rounded text-sm font-mono">$1</code>')
-      .replace(/^(#{1,3})\s+(.+)$/gm, (_, __, text) => text);
+      .replace(/`(.+?)`/g, '<code class="bg-gray-100 text-[#2563EB] px-1.5 py-0.5 rounded text-sm font-mono">$1</code>');
   };
 
   for (let i = 0; i < lines.length; i++) {
@@ -93,9 +94,7 @@ function renderMarkdown(content: string) {
 
     flushList();
 
-    if (line.trim() === '') {
-      continue;
-    }
+    if (line.trim() === '') continue;
 
     if (line.startsWith('|') && line.endsWith('|')) {
       const tableLines: string[] = [line];
@@ -122,7 +121,6 @@ function renderTable(lines: string[], key: number) {
   if (rows.length === 0) return null;
 
   const parseRow = (row: string) => row.split('|').filter((_, i, arr) => i > 0 && i < arr.length - 1).map(c => c.trim());
-
   const headers = parseRow(rows[0]);
   const body = rows.slice(1).map(parseRow);
 
@@ -156,9 +154,7 @@ function SectionContent({ section }: { section: DocSection }) {
       <h2 className="text-xl font-bold text-[#172B4D] mb-4 pb-2 border-b border-gray-100">
         {section.title}
       </h2>
-      <div className="prose-custom">
-        {renderMarkdown(section.content)}
-      </div>
+      <div>{renderMarkdown(section.content)}</div>
     </div>
   );
 }
@@ -166,26 +162,22 @@ function SectionContent({ section }: { section: DocSection }) {
 function DocumentView({ doc, onBack }: { doc: Document; onBack: () => void }) {
   return (
     <div className="max-w-4xl mx-auto">
-      <button
-        onClick={onBack}
-        className="mb-6 flex items-center gap-2 text-sm text-gray-500 hover:text-[#2563EB] transition-colors"
-      >
+      <button onClick={onBack} className="mb-6 flex items-center gap-2 text-sm text-gray-500 hover:text-[#2563EB] transition-colors">
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
-        Back to all documents
+        Back to documents
       </button>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="bg-gradient-to-r from-[#172B4D] to-[#1e3a5f] px-8 py-8">
           <div className="flex items-center gap-3 mb-2">
-            <span className="text-blue-300 text-sm font-medium">Document {doc.number}</span>
+            <span className="text-blue-300 text-sm font-medium">Stage {doc.stage} · Document {doc.number}</span>
             <StatusBadge status={doc.status} />
           </div>
           <h1 className="text-2xl font-bold text-white">{doc.title}</h1>
           <p className="text-blue-200 mt-2 text-sm">{doc.description}</p>
         </div>
-
         <div className="px-8 py-8">
           {doc.sections.map((section) => (
             <SectionContent key={section.id} section={section} />
@@ -198,23 +190,18 @@ function DocumentView({ doc, onBack }: { doc: Document; onBack: () => void }) {
 
 function DocumentCard({ doc, onClick }: { doc: Document; onClick: () => void }) {
   return (
-    <button
-      onClick={onClick}
-      className="w-full text-left bg-white rounded-xl border border-gray-200 p-6 hover:border-[#2563EB] hover:shadow-md transition-all duration-200 group"
-    >
-      <div className="flex items-start justify-between mb-3">
-        <span className="text-xs font-semibold text-[#2563EB] bg-blue-50 px-2.5 py-1 rounded-full">
+    <button onClick={onClick} className="w-full text-left bg-white rounded-xl border border-gray-200 p-5 hover:border-[#2563EB] hover:shadow-md transition-all duration-200 group">
+      <div className="flex items-start justify-between mb-2">
+        <span className="text-xs font-semibold text-[#2563EB] bg-blue-50 px-2 py-0.5 rounded-full">
           Doc {doc.number}
         </span>
         <StatusBadge status={doc.status} />
       </div>
-      <h3 className="text-lg font-semibold text-[#172B4D] group-hover:text-[#2563EB] transition-colors mb-2">
+      <h3 className="text-base font-semibold text-[#172B4D] group-hover:text-[#2563EB] transition-colors mb-1.5">
         {doc.title}
       </h3>
-      <p className="text-sm text-gray-500 leading-relaxed">
-        {doc.description}
-      </p>
-      <div className="mt-4 flex items-center text-xs text-gray-400">
+      <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">{doc.description}</p>
+      <div className="mt-3 flex items-center text-xs text-gray-400">
         <span>{doc.sections.length} sections</span>
         <svg className="w-4 h-4 ml-auto text-gray-300 group-hover:text-[#2563EB] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -224,10 +211,31 @@ function DocumentCard({ doc, onClick }: { doc: Document; onClick: () => void }) 
   );
 }
 
+function StageOverview({ stage, onSelectDoc }: { stage: Stage; onSelectDoc: (doc: Document) => void }) {
+  return (
+    <div className="mb-10">
+      <div className="flex items-center gap-3 mb-4">
+        <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm ${stage.status === 'Completed' ? 'bg-green-500' : 'bg-amber-500'}`}>
+          {stage.number}
+        </div>
+        <div>
+          <h2 className="text-lg font-bold text-[#172B4D]">{stage.title}</h2>
+          <p className="text-xs text-gray-500">{stage.description}</p>
+        </div>
+        <StatusBadge status={stage.status} />
+      </div>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+        {stage.documents.map((doc) => (
+          <DocumentCard key={doc.id} doc={doc} onClick={() => onSelectDoc(doc)} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void }) {
+  const totalDocs = allDocuments.length;
   const totalSections = allDocuments.reduce((sum, d) => sum + d.sections.length, 0);
-  const recordedCount = allDocuments.filter(d => d.status === 'Recorded').length;
-  const proposedCount = allDocuments.filter(d => d.status === 'Proposed').length;
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -239,38 +247,38 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </div>
-          <span className="text-blue-200 text-sm font-medium">Stage 1 — Planning & Documentation</span>
+          <span className="text-blue-200 text-sm font-medium">Planning & Architecture Documentation</span>
         </div>
-        <h1 className="text-3xl md:text-4xl font-bold mb-3">
-          ClickIT Platform
-        </h1>
-        <p className="text-xl text-blue-100 font-light mb-2">
-          AI-Powered Integrated Business Intelligence & Management Platform
-        </p>
+        <h1 className="text-3xl md:text-4xl font-bold mb-3">ClickIT Platform</h1>
+        <p className="text-xl text-blue-100 font-light mb-2">AI-Powered Integrated Business Intelligence & Management Platform</p>
         <p className="text-blue-200 text-sm max-w-2xl leading-relaxed mt-4">
-          Master project documentation covering product vision, module inventory, industry adaptation,
-          roles and permissions, workflows, architecture, database design, AI/ML specification,
-          UI/UX requirements, security, development roadmap, and open decisions.
+          Complete project documentation across 2 stages: Stage 1 covers product requirements, module inventory,
+          workflows, and planning. Stage 2 covers system architecture, technical contracts, technology evaluation,
+          and implementation sequencing.
         </p>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white rounded-xl border border-gray-200 p-5 text-center">
-          <div className="text-3xl font-bold text-[#172B4D]">{allDocuments.length}</div>
-          <div className="text-sm text-gray-500 mt-1">Documents</div>
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
+        <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
+          <div className="text-2xl font-bold text-[#172B4D]">{stages.length}</div>
+          <div className="text-xs text-gray-500 mt-1">Stages</div>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-5 text-center">
-          <div className="text-3xl font-bold text-[#172B4D]">{totalSections}</div>
-          <div className="text-sm text-gray-500 mt-1">Sections</div>
+        <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
+          <div className="text-2xl font-bold text-[#172B4D]">{totalDocs}</div>
+          <div className="text-xs text-gray-500 mt-1">Documents</div>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-5 text-center">
-          <div className="text-3xl font-bold text-green-600">{recordedCount}</div>
-          <div className="text-sm text-gray-500 mt-1">Recorded</div>
+        <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
+          <div className="text-2xl font-bold text-[#172B4D]">{totalSections}</div>
+          <div className="text-xs text-gray-500 mt-1">Sections</div>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-5 text-center">
-          <div className="text-3xl font-bold text-amber-600">{proposedCount}</div>
-          <div className="text-sm text-gray-500 mt-1">Proposed</div>
+        <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
+          <div className="text-2xl font-bold text-green-600">2</div>
+          <div className="text-xs text-gray-500 mt-1">Completed</div>
+        </div>
+        <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
+          <div className="text-2xl font-bold text-gray-400">24</div>
+          <div className="text-xs text-gray-500 mt-1">Remaining Phases</div>
         </div>
       </div>
 
@@ -281,61 +289,66 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
           </svg>
           <div>
-            <h3 className="font-semibold text-amber-800 text-sm">Documentation Stage — No Implementation</h3>
+            <h3 className="font-semibold text-amber-800 text-sm">Documentation Stages Complete — No Implementation Authorized</h3>
             <p className="text-amber-700 text-sm mt-1">
-              This stage covers planning and documentation only. No implementation code, database migrations,
-              UI implementation, model training, or inference engine development is authorized.
-              Awaiting explicit approval to proceed to Phase 2.
+              Stages 1 and 2 are complete. No implementation code, database migrations, UI implementation,
+              model training, or inference engine development is authorized. Awaiting explicit approval
+              to proceed to Phase 3 (Repository & Development Infrastructure).
             </p>
           </div>
         </div>
       </div>
 
-      {/* Document Grid */}
-      <h2 className="text-lg font-semibold text-[#172B4D] mb-4">Project Documents</h2>
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {allDocuments.map((doc) => (
-          <DocumentCard key={doc.id} doc={doc} onClick={() => onSelectDoc(doc)} />
-        ))}
-      </div>
+      {/* Stages */}
+      {stages.map((stage) => (
+        <StageOverview key={stage.number} stage={stage} onSelectDoc={onSelectDoc} />
+      ))}
 
       {/* Completion Report */}
-      <div className="mt-12 bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="mt-8 bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="bg-[#172B4D] px-6 py-4">
-          <h2 className="text-lg font-semibold text-white">Stage 1 Completion Report</h2>
+          <h2 className="text-lg font-semibold text-white">Stage 2 Completion Report</h2>
         </div>
-        <div className="p-6 space-y-4">
+        <div className="p-6 space-y-4 text-sm">
           <div>
-            <h3 className="font-semibold text-[#172B4D] text-sm mb-2">1. What was inspected:</h3>
-            <p className="text-sm text-gray-600">Project repository structure, existing files, and all requirements provided in the project brief.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">1. Stage 1 documents reviewed:</h3>
+            <p className="text-gray-600">All 13 Stage 1 documents inspected — Master Spec, Module Inventory, Industry Adaptation, Roles/Permissions, Workflows, Architecture Plan, Database Plan, AI/ML Spec, UI/UX, Security, Roadmap, Open Decisions, Project Status.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] text-sm mb-2">2. What was documented:</h3>
-            <p className="text-sm text-gray-600">All 13 required specification documents covering vision, modules, industry adaptation, roles, workflows, architecture, database, AI/ML, UI/UX, security, roadmap, open decisions, and project status.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">2. Architecture documents created:</h3>
+            <p className="text-gray-600">13 documents: System Architecture, ADRs, Tech Stack Evaluation, Module Dependencies, API/Event Contracts, Data Architecture, Tenancy/Authorization, Industry Configuration, AI/ML Architecture, Reliability/Observability, Implementation Sequence, Updated Open Decisions, Updated Project Status.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] text-sm mb-2">3. Files created:</h3>
-            <p className="text-sm text-gray-600">Documentation presented as interactive web application with all 13 documents fully authored and navigable.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">3. Proposed architecture:</h3>
+            <p className="text-gray-600">Modular monolith with clear module boundaries. Next.js App Router for frontend + backend. PostgreSQL + Prisma for database. Python/FastAPI for ML services. Defense-in-depth tenant isolation (RLS + middleware). Selective event-driven communication.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] text-sm mb-2">4. Unresolved requirements/decisions:</h3>
-            <p className="text-sm text-gray-600">8 architecture decisions pending (ADR-001 to ADR-008), 8 open decisions, 8 assumptions to validate, 8 clarifications needed. See Document 12 for full details.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">4. Major module dependencies:</h3>
+            <p className="text-gray-600">Organization → CRM → Sales → Finance. Inventory ↔ Sales (read-only + events). Projects → Finance + HR. BI consumes from all business modules. ML consumes from BI. Inference Engine orchestrates analytics + models + rules.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] text-sm mb-2">5. Architecture risks:</h3>
-            <p className="text-sm text-gray-600">Scope complexity (HIGH), ML accuracy expectations (MEDIUM), multi-tenant security (LOW with controls), industry configuration complexity (MEDIUM), performance at scale (MEDIUM), regulatory compliance (MEDIUM).</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">5. Security & multi-tenancy:</h3>
+            <p className="text-gray-600">RLS at database level + middleware at application level. Default-deny authorization. RBAC + ABAC + data scopes. Platform admins cannot access tenant data. Sensitive data classified and protected. AI cannot bypass authorization.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] text-sm mb-2">6. Industry adaptation coverage:</h3>
-            <p className="text-sm text-green-600 font-medium">✓ Explicitly covered in Document 3 with extensible catalogue, custom industry onboarding, profiles, configuration rules, and extension framework.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">6. Frontend/backend/database/ML boundaries:</h3>
+            <p className="text-gray-600">Frontend: Next.js + React + TypeScript + Tailwind. Backend: Next.js API Routes + Server Actions. Database: PostgreSQL + Prisma with RLS. ML: Python + FastAPI (separate services). Clear API contracts between all boundaries.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] text-sm mb-2">7. Full roadmap coverage:</h3>
-            <p className="text-sm text-green-600 font-medium">✓ All 26 phases documented in Document 11 covering frontend, backend, database, BI, ML and inference with dependencies, deliverables and acceptance criteria.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">7. Industry customization:</h3>
+            <p className="text-gray-600">Universal core always available. Extensible industry catalogue. Custom industries fully supported. Industry profiles with suggested configuration. Extension framework for custom fields, workflows, metrics. AI suggestions require human review.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] text-sm mb-2">8. Recommended next phase:</h3>
-            <p className="text-sm text-gray-600"><strong>Phase 2 — Architecture and Technical Contracts.</strong> Pending approval of Phase 1 documentation and resolution of open decisions.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">8. Decisions requiring approval:</h3>
+            <p className="text-gray-600">6 ADRs (modular monolith, Next.js backend, PostgreSQL+Prisma, Python ML, RLS+middleware, selective events). Auth provider selection. Cloud provider selection. All documented in ADR and Open Decisions documents.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-[#172B4D] mb-1">9. Implementation risks:</h3>
+            <p className="text-gray-600">Scope complexity (HIGH), ML accuracy expectations (MEDIUM), multi-tenant security (LOW with controls), industry configuration (MEDIUM, mitigated), performance at scale (MEDIUM, mitigated), regulatory compliance (MEDIUM), Python/TS integration (LOW).</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-[#172B4D] mb-1">10. Ready for Stage 3?</h3>
+            <p className="text-green-600 font-medium">Yes — pending approval of architecture decisions (ADR-001 through ADR-006) and selection of authentication provider. Phase 3 (Repository & Development Infrastructure) can begin once approved.</p>
           </div>
         </div>
       </div>
@@ -345,10 +358,12 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
 
 export default function App() {
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
+  const [activeStage, setActiveStage] = useState<number | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleSelectDoc = useCallback((doc: Document) => {
     setSelectedDoc(doc);
+    setActiveStage(doc.stage ?? null);
     setSidebarOpen(false);
     window.scrollTo(0, 0);
   }, []);
@@ -358,24 +373,30 @@ export default function App() {
     window.scrollTo(0, 0);
   }, []);
 
+  const handleStageSelect = useCallback((stageNum: number | null) => {
+    setActiveStage(stageNum);
+    setSelectedDoc(null);
+  }, []);
+
+  const currentDocs = activeStage
+    ? allDocuments.filter(d => d.stage === activeStage)
+    : allDocuments;
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top Navigation */}
       <header className="bg-[#172B4D] border-b border-[#1e3a5f] sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-14">
             <div className="flex items-center gap-3">
-              <button
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="lg:hidden p-2 rounded-lg text-blue-200 hover:text-white hover:bg-white/10 transition-colors"
-              >
+              <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden p-2 rounded-lg text-blue-200 hover:text-white hover:bg-white/10 transition-colors">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               </button>
-              <button onClick={handleBack} className="flex items-center gap-2.5">
-                <div className="w-8 h-8 bg-[#2563EB] rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">C</span>
+              <button onClick={() => { handleBack(); setActiveStage(null); }} className="flex items-center gap-2.5">
+                <div className="w-7 h-7 bg-[#2563EB] rounded-lg flex items-center justify-center">
+                  <span className="text-white font-bold text-xs">C</span>
                 </div>
                 <div>
                   <span className="text-white font-semibold text-sm">ClickIT</span>
@@ -383,42 +404,74 @@ export default function App() {
                 </div>
               </button>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="text-xs text-blue-300 bg-white/10 px-3 py-1.5 rounded-full">
-                Stage 1 of 26
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-blue-300 bg-white/10 px-3 py-1 rounded-full">
+                Stages 1-2 of 26
               </span>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex gap-8">
-          {/* Sidebar - Desktop */}
-          <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="sticky top-24">
-              <nav className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
-                  <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Documents</h3>
+      {/* Stage Tabs */}
+      <div className="bg-white border-b border-gray-200 sticky top-14 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-1 overflow-x-auto py-2">
+            <button
+              onClick={() => handleStageSelect(null)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
+                activeStage === null ? 'bg-[#172B4D] text-white' : 'text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              All ({allDocuments.length})
+            </button>
+            {stages.map((stage) => (
+              <button
+                key={stage.number}
+                onClick={() => handleStageSelect(stage.number)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors flex items-center gap-2 ${
+                  activeStage === stage.number ? 'bg-[#172B4D] text-white' : 'text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                <span className={`w-5 h-5 rounded text-xs flex items-center justify-center ${
+                  activeStage === stage.number ? 'bg-white/20' : 'bg-gray-200'
+                }`}>{stage.number}</span>
+                <span className="hidden sm:inline">{stage.shortTitle}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex gap-6">
+          {/* Sidebar */}
+          <aside className="hidden lg:block w-60 flex-shrink-0">
+            <div className="sticky top-32">
+              <nav className="bg-white rounded-xl border border-gray-200 overflow-hidden max-h-[calc(100vh-10rem)] overflow-y-auto">
+                <div className="px-3 py-2.5 bg-gray-50 border-b border-gray-200">
+                  <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    {activeStage ? `Stage ${activeStage} Documents` : 'All Documents'}
+                  </h3>
                 </div>
-                <div className="py-2">
+                <div className="py-1">
                   <button
                     onClick={handleBack}
-                    className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
-                      !selectedDoc ? 'bg-blue-50 text-[#2563EB] font-medium' : 'text-gray-600 hover:bg-gray-50'
+                    className={`w-full text-left px-3 py-2 text-sm transition-colors ${
+                      !selectedDoc && !activeStage ? 'bg-blue-50 text-[#2563EB] font-medium' : 'text-gray-600 hover:bg-gray-50'
                     }`}
                   >
                     Overview
                   </button>
-                  {allDocuments.map((doc) => (
+                  {currentDocs.map((doc) => (
                     <button
                       key={doc.id}
                       onClick={() => handleSelectDoc(doc)}
-                      className={`w-full text-left px-4 py-2.5 text-sm transition-colors flex items-center gap-2 ${
+                      className={`w-full text-left px-3 py-2 text-xs transition-colors flex items-center gap-1.5 ${
                         selectedDoc?.id === doc.id ? 'bg-blue-50 text-[#2563EB] font-medium' : 'text-gray-600 hover:bg-gray-50'
                       }`}
                     >
-                      <span className="text-xs text-gray-400 w-5">{doc.number}.</span>
+                      <span className="text-gray-400 w-4 text-right">{doc.number}.</span>
                       <span className="truncate">{doc.shortTitle}</span>
                     </button>
                   ))}
@@ -427,26 +480,19 @@ export default function App() {
             </div>
           </aside>
 
-          {/* Mobile Sidebar Overlay */}
+          {/* Mobile Sidebar */}
           {sidebarOpen && (
             <div className="fixed inset-0 z-40 lg:hidden">
               <div className="absolute inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
-              <aside className="absolute left-0 top-16 bottom-0 w-72 bg-white shadow-xl overflow-y-auto">
+              <aside className="absolute left-0 top-28 bottom-0 w-72 bg-white shadow-xl overflow-y-auto">
                 <nav className="py-2">
-                  <button
-                    onClick={() => { handleBack(); setSidebarOpen(false); }}
-                    className={`w-full text-left px-4 py-3 text-sm ${!selectedDoc ? 'bg-blue-50 text-[#2563EB] font-medium' : 'text-gray-600'}`}
-                  >
-                    Overview
-                  </button>
-                  {allDocuments.map((doc) => (
-                    <button
-                      key={doc.id}
-                      onClick={() => handleSelectDoc(doc)}
-                      className={`w-full text-left px-4 py-3 text-sm flex items-center gap-2 ${
+                  <button onClick={() => { handleBack(); setActiveStage(null); setSidebarOpen(false); }}
+                    className="w-full text-left px-4 py-3 text-sm text-gray-600">Overview</button>
+                  {currentDocs.map((doc) => (
+                    <button key={doc.id} onClick={() => { handleSelectDoc(doc); setSidebarOpen(false); }}
+                      className={`w-full text-left px-4 py-2.5 text-sm flex items-center gap-2 ${
                         selectedDoc?.id === doc.id ? 'bg-blue-50 text-[#2563EB] font-medium' : 'text-gray-600'
-                      }`}
-                    >
+                      }`}>
                       <span className="text-xs text-gray-400 w-5">{doc.number}.</span>
                       <span>{doc.shortTitle}</span>
                     </button>
@@ -460,6 +506,16 @@ export default function App() {
           <main className="flex-1 min-w-0">
             {selectedDoc ? (
               <DocumentView doc={selectedDoc} onBack={handleBack} />
+            ) : activeStage ? (
+              <div>
+                <button onClick={() => handleStageSelect(null)} className="mb-4 flex items-center gap-2 text-sm text-gray-500 hover:text-[#2563EB] transition-colors">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  All stages
+                </button>
+                <StageOverview stage={stages.find(s => s.number === activeStage)!} onSelectDoc={handleSelectDoc} />
+              </div>
             ) : (
               <OverviewPage onSelectDoc={handleSelectDoc} />
             )}
@@ -468,14 +524,12 @@ export default function App() {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 mt-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-gray-500">
-              ClickIT Platform — Master Project Documentation
-            </p>
-            <div className="flex items-center gap-4 text-xs text-gray-400">
-              <span>Stage 1: Planning & Documentation</span>
+      <footer className="border-t border-gray-200 mt-12 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p className="text-sm text-gray-500">ClickIT Platform — Master Project Documentation</p>
+            <div className="flex items-center gap-3 text-xs text-gray-400">
+              <span>Stages 1-2 Complete</span>
               <span className="w-1 h-1 bg-gray-300 rounded-full" />
               <span>Documentation Only — No Implementation</span>
             </div>

@@ -11,8 +11,18 @@ export interface Document {
   title: string;
   shortTitle: string;
   description: string;
-  status: 'Recorded' | 'Proposed' | 'Needs clarification' | 'Approved';
+  status: 'Recorded' | 'Proposed' | 'Needs clarification' | 'Approved' | 'Updated';
+  stage?: number;
   sections: DocSection[];
+}
+
+export interface Stage {
+  number: number;
+  title: string;
+  shortTitle: string;
+  description: string;
+  status: 'Completed' | 'In Progress' | 'Pending';
+  documents: Document[];
 }
 
 export interface Requirement {
