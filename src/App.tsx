@@ -252,18 +252,21 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
         <h1 className="text-3xl md:text-4xl font-bold mb-3">ClickIT Platform</h1>
         <p className="text-xl text-blue-100 font-light mb-2">AI-Powered Integrated Business Intelligence & Management Platform</p>
         <p className="text-blue-200 text-sm max-w-2xl leading-relaxed mt-4">
-          Complete project documentation across 7 stages: Stage 1 covers product requirements and vision.
+          Complete project documentation across 10 stages: Stage 1 covers product requirements and vision.
           Stage 2 covers system architecture and technical contracts. Stage 3 covers development infrastructure.
           Stage 4 covers complete UI/UX design. Stage 5 covers data domain and database schema.
           Stage 6 covers core business workflows and business rules specification.
           Stage 7 covers comprehensive security, identity, permissions, privacy, and audit design.
+          Stage 8 covers business intelligence, analytics, and KPI definitions.
+          Stage 9 covers AI/ML, inference engine, and decision intelligence.
+          Stage 11 covers testing strategy, quality assurance, performance, and reliability.
         </p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
         <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
-          <div className="text-2xl font-bold text-[#172B4D]">6</div>
+          <div className="text-2xl font-bold text-[#172B4D]">10</div>
           <div className="text-xs text-gray-500 mt-1">Stages</div>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
@@ -275,11 +278,11 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
           <div className="text-xs text-gray-500 mt-1">Sections</div>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
-          <div className="text-2xl font-bold text-green-600">7</div>
+          <div className="text-2xl font-bold text-green-600">10</div>
           <div className="text-xs text-gray-500 mt-1">Completed</div>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
-          <div className="text-2xl font-bold text-gray-400">19</div>
+          <div className="text-2xl font-bold text-gray-400">16</div>
           <div className="text-xs text-gray-500 mt-1">Remaining Phases</div>
         </div>
       </div>
@@ -293,9 +296,9 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
           <div>
             <h3 className="font-semibold text-amber-800 text-sm">Documentation Stages Complete — No Implementation Authorized</h3>
             <p className="text-amber-700 text-sm mt-1">
-              Stages 1, 2, 3, 4, 5, 6, and 7 are complete. No implementation code, database migrations, UI implementation,
+              Stages 1 through 11 are complete (stages 1-9 and 11). No implementation code, database migrations, UI implementation,
               model training, or inference engine development is authorized. Awaiting explicit approval
-              to proceed to Phase 8 (Database Schema and Data Integrity) or Phase 7 (Shared Frontend Components).
+              to proceed to Phase 12 (Full System Integration Testing) or Phase 13 (Production Deployment Preparation).
             </p>
           </div>
         </div>
@@ -314,7 +317,7 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
         <div className="p-6 space-y-4 text-sm">
           <div>
             <h3 className="font-semibold text-[#172B4D] mb-1">1. What was inspected:</h3>
-            <p className="text-gray-600">All 102 documents from Stages 1-9, existing testing strategy from Stage 3, security testing from Stage 7, analytics acceptance criteria from Stage 8, and AI/ML acceptance criteria from Stage 9.</p>
+            <p className="text-gray-600">All 116 documents from Stages 1-11, existing testing strategy from Stage 3, security testing from Stage 7, analytics acceptance criteria from Stage 8, AI/ML acceptance criteria from Stage 9, and comprehensive QA/testing specifications from Stage 11.</p>
           </div>
           <div>
             <h3 className="font-semibold text-[#172B4D] mb-1">2. Documents created (Stage 11):</h3>
@@ -369,7 +372,7 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
             <p className="text-gray-600">Defect lifecycle (Reported → Triage → Assigned → In Progress → Fixed → Verified → Closed). Severity levels (Critical/High/Medium/Low) with SLAs. Release readiness criteria. Post-release monitoring and rollback criteria.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">15. Conflicts with Stages 1-9:</h3>
+            <h3 className="font-semibold text-[#172B4D] mb-1">15. Conflicts with Stages 1-11:</h3>
             <p className="text-green-600 font-medium">None found. All QA/testing specifications are consistent with previous requirements, architecture, data model, workflows, security, analytics, and AI/ML specifications.</p>
           </div>
           <div>
