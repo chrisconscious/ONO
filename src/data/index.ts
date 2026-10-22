@@ -10,6 +10,11 @@ import { stage3Doc3, stage3Doc4 } from './stage3-docs-2';
 import { stage3Doc5, stage3Doc6 } from './stage3-docs-3';
 import { stage3Doc7, stage3Doc8 } from './stage3-docs-4';
 import { stage3Doc9, stage3Doc10, stage3Doc11, stage3Doc12 } from './stage3-docs-5';
+import { stage4Doc1, stage4Doc2 } from './stage4-docs-1';
+import { stage4Doc3, stage4Doc4, stage4Doc5 } from './stage4-docs-2';
+import { stage4Doc6, stage4Doc7, stage4Doc8 } from './stage4-docs-3';
+import { stage4Doc9, stage4Doc10, stage4Doc11, stage4Doc12 } from './stage4-docs-4';
+import { stage4Doc13, stage4Doc14 } from './stage4-docs-5';
 
 // Stage 1 documents
 const stage1Docs: Document[] = [
@@ -42,8 +47,15 @@ const stage3Docs: Document[] = [
   stage3Doc11, stage3Doc12
 ];
 
+// Stage 4 documents
+const stage4Docs: Document[] = [
+  stage4Doc1, stage4Doc2, stage4Doc3, stage4Doc4, stage4Doc5,
+  stage4Doc6, stage4Doc7, stage4Doc8, stage4Doc9, stage4Doc10,
+  stage4Doc11, stage4Doc12, stage4Doc13, stage4Doc14
+];
+
 // All documents combined
-export const allDocuments: Document[] = [...stage1Docs, ...stage2Docs, ...stage3Docs];
+export const allDocuments: Document[] = [...stage1Docs, ...stage2Docs, ...stage3Docs, ...stage4Docs];
 
 // Stages
 export const stages: Stage[] = [
@@ -70,6 +82,14 @@ export const stages: Stage[] = [
     description: 'Repository structure, development environment, engineering standards, testing strategy, CI/CD pipeline, database migration workflow, security controls, AI/ML DevOps, observability, and implementation sequence.',
     status: 'Completed',
     documents: stage3Docs,
+  },
+  {
+    number: 4,
+    title: 'Complete UI/UX Design and Screen Specification',
+    shortTitle: 'UI/UX Design',
+    description: 'Design system, screen inventory, navigation, role-specific dashboards, authentication UX, onboarding, business intelligence UX, industry-adaptive UX, interactions, forms/tables, accessibility, and acceptance criteria.',
+    status: 'Completed',
+    documents: stage4Docs,
   },
 ];
 
