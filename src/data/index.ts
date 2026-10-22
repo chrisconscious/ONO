@@ -33,6 +33,11 @@ import {
 
 import { stage9Docs } from './stage9-docs';
 import { stage11Docs } from './stage11-docs';
+import { stage12Doc1 } from './stage12-doc1';
+import { stage12Doc2 } from './stage12-doc2';
+import { stage12Doc3 } from './stage12-doc3';
+import { stage12Doc4, stage12Doc5, stage12Doc6, stage12Doc7 } from './stage12-doc4-7';
+import { stage12Doc8, stage12Doc9, stage12Doc10, stage12Doc11, stage12Doc12 } from './stage12-doc8-12';
 
 // Stage 1 documents
 const stage1Docs: Document[] = [
@@ -101,8 +106,36 @@ const stage9DocsArray: Document[] = stage9Docs;
 // Stage 11 documents
 const stage11DocsArray: Document[] = stage11Docs;
 
+// Stage 12 documents
+const stage12Docs: Document[] = [
+  stage12Doc1,
+  stage12Doc2,
+  stage12Doc3,
+  stage12Doc4,
+  stage12Doc5,
+  stage12Doc6,
+  stage12Doc7,
+  stage12Doc8,
+  stage12Doc9,
+  stage12Doc10,
+  stage12Doc11,
+  stage12Doc12
+];
+
 // All documents combined
-export const allDocuments: Document[] = [...stage1Docs, ...stage2Docs, ...stage3Docs, ...stage4Docs, ...stage5Docs, ...stage6Docs, ...stage7Docs, ...stage8Docs, ...stage9DocsArray, ...stage11DocsArray];
+export const allDocuments: Document[] = [
+  ...stage1Docs,
+  ...stage2Docs,
+  ...stage3Docs,
+  ...stage4Docs,
+  ...stage5Docs,
+  ...stage6Docs,
+  ...stage7Docs,
+  ...stage8Docs,
+  ...stage9DocsArray,
+  ...stage11DocsArray,
+  ...stage12Docs
+];
 
 // Stages
 export const stages: Stage[] = [
@@ -185,6 +218,14 @@ export const stages: Stage[] = [
     description: 'Comprehensive testing strategy, requirements traceability, functional testing, security testing, database testing, analytics testing, AI/ML evaluation, integration testing, performance testing, reliability testing, UI/UX testing, test data management, CI/CD gates, and defect management.',
     status: 'Completed',
     documents: stage11DocsArray,
+  },
+  {
+    number: 12,
+    title: 'Deployment Architecture, Environments, DevOps, Monitoring, Backup, and Production Operations',
+    shortTitle: 'Deployment & Operations',
+    description: 'Deployment architecture, environment configuration, CI/CD strategy, infrastructure security, scaling and capacity, monitoring and observability, backup and disaster recovery, database migrations, production operations, incident management, maintenance procedures, and go-live readiness.',
+    status: 'Completed',
+    documents: stage12Docs,
   },
 ];
 

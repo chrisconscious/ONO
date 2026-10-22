@@ -312,72 +312,72 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
       {/* Completion Report */}
       <div className="mt-8 bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="bg-[#172B4D] px-6 py-4">
-          <h2 className="text-lg font-semibold text-white">Stage 11 Completion Report</h2>
+          <h2 className="text-lg font-semibold text-white">Stage 12 Completion Report</h2>
         </div>
         <div className="p-6 space-y-4 text-sm">
           <div>
             <h3 className="font-semibold text-[#172B4D] mb-1">1. What was inspected:</h3>
-            <p className="text-gray-600">All 116 documents from Stages 1-11, existing testing strategy from Stage 3, security testing from Stage 7, analytics acceptance criteria from Stage 8, AI/ML acceptance criteria from Stage 9, and comprehensive QA/testing specifications from Stage 11.</p>
+            <p className="text-gray-600">All 130 documents from Stages 1-12, existing architecture from Stage 2, repository structure from Stage 3, security architecture from Stage 7, testing strategy from Stage 11, and deployment requirements from previous stages.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">2. Documents created (Stage 11):</h3>
-            <p className="text-gray-600">14 comprehensive QA/testing documents: Quality Assurance and Testing Strategy, Requirements Traceability Matrix, Functional and Business Rule Test Plan, Security and Tenant Isolation Test Plan, Database and Data Integrity Test Plan, Analytics and Data Quality Test Plan, AI/ML Evaluation and Regression Test Plan, API/Integration/Background Job Test Plan, Performance and Capacity Test Plan, Reliability and Disaster Recovery Test Plan, UI/UX/Accessibility/Compatibility Test Plan, Test Data and Environment Management, CI/CD Quality Gates and Release Approval, Defect Management and Release Readiness.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">2. Documents created (Stage 12):</h3>
+            <p className="text-gray-600">12 comprehensive deployment and operations documents: Deployment Architecture and Environment Plan, Environment Configuration and Secret Management, CI/CD Deployment and Release Strategy, Infrastructure and Network Security Plan, Scaling Capacity and Cost Management, Monitoring Logging and Tracing Specification, Backup Restore and Disaster Recovery Plan, Database Migration and Rollback Operations, Production Operations and Runbook Catalog, Incident Management and Escalation Policy, Maintenance Patching and Dependency Management, Production Readiness and Go-Live Checklist.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">3. Testing strategy:</h3>
-            <p className="text-gray-600">19-layer testing strategy from requirements review to production smoke testing. Continuous testing on every commit, pre-merge testing on every PR, pre-release testing, and periodic testing (quarterly penetration tests, load tests, backup tests).</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">3. Deployment architecture:</h3>
+            <p className="text-gray-600">Managed application hosting with separate services for specialized workloads. Next.js application on managed platform, background workers, Python ML services, managed PostgreSQL with RLS, Redis cache, S3-compatible storage. Environment separation: Local, CI/CD, Staging, Production.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">4. Requirements traceability:</h3>
-            <p className="text-gray-600">Complete traceability matrix linking requirements to test cases. Coverage targets: 100% for critical, 95% for high, 90% for medium, 80% for low. Status tracking from planned through passed/failed/blocked.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">4. Configuration and secrets:</h3>
+            <p className="text-gray-600">Environment variables with schema validation. Secret management with rotation (90 days for critical). Configuration hierarchy: defaults → env vars → config files → feature flags → tenant settings. Security controls for secret protection at rest, in transit, in memory, and in logs.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">5. Security testing (release-blocking):</h3>
-            <p className="text-gray-600">Comprehensive tenant isolation tests across all access paths (API, database, background jobs, files, analytics, AI). Authorization tests for permissions, data scope, approvals. Security vulnerability tests (SQL injection, XSS, CSRF, prompt injection). 100% pass rate required for release.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">5. CI/CD and release strategy:</h3>
+            <p className="text-gray-600">GitHub Actions pipeline with 13 stages. GitHub Flow branching model. Semantic versioning. Deployment strategies: rolling (initial), blue-green (critical), canary (large scale). Database migrations with expand-contract pattern. Rollback procedures documented.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">6. Database and data integrity:</h3>
-            <p className="text-gray-600">Schema constraint tests, transaction atomicity tests, concurrency tests, migration safety tests, data integrity tests (referential integrity, financial reconciliation, inventory reconciliation, audit trail completeness).</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">6. Infrastructure security:</h3>
+            <p className="text-gray-600">Network segmentation (public, private, data, management subnets). TLS 1.3 for all communication. Access control with least privilege. Infrastructure hardening (OS, application, database, containers). Vulnerability management with automated scanning and patching.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">7. Analytics and data quality:</h3>
-            <p className="text-gray-600">KPI calculation accuracy tests, data quality dimension tests (completeness, accuracy, consistency, timeliness, uniqueness, validity), reconciliation tests, report accuracy tests.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">7. Scaling and capacity:</h3>
+            <p className="text-gray-600">Scaling strategy for application, database, cache, and workers. Capacity planning process with baseline measurement and growth projection. Performance optimization across application, database, cache, and network. Cost management with right-sizing, spot instances, caching, and data lifecycle.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">8. AI/ML evaluation:</h3>
-            <p className="text-gray-600">Model accuracy and fairness tests, LLM factual correctness and evidence citation tests, regression tests for model/prompt/data changes, safety tests (no hallucinations, no unauthorized access, no prompt injection).</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">8. Monitoring and observability:</h3>
+            <p className="text-gray-600">Three pillars: metrics, logs, traces. Tools: Prometheus + Grafana + Loki (open-source) or Datadog/New Relic (commercial). Application, database, business, and infrastructure metrics. Structured logging with sanitization. Distributed tracing with OpenTelemetry. Alerting with severity levels.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">9. Integration and background jobs:</h3>
-            <p className="text-gray-600">API contract tests, event publication/consumption tests, background job idempotency tests, webhook signature verification tests, external API integration tests.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">9. Backup and disaster recovery:</h3>
+            <p className="text-gray-600">Backup strategy: database (full, incremental, PITR), files (cross-region replication), application (version controlled). Recovery procedures for data deletion, database corruption, infrastructure loss, and security breach. DR strategy: pilot light (initial), warm standby (growth), active-active (enterprise). RPO &lt;1 hour, RTO &lt;4 hours.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">10. Performance and capacity:</h3>
-            <p className="text-gray-600">Performance targets: API &lt;500ms (p95), dashboards &lt;2s, support 1000+ concurrent users. Load tests (sustained, peak, spike), capacity tests (users, data, storage), scalability tests (horizontal, vertical).</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">10. Database migrations:</h3>
+            <p className="text-gray-600">Migration strategy with backward compatibility and expand-contract pattern. Migration workflow: create, test, review, deploy, verify. Data integrity checks before, during, and after migration. Automated verification scripts. Rollback procedures with forward-fix alternative.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">11. Reliability and disaster recovery:</h3>
-            <p className="text-gray-600">Availability target: 99.9%. Backup and recovery tests (daily backups, quarterly restore tests). RTO &lt;4 hours, RPO &lt;1 hour. Resilience tests (chaos engineering, failure injection).</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">11. Production operations:</h3>
+            <p className="text-gray-600">Runbook catalog with templates for critical incidents (application down, database unavailable, high error rate, slow response, job failures, AI service down, security incident, data corruption). Operational procedures: daily, weekly, monthly checks. Operational metrics: availability (99.9%), performance (&lt;500ms), error rate (&lt;0.1%).</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">12. UI/UX and accessibility:</h3>
-            <p className="text-gray-600">WCAG 2.2 AA compliance tests (keyboard navigation, screen reader, color contrast, form accessibility). Browser compatibility tests (Chrome, Firefox, Safari, Edge, iOS Safari, Android Chrome). Responsive design tests.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">12. Incident management:</h3>
+            <p className="text-gray-600">Incident classification: SEV-1 (Critical), SEV-2 (High), SEV-3 (Medium), SEV-4 (Low). Incident response process: detection, declaration, assembly, investigation, mitigation, resolution, review. Communication plan with internal and external templates. Post-incident review within 48 hours.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">13. CI/CD quality gates:</h3>
-            <p className="text-gray-600">Pre-commit gates (formatting, linting, type checking). Pre-merge gates (unit tests, integration tests, security scan, tenant isolation). Pre-release gates (E2E tests, performance tests, accessibility tests, AI evaluation, penetration test). Release approval gate with exception process.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">13. Maintenance and dependencies:</h3>
+            <p className="text-gray-600">Maintenance categories: security patches (24-72 hours), bug fixes (1-2 weeks), feature updates (monthly), infrastructure updates (quarterly), dependency updates (monthly). Dependency management with automated updates (Dependabot/Renovate). Update process: discovery, assessment, testing, deployment, documentation.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">14. Defect management:</h3>
-            <p className="text-gray-600">Defect lifecycle (Reported → Triage → Assigned → In Progress → Fixed → Verified → Closed). Severity levels (Critical/High/Medium/Low) with SLAs. Release readiness criteria. Post-release monitoring and rollback criteria.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">14. Go-live readiness:</h3>
+            <p className="text-gray-600">Comprehensive production readiness checklist covering architecture, code quality, security, data, infrastructure, deployment, testing, documentation, operations, compliance, and business. Go-live procedure with pre-launch (7 days), launch day, and post-launch (1 week) activities. Success criteria: zero critical incidents, error rate &lt;0.1%, response time &lt;500ms.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">15. Conflicts with Stages 1-11:</h3>
-            <p className="text-green-600 font-medium">None found. All QA/testing specifications are consistent with previous requirements, architecture, data model, workflows, security, analytics, and AI/ML specifications.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">15. Conflicts with Stages 1-12:</h3>
+            <p className="text-green-600 font-medium">None found. All deployment and operations specifications are consistent with previous requirements, architecture, security, testing, and AI/ML specifications.</p>
           </div>
           <div>
             <h3 className="font-semibold text-[#172B4D] mb-1">16. Recommended next stage:</h3>
-            <p className="text-green-600 font-medium">Phase 12 (Full System Integration Testing) or Phase 13 (Production Deployment Preparation). Pending approval of all Stage 1-11 documentation and technology decisions.</p>
+            <p className="text-green-600 font-medium">Phase 13 (Full System Integration Testing) or Phase 14 (Production Deployment). Pending approval of all Stage 1-12 documentation and technology decisions. All planning stages (1-12) are now complete.</p>
           </div>
           <div>
             <h3 className="font-semibold text-[#172B4D] mb-1">17. Implementation status:</h3>
@@ -439,7 +439,7 @@ export default function App() {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-blue-300 bg-white/10 px-3 py-1 rounded-full">
-                Stages 1-11 of 26
+                Stages 1-12 of 26
               </span>
             </div>
           </div>
@@ -562,7 +562,7 @@ export default function App() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-sm text-gray-500">ClickIT Platform — Master Project Documentation</p>
             <div className="flex items-center gap-3 text-xs text-gray-400">
-              <span>Stages 1-11 Complete</span>
+              <span>Stages 1-12 Complete</span>
               <span className="w-1 h-1 bg-gray-300 rounded-full" />
               <span>Documentation Only — No Implementation</span>
             </div>
