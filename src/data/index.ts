@@ -25,6 +25,7 @@ import { stage6Doc3 } from './stage6-doc3-cross-department';
 import { stage6Doc4 } from './stage6-doc4-approval-framework';
 import { stage6Doc5, stage6Doc6 } from './stage6-doc5-automation-kpi';
 import { stage6Doc7, stage6Doc8, stage6Doc9 } from './stage6-docs-remaining';
+import { stage7Doc13, stage7Doc14 } from './stage7-docs-final';
 
 // Stage 1 documents
 const stage1Docs: Document[] = [
@@ -76,8 +77,13 @@ const stage6Docs: Document[] = [
   stage6Doc6, stage6Doc7, stage6Doc8, stage6Doc9
 ];
 
+// Stage 7 documents
+const stage7Docs: Document[] = [
+  stage7Doc13, stage7Doc14
+];
+
 // All documents combined
-export const allDocuments: Document[] = [...stage1Docs, ...stage2Docs, ...stage3Docs, ...stage4Docs, ...stage5Docs, ...stage6Docs];
+export const allDocuments: Document[] = [...stage1Docs, ...stage2Docs, ...stage3Docs, ...stage4Docs, ...stage5Docs, ...stage6Docs, ...stage7Docs];
 
 // Stages
 export const stages: Stage[] = [
@@ -128,6 +134,14 @@ export const stages: Stage[] = [
     description: 'Comprehensive business workflow specifications, business rules catalog, cross-department workflows, approval framework, automation specification, KPI catalog, and industry workflow configuration.',
     status: 'Completed',
     documents: stage6Docs,
+  },
+  {
+    number: 7,
+    title: 'Security, Identity, Permissions, Privacy, and Audit Design',
+    shortTitle: 'Security & Privacy',
+    description: 'Comprehensive security specifications including threat modeling, authentication, authorization, tenant isolation, data protection, audit logging, AI security, incident response, and security testing.',
+    status: 'Completed',
+    documents: stage7Docs,
   },
 ];
 

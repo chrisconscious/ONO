@@ -252,10 +252,11 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
         <h1 className="text-3xl md:text-4xl font-bold mb-3">ClickIT Platform</h1>
         <p className="text-xl text-blue-100 font-light mb-2">AI-Powered Integrated Business Intelligence & Management Platform</p>
         <p className="text-blue-200 text-sm max-w-2xl leading-relaxed mt-4">
-          Complete project documentation across 6 stages: Stage 1 covers product requirements and vision.
+          Complete project documentation across 7 stages: Stage 1 covers product requirements and vision.
           Stage 2 covers system architecture and technical contracts. Stage 3 covers development infrastructure.
           Stage 4 covers complete UI/UX design. Stage 5 covers data domain and database schema.
           Stage 6 covers core business workflows and business rules specification.
+          Stage 7 covers comprehensive security, identity, permissions, privacy, and audit design.
         </p>
       </div>
 
@@ -274,11 +275,11 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
           <div className="text-xs text-gray-500 mt-1">Sections</div>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
-          <div className="text-2xl font-bold text-green-600">2</div>
+          <div className="text-2xl font-bold text-green-600">7</div>
           <div className="text-xs text-gray-500 mt-1">Completed</div>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
-          <div className="text-2xl font-bold text-gray-400">20</div>
+          <div className="text-2xl font-bold text-gray-400">19</div>
           <div className="text-xs text-gray-500 mt-1">Remaining Phases</div>
         </div>
       </div>
@@ -292,9 +293,9 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
           <div>
             <h3 className="font-semibold text-amber-800 text-sm">Documentation Stages Complete — No Implementation Authorized</h3>
             <p className="text-amber-700 text-sm mt-1">
-              Stages 1, 2, 3, 4, 5, and 6 are complete. No implementation code, database migrations, UI implementation,
+              Stages 1, 2, 3, 4, 5, 6, and 7 are complete. No implementation code, database migrations, UI implementation,
               model training, or inference engine development is authorized. Awaiting explicit approval
-              to proceed to Phase 7 (Shared Frontend Components) or Phase 9 (Backend APIs and Business Rules).
+              to proceed to Phase 8 (Database Schema and Data Integrity) or Phase 7 (Shared Frontend Components).
             </p>
           </div>
         </div>
@@ -308,47 +309,55 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
       {/* Completion Report */}
       <div className="mt-8 bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="bg-[#172B4D] px-6 py-4">
-          <h2 className="text-lg font-semibold text-white">Stage 6 Completion Report</h2>
+          <h2 className="text-lg font-semibold text-white">Stage 7 Completion Report</h2>
         </div>
         <div className="p-6 space-y-4 text-sm">
           <div>
             <h3 className="font-semibold text-[#172B4D] mb-1">1. What was inspected:</h3>
-            <p className="text-gray-600">All 59 documents from Stages 1-5, existing workflow catalog from Stage 1, module dependencies from Stage 2, data model from Stage 5, and UI/UX specifications from Stage 4.</p>
+            <p className="text-gray-600">All 68 documents from Stages 1-6, existing security controls from Stage 3, tenancy and authorization architecture from Stage 2, data architecture and classification from Stage 5, and workflow and approval frameworks from Stage 6.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">2. Documents created (Stage 6):</h3>
-            <p className="text-gray-600">9 comprehensive documents: Core Business Workflow Catalog, Business Rules Catalog, Cross-Department Workflows, Approval and Delegation Framework, Workflow Automation Specification, Business KPI and Outcome Catalog, Industry Workflow Configuration, Workflow Acceptance Criteria, Updated Project Status.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">2. Documents created (Stage 7):</h3>
+            <p className="text-gray-600">14 comprehensive security documents: Security Threat Model, Identity and Authentication Specification, Authorization and Permission Matrix, Multi-Tenant Security Controls, Platform and Privileged Access Policy, API and Application Security Requirements, Data Classification and Privacy Policy, Audit Logging and Accountability Specification, AI/ML Security and Data Boundaries, File/Export/Integration Security, Security Testing and Acceptance Criteria, Security Incident Response Plan, Updated Open Decisions, Updated Project Status.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">3. Key workflow decisions:</h3>
-            <p className="text-gray-600">Comprehensive workflow specifications with clear status transitions, business rules, approval requirements, and audit trails. Cross-department workflows defined for lead-to-cash, demand-to-procurement, sale-to-delivery, and more.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">3. Threat model coverage:</h3>
+            <p className="text-gray-600">26 critical threats identified across 7 categories: tenant isolation, authentication, authorization, data protection, API/application, AI/automation, and infrastructure. Each threat documented with assets, actors, entry points, impact, controls, detection, residual risk, and verification methods.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">4. Business rules coverage:</h3>
-            <p className="text-gray-600">Complete catalog of validation rules, workflow transition rules, authorization rules, financial control rules, and inventory control rules with enforcement mechanisms and exception handling.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">4. Authentication and authorization:</h3>
+            <p className="text-gray-600">Complete identity lifecycle specification with MFA support, session management, and account recovery. Comprehensive authorization matrix with RBAC + ABAC model, granular permissions, data scope enforcement, and approval workflows for all modules.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">5. Approval framework:</h3>
-            <p className="text-gray-600">Configurable approval policies with delegation support, escalation paths, expiration handling, and separation of duties enforcement. Complete audit trail for all approval decisions.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">5. Multi-tenant security:</h3>
+            <p className="text-gray-600">Three-layer defense model: Database RLS (primary), application middleware (defense-in-depth), service-level checks (explicit). Tenant isolation enforced across all access paths: APIs, database, background jobs, AI/ML, caches, files, exports, and integrations.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">6. Automation and AI:</h3>
-            <p className="text-gray-600">Safe automation framework with risk-based approval levels, exception handling, and AI-assisted decision workflows. Clear distinction between facts, predictions, and recommendations.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">6. Data protection and privacy:</h3>
+            <p className="text-gray-600">Four-level data classification (Public, Internal, Confidential, Highly Restricted) with handling rules for each level. Privacy governance framework with data minimization, purpose limitation, consent management, and user rights support. Regulatory compliance considerations documented.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">7. KPI framework:</h3>
-            <p className="text-gray-600">Comprehensive KPI catalog for financial, sales, marketing, and operational metrics with clear definitions, data sources, calculation methods, and limitations.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">7. Audit and accountability:</h3>
+            <p className="text-gray-600">Comprehensive audit event model covering all security-relevant events. Immutable audit logs with 7-year retention. Real-time monitoring and anomaly detection. Complete audit trail for authentication, authorization, data access, approvals, and administrative operations.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">8. Conflicts with Stages 1-5:</h3>
-            <p className="text-green-600 font-medium">None found. All workflows are consistent with previous requirements, architecture, data model, and UI/UX specifications.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">8. AI/ML security:</h3>
+            <p className="text-gray-600">AI operates within existing authorization boundaries with tenant-scoped context retrieval, prompt injection prevention, action approval workflows, and complete audit trail. Model provider security requirements and fallback policies defined.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">9. Recommended next stage:</h3>
-            <p className="text-green-600 font-medium">Phase 7 (Shared Frontend Components) or Phase 9 (Backend APIs and Business Rules). Pending approval of all Stage 1-6 documentation and technology decisions.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">9. Security testing and incident response:</h3>
+            <p className="text-gray-600">Comprehensive security testing strategy with automated tests in CI/CD, quarterly penetration testing, and release-blocking acceptance criteria. Incident response plan with defined team structure, severity levels, response procedures, communication plans, and post-incident review process.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">10. Implementation status:</h3>
+            <h3 className="font-semibold text-[#172B4D] mb-1">10. Conflicts with Stages 1-6:</h3>
+            <p className="text-green-600 font-medium">None found. All security specifications are consistent with previous requirements, architecture, data model, workflows, and UI/UX specifications.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-[#172B4D] mb-1">11. Recommended next stage:</h3>
+            <p className="text-green-600 font-medium">Phase 8 (Database Schema and Data Integrity) or Phase 7 (Shared Frontend Components). Pending approval of all Stage 1-7 documentation and technology decisions.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-[#172B4D] mb-1">12. Implementation status:</h3>
             <p className="text-amber-600 font-medium">No implementation files or infrastructure were created or modified. This stage is documentation-only.</p>
           </div>
         </div>
@@ -407,7 +416,7 @@ export default function App() {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-blue-300 bg-white/10 px-3 py-1 rounded-full">
-                Stages 1-6 of 26
+                Stages 1-7 of 26
               </span>
             </div>
           </div>
@@ -530,7 +539,7 @@ export default function App() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-sm text-gray-500">ClickIT Platform — Master Project Documentation</p>
             <div className="flex items-center gap-3 text-xs text-gray-400">
-              <span>Stages 1-6 Complete</span>
+              <span>Stages 1-7 Complete</span>
               <span className="w-1 h-1 bg-gray-300 rounded-full" />
               <span>Documentation Only — No Implementation</span>
             </div>
