@@ -31,6 +31,8 @@ import {
   stage8Doc6, stage8Doc7, stage8Doc8, stage8Doc9, stage8Doc10, stage8Doc11
 } from './stage8-docs';
 
+import { stage9Docs } from './stage9-docs';
+
 // Stage 1 documents
 const stage1Docs: Document[] = [
   { ...doc1, stage: 1 },
@@ -92,8 +94,11 @@ const stage8Docs: Document[] = [
   stage8Doc6, stage8Doc7, stage8Doc8, stage8Doc9, stage8Doc10, stage8Doc11
 ];
 
+// Stage 9 documents
+const stage9DocsArray: Document[] = stage9Docs;
+
 // All documents combined
-export const allDocuments: Document[] = [...stage1Docs, ...stage2Docs, ...stage3Docs, ...stage4Docs, ...stage5Docs, ...stage6Docs, ...stage7Docs, ...stage8Docs];
+export const allDocuments: Document[] = [...stage1Docs, ...stage2Docs, ...stage3Docs, ...stage4Docs, ...stage5Docs, ...stage6Docs, ...stage7Docs, ...stage8Docs, ...stage9DocsArray];
 
 // Stages
 export const stages: Stage[] = [
@@ -160,6 +165,14 @@ export const stages: Stage[] = [
     description: 'Business intelligence architecture, metric registry, KPI formulas, data quality, lineage, dashboards, alerts, forecasting, AI insights, analytics security, and acceptance criteria.',
     status: 'Completed',
     documents: stage8Docs,
+  },
+  {
+    number: 9,
+    title: 'AI/ML, Inference Engine, Decision Intelligence, and Model Governance Specification',
+    shortTitle: 'AI/ML & Intelligence',
+    description: 'AI/ML inference architecture, task routing, inference engine, ML use cases, model training and evaluation, model lifecycle, decision intelligence, action boundaries, security controls, and acceptance criteria.',
+    status: 'Completed',
+    documents: stage9DocsArray,
   },
 ];
 

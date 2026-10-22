@@ -428,7 +428,7 @@ export default function App() {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-blue-300 bg-white/10 px-3 py-1 rounded-full">
-                Stages 1-8 of 26
+                Stages 1-9 of 26
               </span>
             </div>
           </div>
@@ -551,7 +551,7 @@ export default function App() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-sm text-gray-500">ClickIT Platform — Master Project Documentation</p>
             <div className="flex items-center gap-3 text-xs text-gray-400">
-              <span>Stages 1-8 Complete</span>
+              <span>Stages 1-9 Complete</span>
               <span className="w-1 h-1 bg-gray-300 rounded-full" />
               <span>Documentation Only — No Implementation</span>
             </div>
