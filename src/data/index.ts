@@ -19,6 +19,12 @@ import { stage5Doc1 } from './stage5-docs-1';
 import { stage5Doc2, stage5Doc3 } from './stage5-docs-2';
 import { stage5Doc4, stage5Doc5 } from './stage5-docs-3';
 import { stage5Doc6, stage5Doc7 } from './stage5-docs-4';
+import { stage6Doc1 } from './stage6-doc1-workflow-catalog';
+import { stage6Doc2 } from './stage6-doc2-business-rules';
+import { stage6Doc3 } from './stage6-doc3-cross-department';
+import { stage6Doc4 } from './stage6-doc4-approval-framework';
+import { stage6Doc5, stage6Doc6 } from './stage6-doc5-automation-kpi';
+import { stage6Doc7, stage6Doc8, stage6Doc9 } from './stage6-docs-remaining';
 
 // Stage 1 documents
 const stage1Docs: Document[] = [
@@ -64,8 +70,14 @@ const stage5Docs: Document[] = [
   stage5Doc6, stage5Doc7
 ];
 
+// Stage 6 documents
+const stage6Docs: Document[] = [
+  stage6Doc1, stage6Doc2, stage6Doc3, stage6Doc4, stage6Doc5,
+  stage6Doc6, stage6Doc7, stage6Doc8, stage6Doc9
+];
+
 // All documents combined
-export const allDocuments: Document[] = [...stage1Docs, ...stage2Docs, ...stage3Docs, ...stage4Docs, ...stage5Docs];
+export const allDocuments: Document[] = [...stage1Docs, ...stage2Docs, ...stage3Docs, ...stage4Docs, ...stage5Docs, ...stage6Docs];
 
 // Stages
 export const stages: Stage[] = [
@@ -108,6 +120,14 @@ export const stages: Stage[] = [
     description: 'Data domain catalog, business entity specifications, logical data model, entity relationships, tenant ownership matrix, data integrity rules, and business invariants.',
     status: 'Completed',
     documents: stage5Docs,
+  },
+  {
+    number: 6,
+    title: 'Core Business Workflows and Business Rules Specification',
+    shortTitle: 'Workflows & Rules',
+    description: 'Comprehensive business workflow specifications, business rules catalog, cross-department workflows, approval framework, automation specification, KPI catalog, and industry workflow configuration.',
+    status: 'Completed',
+    documents: stage6Docs,
   },
 ];
 

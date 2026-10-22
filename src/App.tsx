@@ -252,16 +252,17 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
         <h1 className="text-3xl md:text-4xl font-bold mb-3">ClickIT Platform</h1>
         <p className="text-xl text-blue-100 font-light mb-2">AI-Powered Integrated Business Intelligence & Management Platform</p>
         <p className="text-blue-200 text-sm max-w-2xl leading-relaxed mt-4">
-          Complete project documentation across 5 stages: Stage 1 covers product requirements and vision.
+          Complete project documentation across 6 stages: Stage 1 covers product requirements and vision.
           Stage 2 covers system architecture and technical contracts. Stage 3 covers development infrastructure.
-          Stage 4 covers complete UI/UX design. Stage 5 covers data domain, database schema, and business entity design.
+          Stage 4 covers complete UI/UX design. Stage 5 covers data domain and database schema.
+          Stage 6 covers core business workflows and business rules specification.
         </p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-8">
         <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
-          <div className="text-2xl font-bold text-[#172B4D]">5</div>
+          <div className="text-2xl font-bold text-[#172B4D]">6</div>
           <div className="text-xs text-gray-500 mt-1">Stages</div>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
@@ -277,7 +278,7 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
           <div className="text-xs text-gray-500 mt-1">Completed</div>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
-          <div className="text-2xl font-bold text-gray-400">21</div>
+          <div className="text-2xl font-bold text-gray-400">20</div>
           <div className="text-xs text-gray-500 mt-1">Remaining Phases</div>
         </div>
       </div>
@@ -291,9 +292,9 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
           <div>
             <h3 className="font-semibold text-amber-800 text-sm">Documentation Stages Complete — No Implementation Authorized</h3>
             <p className="text-amber-700 text-sm mt-1">
-              Stages 1, 2, 3, 4, and 5 are complete. No implementation code, database migrations, UI implementation,
+              Stages 1, 2, 3, 4, 5, and 6 are complete. No implementation code, database migrations, UI implementation,
               model training, or inference engine development is authorized. Awaiting explicit approval
-              to proceed to Phase 6 (Application Shell and Navigation) or Phase 8 (Database Schema Implementation).
+              to proceed to Phase 7 (Shared Frontend Components) or Phase 9 (Backend APIs and Business Rules).
             </p>
           </div>
         </div>
@@ -307,43 +308,47 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
       {/* Completion Report */}
       <div className="mt-8 bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="bg-[#172B4D] px-6 py-4">
-          <h2 className="text-lg font-semibold text-white">Stage 5 Completion Report</h2>
+          <h2 className="text-lg font-semibold text-white">Stage 6 Completion Report</h2>
         </div>
         <div className="p-6 space-y-4 text-sm">
           <div>
             <h3 className="font-semibold text-[#172B4D] mb-1">1. What was inspected:</h3>
-            <p className="text-gray-600">All 52 documents from Stages 1-4, existing repository structure, module inventory, architecture decisions, and UI/UX screen requirements.</p>
+            <p className="text-gray-600">All 59 documents from Stages 1-5, existing workflow catalog from Stage 1, module dependencies from Stage 2, data model from Stage 5, and UI/UX specifications from Stage 4.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">2. Documents created (Stage 5):</h3>
-            <p className="text-gray-600">7 core documents: Data Domain Catalog, Business Entity Catalog, Logical Data Model, Entity Relationship Diagrams, Tenant Data Ownership Matrix, Data Integrity and Business Invariants, Updated Project Status.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">2. Documents created (Stage 6):</h3>
+            <p className="text-gray-600">9 comprehensive documents: Core Business Workflow Catalog, Business Rules Catalog, Cross-Department Workflows, Approval and Delegation Framework, Workflow Automation Specification, Business KPI and Outcome Catalog, Industry Workflow Configuration, Workflow Acceptance Criteria, Updated Project Status.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">3. Key data model decisions:</h3>
-            <p className="text-gray-600">Shared database with Row-Level Security (RLS) for tenant isolation. UUID primary keys. Soft delete pattern. Common audit columns (created_at, updated_at, created_by, updated_by). DECIMAL(18,2) for monetary values. TIMESTAMPTZ for all timestamps.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">3. Key workflow decisions:</h3>
+            <p className="text-gray-600">Comprehensive workflow specifications with clear status transitions, business rules, approval requirements, and audit trails. Cross-department workflows defined for lead-to-cash, demand-to-procurement, sale-to-delivery, and more.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">4. Entity coverage:</h3>
-            <p className="text-gray-600">Complete entity specifications for all modules: organization, users, roles, permissions, CRM (leads, contacts, companies), sales (opportunities, quotations, orders), finance (invoices, payments, expenses), inventory (products, stock, warehouses), projects, workforce, support, documents, and analytics.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">4. Business rules coverage:</h3>
+            <p className="text-gray-600">Complete catalog of validation rules, workflow transition rules, authorization rules, financial control rules, and inventory control rules with enforcement mechanisms and exception handling.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">5. Multi-tenancy approach:</h3>
-            <p className="text-gray-600">Three-layer defense: Database RLS (primary), application middleware (defense-in-depth), service-level checks (explicit). No cross-tenant foreign keys. Tenant ID always from session, never from client parameters.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">5. Approval framework:</h3>
+            <p className="text-gray-600">Configurable approval policies with delegation support, escalation paths, expiration handling, and separation of duties enforcement. Complete audit trail for all approval decisions.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">6. Data integrity rules:</h3>
-            <p className="text-gray-600">Financial invariants (invoice totals reconcile, payment allocations validated). Workflow invariants (state transitions enforced). Authorization invariants (tenant isolation, permission checks). Data quality invariants (email validation, unique constraints).</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">6. Automation and AI:</h3>
+            <p className="text-gray-600">Safe automation framework with risk-based approval levels, exception handling, and AI-assisted decision workflows. Clear distinction between facts, predictions, and recommendations.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">7. Conflicts with Stages 1-4:</h3>
-            <p className="text-green-600 font-medium">None found. Data model is consistent with all previous requirements, architecture, and engineering standards.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">7. KPI framework:</h3>
+            <p className="text-gray-600">Comprehensive KPI catalog for financial, sales, marketing, and operational metrics with clear definitions, data sources, calculation methods, and limitations.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">8. Recommended next stage:</h3>
-            <p className="text-green-600 font-medium">Phase 6 (Application Shell and Navigation) or Phase 8 (Database Schema Implementation). Pending approval of all Stage 1-5 documentation and technology decisions.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">8. Conflicts with Stages 1-5:</h3>
+            <p className="text-green-600 font-medium">None found. All workflows are consistent with previous requirements, architecture, data model, and UI/UX specifications.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">9. Implementation status:</h3>
+            <h3 className="font-semibold text-[#172B4D] mb-1">9. Recommended next stage:</h3>
+            <p className="text-green-600 font-medium">Phase 7 (Shared Frontend Components) or Phase 9 (Backend APIs and Business Rules). Pending approval of all Stage 1-6 documentation and technology decisions.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-[#172B4D] mb-1">10. Implementation status:</h3>
             <p className="text-amber-600 font-medium">No implementation files or infrastructure were created or modified. This stage is documentation-only.</p>
           </div>
         </div>
@@ -402,7 +407,7 @@ export default function App() {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-blue-300 bg-white/10 px-3 py-1 rounded-full">
-                Stages 1-5 of 26
+                Stages 1-6 of 26
               </span>
             </div>
           </div>
@@ -525,7 +530,7 @@ export default function App() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-sm text-gray-500">ClickIT Platform — Master Project Documentation</p>
             <div className="flex items-center gap-3 text-xs text-gray-400">
-              <span>Stages 1-5 Complete</span>
+              <span>Stages 1-6 Complete</span>
               <span className="w-1 h-1 bg-gray-300 rounded-full" />
               <span>Documentation Only — No Implementation</span>
             </div>
