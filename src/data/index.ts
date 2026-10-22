@@ -26,6 +26,10 @@ import { stage6Doc4 } from './stage6-doc4-approval-framework';
 import { stage6Doc5, stage6Doc6 } from './stage6-doc5-automation-kpi';
 import { stage6Doc7, stage6Doc8, stage6Doc9 } from './stage6-docs-remaining';
 import { stage7Doc13, stage7Doc14 } from './stage7-docs-final';
+import { 
+  stage8Doc1, stage8Doc2, stage8Doc3, stage8Doc4, stage8Doc5,
+  stage8Doc6, stage8Doc7, stage8Doc8, stage8Doc9, stage8Doc10, stage8Doc11
+} from './stage8-docs';
 
 // Stage 1 documents
 const stage1Docs: Document[] = [
@@ -82,8 +86,14 @@ const stage7Docs: Document[] = [
   stage7Doc13, stage7Doc14
 ];
 
+// Stage 8 documents
+const stage8Docs: Document[] = [
+  stage8Doc1, stage8Doc2, stage8Doc3, stage8Doc4, stage8Doc5,
+  stage8Doc6, stage8Doc7, stage8Doc8, stage8Doc9, stage8Doc10, stage8Doc11
+];
+
 // All documents combined
-export const allDocuments: Document[] = [...stage1Docs, ...stage2Docs, ...stage3Docs, ...stage4Docs, ...stage5Docs, ...stage6Docs, ...stage7Docs];
+export const allDocuments: Document[] = [...stage1Docs, ...stage2Docs, ...stage3Docs, ...stage4Docs, ...stage5Docs, ...stage6Docs, ...stage7Docs, ...stage8Docs];
 
 // Stages
 export const stages: Stage[] = [
@@ -142,6 +152,14 @@ export const stages: Stage[] = [
     description: 'Comprehensive security specifications including threat modeling, authentication, authorization, tenant isolation, data protection, audit logging, AI security, incident response, and security testing.',
     status: 'Completed',
     documents: stage7Docs,
+  },
+  {
+    number: 8,
+    title: 'Business Intelligence, Analytics, KPI Definitions, and Data Quality Specification',
+    shortTitle: 'BI & Analytics',
+    description: 'Business intelligence architecture, metric registry, KPI formulas, data quality, lineage, dashboards, alerts, forecasting, AI insights, analytics security, and acceptance criteria.',
+    status: 'Completed',
+    documents: stage8Docs,
   },
 ];
 

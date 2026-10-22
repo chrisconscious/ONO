@@ -309,55 +309,67 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
       {/* Completion Report */}
       <div className="mt-8 bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="bg-[#172B4D] px-6 py-4">
-          <h2 className="text-lg font-semibold text-white">Stage 7 Completion Report</h2>
+          <h2 className="text-lg font-semibold text-white">Stage 8 Completion Report</h2>
         </div>
         <div className="p-6 space-y-4 text-sm">
           <div>
             <h3 className="font-semibold text-[#172B4D] mb-1">1. What was inspected:</h3>
-            <p className="text-gray-600">All 68 documents from Stages 1-6, existing security controls from Stage 3, tenancy and authorization architecture from Stage 2, data architecture and classification from Stage 5, and workflow and approval frameworks from Stage 6.</p>
+            <p className="text-gray-600">All 82 documents from Stages 1-7, existing KPI catalog from Stage 6, data model from Stage 5, security requirements from Stage 7, and UI/UX specifications from Stage 4.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">2. Documents created (Stage 7):</h3>
-            <p className="text-gray-600">14 comprehensive security documents: Security Threat Model, Identity and Authentication Specification, Authorization and Permission Matrix, Multi-Tenant Security Controls, Platform and Privileged Access Policy, API and Application Security Requirements, Data Classification and Privacy Policy, Audit Logging and Accountability Specification, AI/ML Security and Data Boundaries, File/Export/Integration Security, Security Testing and Acceptance Criteria, Security Incident Response Plan, Updated Open Decisions, Updated Project Status.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">2. Documents created (Stage 8):</h3>
+            <p className="text-gray-600">11 comprehensive BI/analytics documents: BI Analytics Architecture Specification, Metric and KPI Registry, KPI Formula and Definition Catalog, Data Quality and Freshness Specification, Analytics Lineage and Reconciliation, Dashboard and Reporting Requirements, Analytics Alerts and Anomaly Detection, Forecasting and Predictive Analytics, AI Insight Evidence and Uncertainty Policy, Analytics Security and Tenant Boundaries, BI Acceptance and Verification Criteria.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">3. Threat model coverage:</h3>
-            <p className="text-gray-600">26 critical threats identified across 7 categories: tenant isolation, authentication, authorization, data protection, API/application, AI/automation, and infrastructure. Each threat documented with assets, actors, entry points, impact, controls, detection, residual risk, and verification methods.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">3. BI architecture:</h3>
+            <p className="text-gray-600">9-layer analytics architecture from operational data to outcome measurement. Hybrid implementation approach: Phase 1 (direct queries), Phase 2 (pre-aggregated tables), Phase 3 (full ETL pipeline). Performance targets: &lt;2s for simple dashboards, &lt;5s for complex dashboards.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">4. Authentication and authorization:</h3>
-            <p className="text-gray-600">Complete identity lifecycle specification with MFA support, session management, and account recovery. Comprehensive authorization matrix with RBAC + ABAC model, granular permissions, data scope enforcement, and approval workflows for all modules.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">4. Metric registry and KPIs:</h3>
+            <p className="text-gray-600">Central metric registry with governance, versioning, and ownership. Comprehensive KPI catalog across all domains: CRM, Sales, Marketing, Finance, Inventory, Projects, HR, Support, Operations. Each KPI includes complete formula, data sources, limitations, and verification queries.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">5. Multi-tenant security:</h3>
-            <p className="text-gray-600">Three-layer defense model: Database RLS (primary), application middleware (defense-in-depth), service-level checks (explicit). Tenant isolation enforced across all access paths: APIs, database, background jobs, AI/ML, caches, files, exports, and integrations.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">5. Data quality and freshness:</h3>
+            <p className="text-gray-600">Six quality dimensions (completeness, accuracy, consistency, timeliness, uniqueness, validity) with measurable targets. Freshness categories from real-time to weekly. Quality checks, monitoring, and issue resolution workflows. Clear communication of data quality to users.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">6. Data protection and privacy:</h3>
-            <p className="text-gray-600">Four-level data classification (Public, Internal, Confidential, Highly Restricted) with handling rules for each level. Privacy governance framework with data minimization, purpose limitation, consent management, and user rights support. Regulatory compliance considerations documented.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">6. Lineage and reconciliation:</h3>
+            <p className="text-gray-600">Complete traceability from insights to source data. Reconciliation processes between operational and analytical data. Correction handling rules (retroactive, prospective, separate). Historical reporting with version management.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">7. Audit and accountability:</h3>
-            <p className="text-gray-600">Comprehensive audit event model covering all security-relevant events. Immutable audit logs with 7-year retention. Real-time monitoring and anomaly detection. Complete audit trail for authentication, authorization, data access, approvals, and administrative operations.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">7. Dashboards and reporting:</h3>
+            <p className="text-gray-600">Role-based dashboards (Executive, Sales, Finance, Operations, Support). Interactive features: filtering, drill-down, comparisons, visualizations. All states handled (loading, empty, error, partial data). WCAG 2.2 AA compliant and responsive design.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">8. AI/ML security:</h3>
-            <p className="text-gray-600">AI operates within existing authorization boundaries with tenant-scoped context retrieval, prompt injection prevention, action approval workflows, and complete audit trail. Model provider security requirements and fallback policies defined.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">8. Alerts and anomaly detection:</h3>
+            <p className="text-gray-600">Threshold alerts (absolute, percentage, trend, comparison) and anomaly detection (statistical and ML methods). Alert lifecycle management with deduplication and suppression. Multi-channel notifications (email, in-app, SMS, Slack). False positive rate &lt;10%.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">9. Security testing and incident response:</h3>
-            <p className="text-gray-600">Comprehensive security testing strategy with automated tests in CI/CD, quarterly penetration testing, and release-blocking acceptance criteria. Incident response plan with defined team structure, severity levels, response procedures, communication plans, and post-incident review process.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">9. Forecasting and predictive analytics:</h3>
+            <p className="text-gray-600">Five forecasting use cases: sales, demand, cash flow, customer churn, lead conversion. Minimum data requirements enforced. Baseline comparisons required. Confidence intervals and uncertainty disclosure. Human oversight for high-risk predictions.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">10. Conflicts with Stages 1-6:</h3>
-            <p className="text-green-600 font-medium">None found. All security specifications are consistent with previous requirements, architecture, data model, workflows, and UI/UX specifications.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">10. AI insight evidence policy:</h3>
+            <p className="text-gray-600">Four insight types (descriptive, diagnostic, predictive, prescriptive) with evidence requirements. Confidence levels and uncertainty disclosure. Prohibited practices (fabrication, misrepresentation, unauthorized actions). Complete audit trail for all AI insights.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">11. Recommended next stage:</h3>
-            <p className="text-green-600 font-medium">Phase 8 (Database Schema and Data Integrity) or Phase 7 (Shared Frontend Components). Pending approval of all Stage 1-7 documentation and technology decisions.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">11. Analytics security:</h3>
+            <p className="text-gray-600">Tenant isolation enforced at all analytics layers. Permission checks for dashboards, metrics, drill-down, and exports. Data classification applied to analytical outputs. Cache security with tenant-scoped keys. Future data marketplace with explicit consent and anonymization.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">12. Implementation status:</h3>
+            <h3 className="font-semibold text-[#172B4D] mb-1">12. Acceptance criteria:</h3>
+            <p className="text-gray-600">Comprehensive verification criteria for metrics, data quality, reporting periods, freshness, security, AI insights, industry customization, and system reliability. Release-blocking criteria defined. Severity thresholds and exception process established.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-[#172B4D] mb-1">13. Conflicts with Stages 1-7:</h3>
+            <p className="text-green-600 font-medium">None found. All BI/analytics specifications are consistent with previous requirements, architecture, data model, workflows, security, and UI/UX specifications.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-[#172B4D] mb-1">14. Recommended next stage:</h3>
+            <p className="text-green-600 font-medium">Phase 9 (Backend APIs and Business Rules) or Phase 10 (Shared Infrastructure Services). Pending approval of all Stage 1-8 documentation and technology decisions.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-[#172B4D] mb-1">15. Implementation status:</h3>
             <p className="text-amber-600 font-medium">No implementation files or infrastructure were created or modified. This stage is documentation-only.</p>
           </div>
         </div>
@@ -416,7 +428,7 @@ export default function App() {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-blue-300 bg-white/10 px-3 py-1 rounded-full">
-                Stages 1-7 of 26
+                Stages 1-8 of 26
               </span>
             </div>
           </div>
@@ -539,7 +551,7 @@ export default function App() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-sm text-gray-500">ClickIT Platform — Master Project Documentation</p>
             <div className="flex items-center gap-3 text-xs text-gray-400">
-              <span>Stages 1-7 Complete</span>
+              <span>Stages 1-8 Complete</span>
               <span className="w-1 h-1 bg-gray-300 rounded-full" />
               <span>Documentation Only — No Implementation</span>
             </div>
