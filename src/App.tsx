@@ -309,67 +309,75 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
       {/* Completion Report */}
       <div className="mt-8 bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="bg-[#172B4D] px-6 py-4">
-          <h2 className="text-lg font-semibold text-white">Stage 8 Completion Report</h2>
+          <h2 className="text-lg font-semibold text-white">Stage 11 Completion Report</h2>
         </div>
         <div className="p-6 space-y-4 text-sm">
           <div>
             <h3 className="font-semibold text-[#172B4D] mb-1">1. What was inspected:</h3>
-            <p className="text-gray-600">All 82 documents from Stages 1-7, existing KPI catalog from Stage 6, data model from Stage 5, security requirements from Stage 7, and UI/UX specifications from Stage 4.</p>
+            <p className="text-gray-600">All 102 documents from Stages 1-9, existing testing strategy from Stage 3, security testing from Stage 7, analytics acceptance criteria from Stage 8, and AI/ML acceptance criteria from Stage 9.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">2. Documents created (Stage 8):</h3>
-            <p className="text-gray-600">11 comprehensive BI/analytics documents: BI Analytics Architecture Specification, Metric and KPI Registry, KPI Formula and Definition Catalog, Data Quality and Freshness Specification, Analytics Lineage and Reconciliation, Dashboard and Reporting Requirements, Analytics Alerts and Anomaly Detection, Forecasting and Predictive Analytics, AI Insight Evidence and Uncertainty Policy, Analytics Security and Tenant Boundaries, BI Acceptance and Verification Criteria.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">2. Documents created (Stage 11):</h3>
+            <p className="text-gray-600">14 comprehensive QA/testing documents: Quality Assurance and Testing Strategy, Requirements Traceability Matrix, Functional and Business Rule Test Plan, Security and Tenant Isolation Test Plan, Database and Data Integrity Test Plan, Analytics and Data Quality Test Plan, AI/ML Evaluation and Regression Test Plan, API/Integration/Background Job Test Plan, Performance and Capacity Test Plan, Reliability and Disaster Recovery Test Plan, UI/UX/Accessibility/Compatibility Test Plan, Test Data and Environment Management, CI/CD Quality Gates and Release Approval, Defect Management and Release Readiness.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">3. BI architecture:</h3>
-            <p className="text-gray-600">9-layer analytics architecture from operational data to outcome measurement. Hybrid implementation approach: Phase 1 (direct queries), Phase 2 (pre-aggregated tables), Phase 3 (full ETL pipeline). Performance targets: &lt;2s for simple dashboards, &lt;5s for complex dashboards.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">3. Testing strategy:</h3>
+            <p className="text-gray-600">19-layer testing strategy from requirements review to production smoke testing. Continuous testing on every commit, pre-merge testing on every PR, pre-release testing, and periodic testing (quarterly penetration tests, load tests, backup tests).</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">4. Metric registry and KPIs:</h3>
-            <p className="text-gray-600">Central metric registry with governance, versioning, and ownership. Comprehensive KPI catalog across all domains: CRM, Sales, Marketing, Finance, Inventory, Projects, HR, Support, Operations. Each KPI includes complete formula, data sources, limitations, and verification queries.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">4. Requirements traceability:</h3>
+            <p className="text-gray-600">Complete traceability matrix linking requirements to test cases. Coverage targets: 100% for critical, 95% for high, 90% for medium, 80% for low. Status tracking from planned through passed/failed/blocked.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">5. Data quality and freshness:</h3>
-            <p className="text-gray-600">Six quality dimensions (completeness, accuracy, consistency, timeliness, uniqueness, validity) with measurable targets. Freshness categories from real-time to weekly. Quality checks, monitoring, and issue resolution workflows. Clear communication of data quality to users.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">5. Security testing (release-blocking):</h3>
+            <p className="text-gray-600">Comprehensive tenant isolation tests across all access paths (API, database, background jobs, files, analytics, AI). Authorization tests for permissions, data scope, approvals. Security vulnerability tests (SQL injection, XSS, CSRF, prompt injection). 100% pass rate required for release.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">6. Lineage and reconciliation:</h3>
-            <p className="text-gray-600">Complete traceability from insights to source data. Reconciliation processes between operational and analytical data. Correction handling rules (retroactive, prospective, separate). Historical reporting with version management.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">6. Database and data integrity:</h3>
+            <p className="text-gray-600">Schema constraint tests, transaction atomicity tests, concurrency tests, migration safety tests, data integrity tests (referential integrity, financial reconciliation, inventory reconciliation, audit trail completeness).</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">7. Dashboards and reporting:</h3>
-            <p className="text-gray-600">Role-based dashboards (Executive, Sales, Finance, Operations, Support). Interactive features: filtering, drill-down, comparisons, visualizations. All states handled (loading, empty, error, partial data). WCAG 2.2 AA compliant and responsive design.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">7. Analytics and data quality:</h3>
+            <p className="text-gray-600">KPI calculation accuracy tests, data quality dimension tests (completeness, accuracy, consistency, timeliness, uniqueness, validity), reconciliation tests, report accuracy tests.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">8. Alerts and anomaly detection:</h3>
-            <p className="text-gray-600">Threshold alerts (absolute, percentage, trend, comparison) and anomaly detection (statistical and ML methods). Alert lifecycle management with deduplication and suppression. Multi-channel notifications (email, in-app, SMS, Slack). False positive rate &lt;10%.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">8. AI/ML evaluation:</h3>
+            <p className="text-gray-600">Model accuracy and fairness tests, LLM factual correctness and evidence citation tests, regression tests for model/prompt/data changes, safety tests (no hallucinations, no unauthorized access, no prompt injection).</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">9. Forecasting and predictive analytics:</h3>
-            <p className="text-gray-600">Five forecasting use cases: sales, demand, cash flow, customer churn, lead conversion. Minimum data requirements enforced. Baseline comparisons required. Confidence intervals and uncertainty disclosure. Human oversight for high-risk predictions.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">9. Integration and background jobs:</h3>
+            <p className="text-gray-600">API contract tests, event publication/consumption tests, background job idempotency tests, webhook signature verification tests, external API integration tests.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">10. AI insight evidence policy:</h3>
-            <p className="text-gray-600">Four insight types (descriptive, diagnostic, predictive, prescriptive) with evidence requirements. Confidence levels and uncertainty disclosure. Prohibited practices (fabrication, misrepresentation, unauthorized actions). Complete audit trail for all AI insights.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">10. Performance and capacity:</h3>
+            <p className="text-gray-600">Performance targets: API &lt;500ms (p95), dashboards &lt;2s, support 1000+ concurrent users. Load tests (sustained, peak, spike), capacity tests (users, data, storage), scalability tests (horizontal, vertical).</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">11. Analytics security:</h3>
-            <p className="text-gray-600">Tenant isolation enforced at all analytics layers. Permission checks for dashboards, metrics, drill-down, and exports. Data classification applied to analytical outputs. Cache security with tenant-scoped keys. Future data marketplace with explicit consent and anonymization.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">11. Reliability and disaster recovery:</h3>
+            <p className="text-gray-600">Availability target: 99.9%. Backup and recovery tests (daily backups, quarterly restore tests). RTO &lt;4 hours, RPO &lt;1 hour. Resilience tests (chaos engineering, failure injection).</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">12. Acceptance criteria:</h3>
-            <p className="text-gray-600">Comprehensive verification criteria for metrics, data quality, reporting periods, freshness, security, AI insights, industry customization, and system reliability. Release-blocking criteria defined. Severity thresholds and exception process established.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">12. UI/UX and accessibility:</h3>
+            <p className="text-gray-600">WCAG 2.2 AA compliance tests (keyboard navigation, screen reader, color contrast, form accessibility). Browser compatibility tests (Chrome, Firefox, Safari, Edge, iOS Safari, Android Chrome). Responsive design tests.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">13. Conflicts with Stages 1-7:</h3>
-            <p className="text-green-600 font-medium">None found. All BI/analytics specifications are consistent with previous requirements, architecture, data model, workflows, security, and UI/UX specifications.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">13. CI/CD quality gates:</h3>
+            <p className="text-gray-600">Pre-commit gates (formatting, linting, type checking). Pre-merge gates (unit tests, integration tests, security scan, tenant isolation). Pre-release gates (E2E tests, performance tests, accessibility tests, AI evaluation, penetration test). Release approval gate with exception process.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">14. Recommended next stage:</h3>
-            <p className="text-green-600 font-medium">Phase 9 (Backend APIs and Business Rules) or Phase 10 (Shared Infrastructure Services). Pending approval of all Stage 1-8 documentation and technology decisions.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">14. Defect management:</h3>
+            <p className="text-gray-600">Defect lifecycle (Reported → Triage → Assigned → In Progress → Fixed → Verified → Closed). Severity levels (Critical/High/Medium/Low) with SLAs. Release readiness criteria. Post-release monitoring and rollback criteria.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">15. Implementation status:</h3>
+            <h3 className="font-semibold text-[#172B4D] mb-1">15. Conflicts with Stages 1-9:</h3>
+            <p className="text-green-600 font-medium">None found. All QA/testing specifications are consistent with previous requirements, architecture, data model, workflows, security, analytics, and AI/ML specifications.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-[#172B4D] mb-1">16. Recommended next stage:</h3>
+            <p className="text-green-600 font-medium">Phase 12 (Full System Integration Testing) or Phase 13 (Production Deployment Preparation). Pending approval of all Stage 1-11 documentation and technology decisions.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-[#172B4D] mb-1">17. Implementation status:</h3>
             <p className="text-amber-600 font-medium">No implementation files or infrastructure were created or modified. This stage is documentation-only.</p>
           </div>
         </div>
@@ -428,7 +436,7 @@ export default function App() {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-blue-300 bg-white/10 px-3 py-1 rounded-full">
-                Stages 1-9 of 26
+                Stages 1-11 of 26
               </span>
             </div>
           </div>
@@ -551,7 +559,7 @@ export default function App() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-sm text-gray-500">ClickIT Platform — Master Project Documentation</p>
             <div className="flex items-center gap-3 text-xs text-gray-400">
-              <span>Stages 1-9 Complete</span>
+              <span>Stages 1-11 Complete</span>
               <span className="w-1 h-1 bg-gray-300 rounded-full" />
               <span>Documentation Only — No Implementation</span>
             </div>

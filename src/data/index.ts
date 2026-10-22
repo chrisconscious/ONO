@@ -32,6 +32,7 @@ import {
 } from './stage8-docs';
 
 import { stage9Docs } from './stage9-docs';
+import { stage11Docs } from './stage11-docs';
 
 // Stage 1 documents
 const stage1Docs: Document[] = [
@@ -97,8 +98,11 @@ const stage8Docs: Document[] = [
 // Stage 9 documents
 const stage9DocsArray: Document[] = stage9Docs;
 
+// Stage 11 documents
+const stage11DocsArray: Document[] = stage11Docs;
+
 // All documents combined
-export const allDocuments: Document[] = [...stage1Docs, ...stage2Docs, ...stage3Docs, ...stage4Docs, ...stage5Docs, ...stage6Docs, ...stage7Docs, ...stage8Docs, ...stage9DocsArray];
+export const allDocuments: Document[] = [...stage1Docs, ...stage2Docs, ...stage3Docs, ...stage4Docs, ...stage5Docs, ...stage6Docs, ...stage7Docs, ...stage8Docs, ...stage9DocsArray, ...stage11DocsArray];
 
 // Stages
 export const stages: Stage[] = [
@@ -173,6 +177,14 @@ export const stages: Stage[] = [
     description: 'AI/ML inference architecture, task routing, inference engine, ML use cases, model training and evaluation, model lifecycle, decision intelligence, action boundaries, security controls, and acceptance criteria.',
     status: 'Completed',
     documents: stage9DocsArray,
+  },
+  {
+    number: 11,
+    title: 'Testing Strategy, Quality Assurance, Performance, Reliability, and Production Readiness',
+    shortTitle: 'QA & Testing',
+    description: 'Comprehensive testing strategy, requirements traceability, functional testing, security testing, database testing, analytics testing, AI/ML evaluation, integration testing, performance testing, reliability testing, UI/UX testing, test data management, CI/CD gates, and defect management.',
+    status: 'Completed',
+    documents: stage11DocsArray,
   },
 ];
 
