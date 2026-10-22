@@ -5,6 +5,11 @@ import { doc9, doc10, doc11, doc12, doc13 } from './documents-3';
 import { archDoc1, archDoc2, archDoc3 } from './stage2-docs-1';
 import { archDoc4, archDoc5, archDoc6, archDoc7, archDoc8 } from './stage2-docs-2';
 import { archDoc9, archDoc10, archDoc11, archDoc12, archDoc13 } from './stage2-docs-3';
+import { stage3Doc1, stage3Doc2 } from './stage3-docs-1';
+import { stage3Doc3, stage3Doc4 } from './stage3-docs-2';
+import { stage3Doc5, stage3Doc6 } from './stage3-docs-3';
+import { stage3Doc7, stage3Doc8 } from './stage3-docs-4';
+import { stage3Doc9, stage3Doc10, stage3Doc11, stage3Doc12 } from './stage3-docs-5';
 
 // Stage 1 documents
 const stage1Docs: Document[] = [
@@ -30,8 +35,15 @@ const stage2Docs: Document[] = [
   archDoc11, archDoc12, archDoc13
 ];
 
+// Stage 3 documents
+const stage3Docs: Document[] = [
+  stage3Doc1, stage3Doc2, stage3Doc3, stage3Doc4, stage3Doc5,
+  stage3Doc6, stage3Doc7, stage3Doc8, stage3Doc9, stage3Doc10,
+  stage3Doc11, stage3Doc12
+];
+
 // All documents combined
-export const allDocuments: Document[] = [...stage1Docs, ...stage2Docs];
+export const allDocuments: Document[] = [...stage1Docs, ...stage2Docs, ...stage3Docs];
 
 // Stages
 export const stages: Stage[] = [
@@ -50,6 +62,14 @@ export const stages: Stage[] = [
     description: 'System architecture, ADRs, technology evaluation, module dependencies, API/event contracts, data architecture, tenancy/authorization, industry configuration, AI/ML architecture, reliability, implementation sequence, updated decisions and status.',
     status: 'Completed',
     documents: stage2Docs,
+  },
+  {
+    number: 3,
+    title: 'Repository and Development Infrastructure Planning',
+    shortTitle: 'Dev Infrastructure',
+    description: 'Repository structure, development environment, engineering standards, testing strategy, CI/CD pipeline, database migration workflow, security controls, AI/ML DevOps, observability, and implementation sequence.',
+    status: 'Completed',
+    documents: stage3Docs,
   },
 ];
 

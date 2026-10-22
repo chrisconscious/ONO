@@ -252,9 +252,9 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
         <h1 className="text-3xl md:text-4xl font-bold mb-3">ClickIT Platform</h1>
         <p className="text-xl text-blue-100 font-light mb-2">AI-Powered Integrated Business Intelligence & Management Platform</p>
         <p className="text-blue-200 text-sm max-w-2xl leading-relaxed mt-4">
-          Complete project documentation across 2 stages: Stage 1 covers product requirements, module inventory,
-          workflows, and planning. Stage 2 covers system architecture, technical contracts, technology evaluation,
-          and implementation sequencing.
+          Complete project documentation across 3 stages: Stage 1 covers product requirements, module inventory,
+          workflows, and planning. Stage 2 covers system architecture, technical contracts, and technology evaluation.
+          Stage 3 covers repository structure, development environment, engineering standards, testing, and CI/CD.
         </p>
       </div>
 
@@ -277,7 +277,7 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
           <div className="text-xs text-gray-500 mt-1">Completed</div>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
-          <div className="text-2xl font-bold text-gray-400">24</div>
+          <div className="text-2xl font-bold text-gray-400">23</div>
           <div className="text-xs text-gray-500 mt-1">Remaining Phases</div>
         </div>
       </div>
@@ -291,9 +291,9 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
           <div>
             <h3 className="font-semibold text-amber-800 text-sm">Documentation Stages Complete — No Implementation Authorized</h3>
             <p className="text-amber-700 text-sm mt-1">
-              Stages 1 and 2 are complete. No implementation code, database migrations, UI implementation,
+              Stages 1, 2, and 3 are complete. No implementation code, database migrations, UI implementation,
               model training, or inference engine development is authorized. Awaiting explicit approval
-              to proceed to Phase 3 (Repository & Development Infrastructure).
+              to proceed to Phase 4 (UI/UX Design System & Screen Inventory).
             </p>
           </div>
         </div>
@@ -307,48 +307,44 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
       {/* Completion Report */}
       <div className="mt-8 bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="bg-[#172B4D] px-6 py-4">
-          <h2 className="text-lg font-semibold text-white">Stage 2 Completion Report</h2>
+          <h2 className="text-lg font-semibold text-white">Stage 3 Completion Report</h2>
         </div>
         <div className="p-6 space-y-4 text-sm">
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">1. Stage 1 documents reviewed:</h3>
-            <p className="text-gray-600">All 13 Stage 1 documents inspected — Master Spec, Module Inventory, Industry Adaptation, Roles/Permissions, Workflows, Architecture Plan, Database Plan, AI/ML Spec, UI/UX, Security, Roadmap, Open Decisions, Project Status.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">1. What was inspected:</h3>
+            <p className="text-gray-600">Existing repository structure (Vite + React 18 + TypeScript 5.7 + Tailwind CSS 4), package.json dependencies, tsconfig.json, and all 26 documents from Stages 1-2.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">2. Architecture documents created:</h3>
-            <p className="text-gray-600">13 documents: System Architecture, ADRs, Tech Stack Evaluation, Module Dependencies, API/Event Contracts, Data Architecture, Tenancy/Authorization, Industry Configuration, AI/ML Architecture, Reliability/Observability, Implementation Sequence, Updated Open Decisions, Updated Project Status.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">2. Documents created (Stage 3):</h3>
+            <p className="text-gray-600">12 documents: Repository Structure Plan, Development Environment Plan, Engineering Standards, Testing Strategy, CI/CD and Quality Gate Plan, Database Migration Workflow, Security Engineering Controls, AI/ML Development Operations Plan, Observability and Operational Readiness, Implementation Sequence, Updated Open Decisions, Updated Project Status.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">3. Proposed architecture:</h3>
-            <p className="text-gray-600">Modular monolith with clear module boundaries. Next.js App Router for frontend + backend. PostgreSQL + Prisma for database. Python/FastAPI for ML services. Defense-in-depth tenant isolation (RLS + middleware). Selective event-driven communication.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">3. Proposed repository structure:</h3>
+            <p className="text-gray-600">Monorepo with pnpm workspaces + Turborepo. apps/ (web, workers, ml-services), packages/ (shared: database, auth, api-contracts, ui, analytics, infrastructure), modules/ (business modules: CRM, sales, finance, inventory, projects, HR, support, documents, strategy, intelligence, industry).</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">4. Major module dependencies:</h3>
-            <p className="text-gray-600">Organization → CRM → Sales → Finance. Inventory ↔ Sales (read-only + events). Projects → Finance + HR. BI consumes from all business modules. ML consumes from BI. Inference Engine orchestrates analytics + models + rules.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">4. Key engineering decisions:</h3>
+            <p className="text-gray-600">Strict TypeScript (no any). Zod validation. Layered architecture (types → schemas → services → repository → API). Vitest for testing. Playwright for E2E. GitHub Actions for CI/CD. Prisma migrations. Structured JSON logging. Comprehensive security controls.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">5. Security & multi-tenancy:</h3>
-            <p className="text-gray-600">RLS at database level + middleware at application level. Default-deny authorization. RBAC + ABAC + data scopes. Platform admins cannot access tenant data. Sensitive data classified and protected. AI cannot bypass authorization.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">5. Existing tooling discovered:</h3>
+            <p className="text-gray-600">Current repo has Vite + React 18 + TypeScript 5.7 + Tailwind CSS 4 + Supabase client. No ESLint, Prettier, testing, CI/CD, Docker, or backend code. Repository is documentation viewer, not platform codebase.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">6. Frontend/backend/database/ML boundaries:</h3>
-            <p className="text-gray-600">Frontend: Next.js + React + TypeScript + Tailwind. Backend: Next.js API Routes + Server Actions. Database: PostgreSQL + Prisma with RLS. ML: Python + FastAPI (separate services). Clear API contracts between all boundaries.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">6. Unresolved decisions:</h3>
+            <p className="text-gray-600">Authentication provider, cloud provider, target market compliance, team size, timeline, budget. All ADRs from Stage 2 still pending approval. New Stage 3 decisions (pnpm, Turborepo, Vitest, Playwright) proposed.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">7. Industry customization:</h3>
-            <p className="text-gray-600">Universal core always available. Extensible industry catalogue. Custom industries fully supported. Industry profiles with suggested configuration. Extension framework for custom fields, workflows, metrics. AI suggestions require human review.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">7. Conflicts with Stages 1-2:</h3>
+            <p className="text-green-600 font-medium">None found. Stage 3 plan is consistent with all previous requirements and architecture decisions.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">8. Decisions requiring approval:</h3>
-            <p className="text-gray-600">6 ADRs (modular monolith, Next.js backend, PostgreSQL+Prisma, Python ML, RLS+middleware, selective events). Auth provider selection. Cloud provider selection. All documented in ADR and Open Decisions documents.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">8. Recommended next stage:</h3>
+            <p className="text-green-600 font-medium">Phase 4 — UI/UX Design System and Screen Inventory. Pending approval of all Stage 1-3 documentation and technology decisions.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">9. Implementation risks:</h3>
-            <p className="text-gray-600">Scope complexity (HIGH), ML accuracy expectations (MEDIUM), multi-tenant security (LOW with controls), industry configuration (MEDIUM, mitigated), performance at scale (MEDIUM, mitigated), regulatory compliance (MEDIUM), Python/TS integration (LOW).</p>
-          </div>
-          <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">10. Ready for Stage 3?</h3>
-            <p className="text-green-600 font-medium">Yes — pending approval of architecture decisions (ADR-001 through ADR-006) and selection of authentication provider. Phase 3 (Repository & Development Infrastructure) can begin once approved.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">9. Implementation status:</h3>
+            <p className="text-amber-600 font-medium">No implementation files or infrastructure were created or modified. This stage is documentation-only.</p>
           </div>
         </div>
       </div>
@@ -406,7 +402,7 @@ export default function App() {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-blue-300 bg-white/10 px-3 py-1 rounded-full">
-                Stages 1-2 of 26
+                Stages 1-3 of 26
               </span>
             </div>
           </div>
@@ -529,7 +525,7 @@ export default function App() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-sm text-gray-500">ClickIT Platform — Master Project Documentation</p>
             <div className="flex items-center gap-3 text-xs text-gray-400">
-              <span>Stages 1-2 Complete</span>
+              <span>Stages 1-3 Complete</span>
               <span className="w-1 h-1 bg-gray-300 rounded-full" />
               <span>Documentation Only — No Implementation</span>
             </div>
