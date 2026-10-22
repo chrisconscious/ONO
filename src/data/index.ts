@@ -15,6 +15,10 @@ import { stage4Doc3, stage4Doc4, stage4Doc5 } from './stage4-docs-2';
 import { stage4Doc6, stage4Doc7, stage4Doc8 } from './stage4-docs-3';
 import { stage4Doc9, stage4Doc10, stage4Doc11, stage4Doc12 } from './stage4-docs-4';
 import { stage4Doc13, stage4Doc14 } from './stage4-docs-5';
+import { stage5Doc1 } from './stage5-docs-1';
+import { stage5Doc2, stage5Doc3 } from './stage5-docs-2';
+import { stage5Doc4, stage5Doc5 } from './stage5-docs-3';
+import { stage5Doc6, stage5Doc7 } from './stage5-docs-4';
 
 // Stage 1 documents
 const stage1Docs: Document[] = [
@@ -54,8 +58,14 @@ const stage4Docs: Document[] = [
   stage4Doc11, stage4Doc12, stage4Doc13, stage4Doc14
 ];
 
+// Stage 5 documents
+const stage5Docs: Document[] = [
+  stage5Doc1, stage5Doc2, stage5Doc3, stage5Doc4, stage5Doc5,
+  stage5Doc6, stage5Doc7
+];
+
 // All documents combined
-export const allDocuments: Document[] = [...stage1Docs, ...stage2Docs, ...stage3Docs, ...stage4Docs];
+export const allDocuments: Document[] = [...stage1Docs, ...stage2Docs, ...stage3Docs, ...stage4Docs, ...stage5Docs];
 
 // Stages
 export const stages: Stage[] = [
@@ -90,6 +100,14 @@ export const stages: Stage[] = [
     description: 'Design system, screen inventory, navigation, role-specific dashboards, authentication UX, onboarding, business intelligence UX, industry-adaptive UX, interactions, forms/tables, accessibility, and acceptance criteria.',
     status: 'Completed',
     documents: stage4Docs,
+  },
+  {
+    number: 5,
+    title: 'Data Domain, Database Schema, and Business Entity Design',
+    shortTitle: 'Data Model',
+    description: 'Data domain catalog, business entity specifications, logical data model, entity relationships, tenant ownership matrix, data integrity rules, and business invariants.',
+    status: 'Completed',
+    documents: stage5Docs,
   },
 ];
 
