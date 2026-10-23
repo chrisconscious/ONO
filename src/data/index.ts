@@ -44,6 +44,7 @@ import { stage15Docs } from './stage15-docs';
 import { stage15DocsExtended } from './stage15-docs-extended';
 import { stage15DocsFinal } from './stage15-docs-final';
 import { stage16Docs } from './stage16-docs';
+import { stage17Docs } from './stage17-docs';
 
 // Stage 1 documents
 const stage1Docs: Document[] = [
@@ -280,6 +281,14 @@ export const stages: Stage[] = [
     description: 'Comprehensive data governance framework with 16 principles, roles and responsibilities, governance processes, data classification, legal compliance (Tanzania PDPA), privacy protection, AI data governance, marketplace governance, data lifecycle management, and compliance metrics.',
     status: 'Completed',
     documents: stage16DocsArray,
+  },
+  {
+    number: 17,
+    title: 'Documentation Consistency Audit, Cross-Stage Dependency Review, Risk Register, and Unresolved Decision Closure',
+    shortTitle: 'Audit & Readiness',
+    description: 'Comprehensive audit of all 156 documents across 16 stages, requirements traceability matrix, cross-stage consistency analysis, consolidated risk register, unresolved decision register, and implementation readiness assessment.',
+    status: 'Completed',
+    documents: stage17Docs,
   },
 ];
 
