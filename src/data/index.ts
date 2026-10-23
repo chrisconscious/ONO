@@ -40,6 +40,9 @@ import { stage12Doc4, stage12Doc5, stage12Doc6, stage12Doc7 } from './stage12-do
 import { stage12Doc8, stage12Doc9, stage12Doc10, stage12Doc11, stage12Doc12 } from './stage12-doc8-12';
 import { stage13Docs } from './stage13-docs';
 import { stage14Docs } from './stage14-docs';
+import { stage15Docs } from './stage15-docs';
+import { stage15DocsExtended } from './stage15-docs-extended';
+import { stage15DocsFinal } from './stage15-docs-final';
 
 // Stage 1 documents
 const stage1Docs: Document[] = [
@@ -127,6 +130,12 @@ const stage12Docs: Document[] = [
 // Stage 13 documents
 const stage13DocsArray: Document[] = stage13Docs;
 
+// Stage 14 documents
+const stage14DocsArray: Document[] = stage14Docs;
+
+// Stage 15 documents
+const stage15DocsArray: Document[] = [...stage15Docs, ...stage15DocsExtended, ...stage15DocsFinal];
+
 // All documents combined
 export const allDocuments: Document[] = [
   ...stage1Docs,
@@ -140,7 +149,9 @@ export const allDocuments: Document[] = [
   ...stage9DocsArray,
   ...stage11DocsArray,
   ...stage12Docs,
-  ...stage13DocsArray
+  ...stage13DocsArray,
+  ...stage14DocsArray,
+  ...stage15DocsArray
 ];
 
 // Stages
@@ -247,7 +258,15 @@ export const stages: Stage[] = [
     shortTitle: 'SaaS Operations',
     description: 'Customer lifecycle and onboarding, organization setup and industry configuration, tenant provisioning and lifecycle, user invitation and membership management, subscription plans and entitlement model.',
     status: 'Completed',
-    documents: stage14Docs,
+    documents: stage14DocsArray,
+  },
+  {
+    number: 15,
+    title: 'Design-to-Development Handoff, Complete Screen Specifications, Component Inventory, and Interaction Contracts',
+    shortTitle: 'Design Handoff',
+    description: 'Complete screen inventory and route map, screen-by-screen implementation specifications, design system and visual tokens, reusable component inventory, UI interaction contracts, navigation and routing, forms and tables patterns, loading and error states, role-aware UI, BI/AI interface, accessibility criteria, handoff process, and AI implementation governance.',
+    status: 'Completed',
+    documents: stage15DocsArray,
   },
 ];
 
