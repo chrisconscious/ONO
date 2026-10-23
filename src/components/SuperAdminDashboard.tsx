@@ -263,6 +263,7 @@ export function SuperAdminDashboard() {
           </CardContent>
         </Card>
       </main>
+      )}
     </div>
   );
 }
