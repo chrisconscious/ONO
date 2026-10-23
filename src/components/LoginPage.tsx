@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { TestimonialCarousel } from '@/components/TestimonialCarousel';
 
 export function LoginPage() {
   const { login, isLoading, error } = useAuth();
@@ -52,21 +53,8 @@ export function LoginPage() {
             </p>
           </div>
 
-          {/* Decorative Elements */}
-          <div className="flex gap-4">
-            <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-              <div className="text-3xl font-bold text-white mb-2">158</div>
-              <div className="text-blue-100">Documents</div>
-            </div>
-            <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-              <div className="text-3xl font-bold text-white mb-2">17</div>
-              <div className="text-blue-100">Stages</div>
-            </div>
-            <div className="flex-1 bg-white/10 backdrop-blur-sm rounded-lg p-6 border border-white/20">
-              <div className="text-3xl font-bold text-white mb-2">65%</div>
-              <div className="text-blue-100">Complete</div>
-            </div>
-          </div>
+          {/* Testimonial Carousel */}
+          <TestimonialCarousel />
         </div>
       </div>
 

@@ -3,6 +3,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 interface User {
   id: string;
   email: string;
+  name?: string;
   role: 'super_admin' | 'tenant_user';
   organizationId?: string;
 }
@@ -22,6 +23,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const MOCK_SUPER_ADMIN = {
   id: 'super-admin-001',
   email: 'admin@clickit.com',
+  name: 'Super Admin',
   role: 'super_admin' as const,
 };
 
