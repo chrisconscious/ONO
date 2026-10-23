@@ -1,5 +1,10 @@
 import { useState, useCallback } from 'react';
 import { allDocuments, stages, Document, DocSection, Stage } from './data';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { LoginPage } from './components/LoginPage';
+import { SuperAdminDashboard } from './components/SuperAdminDashboard';
+import { Button } from './components/ui/button';
+import { FileText } from 'lucide-react';
 
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
@@ -369,10 +374,27 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
   );
 }
 
-export default function App() {
+function AuthenticatedApp() {
+  const { user } = useAuth();
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
   const [activeStage, setActiveStage] = useState<number | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showDashboard, setShowDashboard] = useState(true);
+
+  // If user wants to see dashboard, show it
+  if (showDashboard) {
+    return (
+      <div>
+        <SuperAdminDashboard />
+        <div className="fixed bottom-4 right-4">
+          <Button onClick={() => setShowDashboard(false)} variant="outline">
+            <FileText className="mr-2 h-4 w-4" />
+            View Documentation
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   const handleSelectDoc = useCallback((doc: Document) => {
     setSelectedDoc(doc);
@@ -542,7 +564,7 @@ export default function App() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-sm text-gray-500">ClickIT Platform — Master Project Documentation</p>
             <div className="flex items-center gap-3 text-xs text-gray-400">
-              <span>Stages 1-14 Complete</span>
+              <span>Stages 1-17 Complete</span>
               <span className="w-1 h-1 bg-gray-300 rounded-full" />
               <span>Documentation Only — No Implementation</span>
             </div>
@@ -551,4 +573,22 @@ export default function App() {
       </footer>
     </div>
   );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
+}
+
+function AppContent() {
+  const { user } = useAuth();
+
+  if (!user) {
+    return <LoginPage />;
+  }
+
+  return <AuthenticatedApp />;
 }
