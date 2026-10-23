@@ -45,6 +45,7 @@ import { stage15DocsExtended } from './stage15-docs-extended';
 import { stage15DocsFinal } from './stage15-docs-final';
 import { stage16Docs } from './stage16-docs';
 import { stage17Docs } from './stage17-docs';
+import { stage18Docs } from './stage18-docs';
 
 // Stage 1 documents
 const stage1Docs: Document[] = [
@@ -157,7 +158,9 @@ export const allDocuments: Document[] = [
   ...stage13DocsArray,
   ...stage14DocsArray,
   ...stage15DocsArray,
-  ...stage16DocsArray
+  ...stage16DocsArray,
+  ...stage17Docs,
+  ...stage18Docs
 ];
 
 // Stages
@@ -289,6 +292,14 @@ export const stages: Stage[] = [
     description: 'Comprehensive audit of all 156 documents across 16 stages, requirements traceability matrix, cross-stage consistency analysis, consolidated risk register, unresolved decision register, and implementation readiness assessment.',
     status: 'Completed',
     documents: stage17Docs,
+  },
+  {
+    number: 18,
+    title: 'Final Implementation Blueprint, Phase-by-Phase Build Prompts, Acceptance Gates, and Explicit Authorization Checkpoint',
+    shortTitle: 'Implementation Blueprint',
+    description: 'Comprehensive implementation blueprint with document hierarchy, product scope, architecture baseline, 10-phase roadmap, acceptance gates, AI governance, and readiness assessment.',
+    status: 'Completed',
+    documents: stage18Docs,
   },
 ];
 
