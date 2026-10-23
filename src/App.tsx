@@ -312,76 +312,68 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
       {/* Completion Report */}
       <div className="mt-8 bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="bg-[#172B4D] px-6 py-4">
-          <h2 className="text-lg font-semibold text-white">Stage 15 Completion Report</h2>
+          <h2 className="text-lg font-semibold text-white">Stage 16 Completion Report</h2>
         </div>
         <div className="p-6 space-y-4 text-sm">
           <div>
             <h3 className="font-semibold text-[#172B4D] mb-1">1. What was inspected:</h3>
-            <p className="text-gray-600">All 155 documents from Stages 1-15, covering product requirements, architecture, infrastructure, UI/UX, data model, workflows, security, analytics, AI/ML, testing, deployment, product strategy, SaaS operations, and design handoff specifications.</p>
+            <p className="text-gray-600">All 156 documents from Stages 1-16, covering product requirements, architecture, infrastructure, UI/UX, data model, workflows, security, analytics, AI/ML, testing, deployment, product strategy, SaaS operations, design handoff, and data governance specifications.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">2. Documents created (Stage 15):</h3>
-            <p className="text-gray-600">13 comprehensive design handoff documents: Complete Screen Inventory and Route Map, Screen-by-Screen Implementation Specifications, Design System and Visual Token Specification, Reusable Component Inventory and Contracts, UI Interaction and State Transition Contracts, Navigation Routing and Access Control Specification, Forms Tables and Data-Dense UI Patterns, Loading Empty Error and Recovery UX, Role-Aware UI and Permission Presentation, BI/AI Decision Interface Specification, Accessibility and Responsive Acceptance Criteria, Design-to-Development Handoff and Approval Process, AI-Assisted UI Implementation Governance.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">2. Documents created (Stage 16):</h3>
+            <p className="text-gray-600">1 comprehensive data governance framework document covering 16 governance principles, 9 governance roles, 4 governance processes, required documentation (8 policies, 7 registers, 6 procedures, 7 record types), and governance metrics.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">3. Screen inventory:</h3>
-            <p className="text-gray-600">87 screens across 11 domains (Authentication, Onboarding, Shell, CRM, Inventory, Finance, BI/AI, Org Admin, Platform Admin). 42 MVP screens implementation-ready. Complete route mapping with permission requirements.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">3. Governance principles:</h3>
+            <p className="text-gray-600">16 core principles: Purpose limitation, Data minimization, Lawful processing, Transparency, Accuracy, Confidentiality, Integrity, Availability, Accountability, Least privilege, Retention limitation, Secure deletion, Data portability, Tenant separation, Responsible secondary use, Human oversight.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">4. Design system:</h3>
-            <p className="text-gray-600">Complete design token specification with primitive, semantic, and component tokens. Color system (navy #172B4D, blue #2563EB), typography (Inter, JetBrains Mono), spacing scale, elevation system. WCAG 2.2 AA compliant.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">4. Governance roles:</h3>
+            <p className="text-gray-600">9 defined roles: Business Data Owner, Data Steward, Platform Security Owner, Privacy Lead, Application Owner, Data Consumer, AI/ML Owner, Marketplace Product Owner, Legal Reviewer. Role assignment for small team and growth team.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">5. Component inventory:</h3>
-            <p className="text-gray-600">52 reusable components across 5 categories: Application Structure (6), Data Display (12), Forms and Actions (15), Business-Specific (11), Feedback and States (8). Complete component contracts with props, variants, and accessibility requirements.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">5. Governance processes:</h3>
+            <p className="text-gray-600">New data use approval (8 steps), Data subject request handling (7 steps), Data breach response (7 steps), Regular governance reviews (daily, weekly, monthly, quarterly, annual).</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">6. Interaction contracts:</h3>
-            <p className="text-gray-600">Detailed interaction specifications for all critical actions (create, edit, delete, approve, etc.). State transition diagrams, validation rules, error handling, and audit requirements. Permission-aware action presentation.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">6. Legal compliance:</h3>
+            <p className="text-gray-600">Tanzania Personal Data Protection Act 2022 requirements identified. Lawful processing bases defined (contractual necessity, legal obligation, legitimate interests, consent). Data subject rights procedures established. Breach notification within 72 hours.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">7. Navigation and routing:</h3>
-            <p className="text-gray-600">Complete route structure with organization-scoped routes. Navigation hierarchy with permission-based visibility. Breadcrumb patterns, context switchers, and deep linking support.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">7. Data classification:</h3>
+            <p className="text-gray-600">4-level classification: Public, Internal, Confidential, Highly Restricted. Each level has defined protection requirements and access controls. Aligned with Stage 7 security architecture.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">8. Data-dense UI patterns:</h3>
-            <p className="text-gray-600">Form patterns with validation and states. Table patterns with sorting, filtering, pagination, and bulk actions. Responsive behavior for mobile, tablet, and desktop.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">8. AI data governance:</h3>
+            <p className="text-gray-600">Default policy: No cross-tenant training data mixing. Tenant-scoped AI context retrieval. Human oversight for consequential decisions. Transparency about AI involvement. Aligned with Stage 9 AI/ML architecture.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">9. State management:</h3>
-            <p className="text-gray-600">Comprehensive loading, empty, error, and recovery UX patterns. Skeleton screens, progress indicators, retry mechanisms, and graceful degradation.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">9. Marketplace governance:</h3>
+            <p className="text-gray-600">Future capability (not automatic entitlement). Explicit approval required for each data product. Rigorous re-identification risk assessment. Strict buyer controls and access restrictions.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">10. Role-aware UI:</h3>
-            <p className="text-gray-600">Permission-based UI adaptation (hide, disable, lock, request). Role-specific dashboards for Sales Rep, Sales Manager, Admin, and Executive. Data scope enforcement in UI.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">10. Data lifecycle management:</h3>
+            <p className="text-gray-600">Retention principles established. Secure deletion procedures defined. Archive processes outlined. Data portability mechanisms specified. Legal hold procedures for litigation.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">11. BI/AI interface:</h3>
-            <p className="text-gray-600">Dashboard components (KPI cards, trend charts, data tables, insight cards). AI recommendation interface with confidence levels, evidence citations, and approval workflows. Data freshness indicators.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">11. Unresolved legal decisions:</h3>
+            <p className="text-amber-600 font-medium">10 key decisions require legal counsel review: Tanzania PDPA registration, DPO appointment, cross-border transfers, consent requirements, marketplace timeline, AI training data usage, data portability scope, anonymization techniques, retention automation, audit log storage.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">12. Accessibility:</h3>
-            <p className="text-gray-600">WCAG 2.2 AA compliance requirements. Keyboard navigation, screen reader support, color contrast, focus management. Responsive design with mobile-first approach.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">12. Risk assessment:</h3>
+            <p className="text-gray-600">5 high-priority risks identified: Legal non-compliance, Data breach, Privacy violations, AI misuse, Marketplace re-identification. 3 medium-priority risks: Data quality, Retention non-compliance, Inadequate consent. Mitigation strategies defined for all risks.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">13. Handoff process:</h3>
-            <p className="text-gray-600">10-stage handoff workflow from design to release. 4 approval gates (Design, Technical, Development, QA). Design conformance review with automated and manual checks.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">13. Integration with previous stages:</h3>
+            <p className="text-green-600 font-medium">All Stage 1-15 requirements addressed. Data governance aligns with Stage 5 data model. Security controls align with Stage 7. AI governance aligns with Stage 9. Integration controls align with Stage 10. SaaS operations align with Stage 14. No conflicts found.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">14. AI governance:</h3>
-            <p className="text-gray-600">Rules for AI-assisted implementation (what AI can/cannot do). Design conformance review process. Automated checks and manual review requirements.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">14. Project status:</h3>
+            <p className="text-gray-600">156 documents across 16 stages. 16 of 26 phases complete (62%). Remaining phases: 10. All planning, design, and governance stages complete.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">15. Integration with previous stages:</h3>
-            <p className="text-green-600 font-medium">All Stage 1-14 requirements addressed. UI/UX aligns with Stage 4 design system. Data model aligns with Stage 5. Workflows align with Stage 6. Security aligns with Stage 7. Analytics align with Stage 8. AI/ML align with Stage 9. Testing align with Stage 11. Deployment align with Stage 12. Product strategy align with Stage 13. SaaS operations align with Stage 14. No conflicts found.</p>
-          </div>
-          <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">16. Project status:</h3>
-            <p className="text-gray-600">155 documents across 15 stages. 15 of 26 phases complete (58%). Remaining phases: 11. All planning and design stages complete.</p>
-          </div>
-          <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">17. Recommended next stage:</h3>
-            <p className="text-green-600 font-medium">Phase 16 (Implementation Kickoff) - finalize team hiring, set up development environment, resolve open decisions (auth provider, cloud provider, payment provider), and begin Phase 1 development (Secure Platform Foundation). All design handoff specifications are complete and implementation-ready.</p>
+            <h3 className="font-semibold text-[#172B4D] mb-1">15. Recommended next stage:</h3>
+            <p className="text-green-600 font-medium">Phase 17 (Implementation Kickoff) - finalize team hiring, set up development environment, resolve open decisions (auth provider, cloud provider, payment provider), engage legal counsel for Tanzania PDPA compliance, and begin Phase 1 development (Secure Platform Foundation). All governance specifications are complete and implementation-ready.</p>
           </div>
           <div>
             <h3 className="font-semibold text-[#172B4D] mb-1">18. Implementation status:</h3>
@@ -443,7 +435,7 @@ export default function App() {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-blue-300 bg-white/10 px-3 py-1 rounded-full">
-                Stages 1-15 of 26
+                Stages 1-16 of 26
               </span>
             </div>
           </div>

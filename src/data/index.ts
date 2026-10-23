@@ -43,6 +43,7 @@ import { stage14Docs } from './stage14-docs';
 import { stage15Docs } from './stage15-docs';
 import { stage15DocsExtended } from './stage15-docs-extended';
 import { stage15DocsFinal } from './stage15-docs-final';
+import { stage16Docs } from './stage16-docs';
 
 // Stage 1 documents
 const stage1Docs: Document[] = [
@@ -136,6 +137,9 @@ const stage14DocsArray: Document[] = stage14Docs;
 // Stage 15 documents
 const stage15DocsArray: Document[] = [...stage15Docs, ...stage15DocsExtended, ...stage15DocsFinal];
 
+// Stage 16 documents
+const stage16DocsArray: Document[] = stage16Docs;
+
 // All documents combined
 export const allDocuments: Document[] = [
   ...stage1Docs,
@@ -151,7 +155,8 @@ export const allDocuments: Document[] = [
   ...stage12Docs,
   ...stage13DocsArray,
   ...stage14DocsArray,
-  ...stage15DocsArray
+  ...stage15DocsArray,
+  ...stage16DocsArray
 ];
 
 // Stages
@@ -267,6 +272,14 @@ export const stages: Stage[] = [
     description: 'Complete screen inventory and route map, screen-by-screen implementation specifications, design system and visual tokens, reusable component inventory, UI interaction contracts, navigation and routing, forms and tables patterns, loading and error states, role-aware UI, BI/AI interface, accessibility criteria, handoff process, and AI implementation governance.',
     status: 'Completed',
     documents: stage15DocsArray,
+  },
+  {
+    number: 16,
+    title: 'Data Governance, Legal and Regulatory Review, Data Retention, Consent, and Future Data Marketplace Controls',
+    shortTitle: 'Data Governance',
+    description: 'Comprehensive data governance framework with 16 principles, roles and responsibilities, governance processes, data classification, legal compliance (Tanzania PDPA), privacy protection, AI data governance, marketplace governance, data lifecycle management, and compliance metrics.',
+    status: 'Completed',
+    documents: stage16DocsArray,
   },
 ];
 
