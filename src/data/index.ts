@@ -39,6 +39,7 @@ import { stage12Doc3 } from './stage12-doc3';
 import { stage12Doc4, stage12Doc5, stage12Doc6, stage12Doc7 } from './stage12-doc4-7';
 import { stage12Doc8, stage12Doc9, stage12Doc10, stage12Doc11, stage12Doc12 } from './stage12-doc8-12';
 import { stage13Docs } from './stage13-docs';
+import { stage14Docs } from './stage14-docs';
 
 // Stage 1 documents
 const stage1Docs: Document[] = [
@@ -239,6 +240,14 @@ export const stages: Stage[] = [
     description: 'Product capability catalog, MVP scope and acceptance criteria, feature prioritization matrix, phased delivery roadmap, module dependencies, success metrics, scope governance, industry expansion strategy, and delivery risk assessment.',
     status: 'Completed',
     documents: stage13DocsArray,
+  },
+  {
+    number: 14,
+    title: 'User Onboarding, Organization Setup, Tenant Provisioning, Subscriptions, Billing, and SaaS Administration',
+    shortTitle: 'SaaS Operations',
+    description: 'Customer lifecycle and onboarding, organization setup and industry configuration, tenant provisioning and lifecycle, user invitation and membership management, subscription plans and entitlement model.',
+    status: 'Completed',
+    documents: stage14Docs,
   },
 ];
 
