@@ -317,7 +317,7 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
         <div className="p-6 space-y-4 text-sm">
           <div>
             <h3 className="font-semibold text-[#172B4D] mb-1">1. What was inspected:</h3>
-            <p className="text-gray-600">All 128 documents from Stages 1-12, existing architecture from Stage 2, repository structure from Stage 3, security architecture from Stage 7, testing strategy from Stage 11, and deployment requirements from previous stages.</p>
+            <p className="text-gray-600">All 137 documents from Stages 1-13, covering product requirements, architecture, infrastructure, UI/UX, data model, workflows, security, analytics, AI/ML, testing, deployment, and product strategy.</p>
           </div>
           <div>
             <h3 className="font-semibold text-[#172B4D] mb-1">2. Documents created (Stage 12):</h3>
@@ -372,7 +372,7 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
             <p className="text-gray-600">Comprehensive production readiness checklist covering architecture, code quality, security, data, infrastructure, deployment, testing, documentation, operations, compliance, and business. Go-live procedure with pre-launch (7 days), launch day, and post-launch (1 week) activities. Success criteria: zero critical incidents, error rate &lt;0.1%, response time &lt;500ms.</p>
           </div>
           <div>
-            <h3 className="font-semibold text-[#172B4D] mb-1">15. Conflicts with Stages 1-12:</h3>
+            <h3 className="font-semibold text-[#172B4D] mb-1">15. Conflicts with Stages 1-13:</h3>
             <p className="text-green-600 font-medium">None found. All deployment and operations specifications are consistent with previous requirements, architecture, security, testing, and AI/ML specifications.</p>
           </div>
           <div>
@@ -439,7 +439,7 @@ export default function App() {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-blue-300 bg-white/10 px-3 py-1 rounded-full">
-                Stages 1-12 of 26
+                Stages 1-13 of 26
               </span>
             </div>
           </div>
@@ -562,7 +562,7 @@ export default function App() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-sm text-gray-500">ClickIT Platform — Master Project Documentation</p>
             <div className="flex items-center gap-3 text-xs text-gray-400">
-              <span>Stages 1-12 Complete</span>
+              <span>Stages 1-13 Complete</span>
               <span className="w-1 h-1 bg-gray-300 rounded-full" />
               <span>Documentation Only — No Implementation</span>
             </div>

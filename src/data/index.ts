@@ -38,6 +38,7 @@ import { stage12Doc2 } from './stage12-doc2';
 import { stage12Doc3 } from './stage12-doc3';
 import { stage12Doc4, stage12Doc5, stage12Doc6, stage12Doc7 } from './stage12-doc4-7';
 import { stage12Doc8, stage12Doc9, stage12Doc10, stage12Doc11, stage12Doc12 } from './stage12-doc8-12';
+import { stage13Docs } from './stage13-docs';
 
 // Stage 1 documents
 const stage1Docs: Document[] = [
@@ -122,6 +123,9 @@ const stage12Docs: Document[] = [
   stage12Doc12
 ];
 
+// Stage 13 documents
+const stage13DocsArray: Document[] = stage13Docs;
+
 // All documents combined
 export const allDocuments: Document[] = [
   ...stage1Docs,
@@ -134,7 +138,8 @@ export const allDocuments: Document[] = [
   ...stage8Docs,
   ...stage9DocsArray,
   ...stage11DocsArray,
-  ...stage12Docs
+  ...stage12Docs,
+  ...stage13DocsArray
 ];
 
 // Stages
@@ -226,6 +231,14 @@ export const stages: Stage[] = [
     description: 'Deployment architecture, environment configuration, CI/CD strategy, infrastructure security, scaling and capacity, monitoring and observability, backup and disaster recovery, database migrations, production operations, incident management, maintenance procedures, and go-live readiness.',
     status: 'Completed',
     documents: stage12Docs,
+  },
+  {
+    number: 13,
+    title: 'Product Scope, MVP Boundaries, Feature Prioritization, and Phased Delivery',
+    shortTitle: 'Product Strategy',
+    description: 'Product capability catalog, MVP scope and acceptance criteria, feature prioritization matrix, phased delivery roadmap, module dependencies, success metrics, scope governance, industry expansion strategy, and delivery risk assessment.',
+    status: 'Completed',
+    documents: stage13DocsArray,
   },
 ];
 
