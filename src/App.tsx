@@ -317,7 +317,7 @@ function OverviewPage({ onSelectDoc }: { onSelectDoc: (doc: Document) => void })
         <div className="p-6 space-y-4 text-sm">
           <div>
             <h3 className="font-semibold text-[#172B4D] mb-1">1. What was inspected:</h3>
-            <p className="text-gray-600">All 130 documents from Stages 1-12, existing architecture from Stage 2, repository structure from Stage 3, security architecture from Stage 7, testing strategy from Stage 11, and deployment requirements from previous stages.</p>
+            <p className="text-gray-600">All 128 documents from Stages 1-12, existing architecture from Stage 2, repository structure from Stage 3, security architecture from Stage 7, testing strategy from Stage 11, and deployment requirements from previous stages.</p>
           </div>
           <div>
             <h3 className="font-semibold text-[#172B4D] mb-1">2. Documents created (Stage 12):</h3>
