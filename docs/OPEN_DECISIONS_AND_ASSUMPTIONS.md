@@ -127,7 +127,7 @@ Items marked **Blocking** stop the phase listed beside them.
 | `CF-07` | Product name "ClickIT" appeared in the original brief | **Resolved:** product is ONO; name corrected across all documents |
 | `CF-08` | "Universal industry support" vs "do not build every industry in v1" | **Clarified:** universality via universal core + custom path; coverage staged |
 | `CF-09` | No native mobile app vs field operations (site assignment, delivery proof) | Open — responsive web first; revisit after `ASM-004` is tested |
-| `CF-10` | "No implementation" instruction vs an existing scaffold in the repo | **Recorded:** scaffold predates Stage 1 authorisation and is documented as such in `PROJECT_STATUS.md` |
+| `CF-10` | "No implementation" instruction vs an existing scaffold in the repo | **Closed 2026-10-26:** scaffold predates Stage 1 authorisation, is documented as such in `PROJECT_STATUS.md`, and was committed as `4f14249` with no further implementation |
 
 ---
 

@@ -29,7 +29,8 @@
 | Item | Finding |
 | --- | --- |
 | Git repository | Initialised, branch `main`, remote `origin` → `https://github.com/chrisconscious/ONO.git`, tracking `origin/main` |
-| Remote baseline | Commit `8992a97` — "chore: add initial project folder structure" |
+| Remote baseline at inspection | Commit `8992a97` — "chore: add initial project folder structure" |
+| Remote head now | Commit `80c79ea` — scaffold plus the Stage 1 documentation set |
 | Folder scaffold | 49 `.gitkeep` files across `docs/`, `prisma/`, `public/`, `src/`, `tests/` |
 | Existing documentation | None — `docs/**` contained only `.gitkeep` placeholders |
 | Languages present | TypeScript, CSS, JavaScript (config only), Prisma schema, JSON, Markdown |
@@ -75,12 +76,12 @@ Full technology detail: `TECHNOLOGY_STACK_AND_GOVERNANCE.md`.
 - The scaffold was produced in the turn **immediately before** the Stage 1
   instruction, in response to the product owner's explicit request to scaffold
   the application.
-- It is **not committed** and **not pushed**. The remote still contains only the
-  folder-structure commit.
+- It was committed and pushed on 2026-10-26 at the product owner's explicit
+  instruction, as commit `4f14249` ("chore: add ONO application scaffold").
 - Stage 1 itself produced documentation only — no application code was added or
-  modified during this stage.
-- Whether to commit and push the scaffold plus these documents is a decision for
-  the product owner (`CF-10`).
+  modified during this stage. The documentation set is commit `80c79ea`.
+- Remote `main` now matches local `main`. `CF-10` is closed: the scaffold is
+  recorded as pre-Stage-1 work, and no further implementation has begun.
 
 ---
 
@@ -229,3 +230,4 @@ implementation, no model training, no inference engine.
 | --- | --- | --- |
 | 2026-10-26 | Stage 1 baseline created: 16 documents (13 required + index + technology governance + traceability) | Documentation |
 | 2026-10-26 | Product name corrected from ClickIT to ONO throughout | Documentation |
+| 2026-10-26 | Scaffold committed as `4f14249` and documentation as `80c79ea`; both pushed to `origin/main` at the product owner's instruction | Documentation |
