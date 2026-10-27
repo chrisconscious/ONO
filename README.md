@@ -1,113 +1,61 @@
 # ONO
 
-A multi-tenant business operations platform: CRM, sales, finance, inventory,
-procurement, projects, workforce, analytics and AI insights in one system.
+ONO is a multi-tenant business operations application built with Next.js,
+TypeScript, PostgreSQL, and Prisma. The current repository includes application
+code for areas such as CRM, sales, finance, inventory, projects, workforce,
+analytics, subscriptions, billing, and data governance. A directory or schema
+model alone does not mean that a feature is complete.
 
-This repository currently contains the application scaffold — bootable, typed,
-linted and ready for feature work.
+## Run locally
 
-## Stack
+Requirements: Node.js 20.9 or newer, npm, and PostgreSQL for database-backed
+features.
 
-| Layer | Choice |
-| --- | --- |
-| Framework | Next.js 16 (App Router, Turbopack) |
-| Language | TypeScript 5.9 (strict) |
-| UI | React 19 + Tailwind CSS 4 |
-| Database | PostgreSQL via Prisma 6 |
-| Validation | Zod 4 |
-| Lint | ESLint 9 + `eslint-config-next` |
-
-## Getting started
-
-Requires Node.js 20.9+ (developed on Node 24).
-
-```bash
+```powershell
 npm install
-cp .env.example .env      # then edit DATABASE_URL / AUTH_SECRET
-npm run db:generate       # generate the Prisma client
-npm run dev               # http://localhost:3000
+if (-not (Test-Path .env)) { Copy-Item .env.example .env }
 ```
 
-`npm install` already runs `prisma generate` through `postinstall`.
+Set `DATABASE_URL` in the local `.env`. Never commit or share that file. Then
+run:
 
-To create the schema in your database:
-
-```bash
-npm run db:push                                   # quick sync, no migration history
-npm run db:migrate -- --name init_schema          # or a tracked migration
+```powershell
+npm run db:generate
+npm run dev
 ```
 
-## Scripts
+Visit [http://localhost:3000](http://localhost:3000).
 
-| Script | Purpose |
+## Useful commands
+
+| Command | Purpose |
 | --- | --- |
-| `npm run dev` | Start the dev server |
-| `npm run build` | Production build |
-| `npm start` | Serve the production build |
-| `npm run typecheck` | `tsc --noEmit` |
-| `npm run lint` | ESLint over the repo |
-| `npm run db:generate` | Generate the Prisma client |
-| `npm run db:push` | Push schema to the database |
-| `npm run db:migrate` | Create/apply migrations |
+| `npm run dev` | Start local Next.js development server |
+| `npm run build` | Create production build |
+| `npm start` | Run production build |
+| `npm run typecheck` | Run TypeScript checks |
+| `npm run lint` | Run ESLint |
+| `npm run db:generate` | Generate Prisma client |
+| `npm run db:migrate` | Run Prisma development migration workflow |
 | `npm run db:studio` | Open Prisma Studio |
 
-## Project structure
+Review database migrations and confirm the target environment before changing
+database state.
 
-```text
-prisma/
-  schema.prisma          # data model (Tenant, User)
-  migrations/            # tracked SQL migrations
-src/
-  app/
-    (auth)/              # sign-in, sign-up, password flows
-    (tenant)/            # tenant-facing application shell
-    (platform-admin)/    # internal admin console
-    api/                 # route handlers (api/health is live)
-    layout.tsx           # root layout
-    page.tsx             # landing page
-    globals.css          # Tailwind entry + theme tokens
-  components/
-    ui/                  # primitives (buttons, inputs, ...)
-    shared/              # cross-feature composites
-  config/                # app-level configuration
-  features/              # vertical slices, one per business module
-    ai-insights/  analytics/  crm/  finance/  inventory/
-    procurement/  projects/   sales/  workforce/
-  lib/
-    auth/                # session + authentication helpers
-    configuration/       # typed environment contract
-    database/            # Prisma client singleton
-    permissions/         # role and tenancy checks
-    validation/          # shared Zod schemas
-  server/
-    jobs/                # background work
-    repositories/        # data access
-    services/            # business logic
-  types/                 # shared TypeScript types
-tests/
-  unit/  integration/  e2e/
-docs/
-  architecture/  database/  api/  security/  deployment/ ...
-```
+## Documentation
 
-## Conventions
+- [Technical Documentation](./docs/TECHNICAL_DOCUMENTATION.md) — stack,
+  configuration, and operational constraints.
+- [Code Documentation](./docs/CODE_DOCUMENTATION.md) — codebase layout and
+  module responsibilities.
+- [Project Architecture](./docs/PROJECT_ARCHITECTURE.md) — runtime layers,
+  trust boundaries, and data flow.
+- [API Documentation](./docs/API_DOCUMENTATION.md) — implemented route
+  inventory and authentication conventions.
+- [Database Schema Documentation](./docs/DATABASE_SCHEMA_DOCUMENTATION.md) —
+  current Prisma model groups and migration guidance.
+- [Developer Guide](./docs/DEVELOPER_GUIDE.md) — local setup, checks, and
+  contribution workflow.
 
-- **Tenancy:** every tenant-scoped table carries a `tenantId`; access checks
-  live in `src/lib/permissions`.
-- **Feature slices:** a feature owns its components, server actions and
-  schemas under `src/features/<module>`; nothing else imports from inside it
-  except its public entry points.
-- **Data access:** route handlers and server components call
-  `src/server/services`, which call `src/server/repositories`. Prisma is not
-  imported outside `src/server` and `src/lib/database`.
-- **Environment:** server configuration is validated once through
-  `getServerEnv()` in `src/lib/configuration/env.ts`.
-- **Secrets:** `.env` is git-ignored; only `.env.example` is committed.
-
-## Health check
-
-`GET /api/health` returns:
-
-```json
-{ "status": "ok", "service": "ono", "timestamp": "..." }
-```
+The documentation describes the repository as inspected and may not list every
+field or behavior. Source code and `prisma/schema.prisma` are authoritative.
