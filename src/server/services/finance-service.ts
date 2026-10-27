@@ -185,6 +185,13 @@ export async function recordPayment(input: unknown, ctx: TenantContext) {
     let invoice: Awaited<ReturnType<typeof tx.invoice.findFirst>> | null = null;
 
     if (data.invoiceId) {
+      // Lock-then-check on the invoice row so two concurrent payment
+      // allocations cannot both read the same outstanding balance and
+      // over-settle it (lost-update). This mirrors the locking used by
+      // transitionInvoice() and stock withdrawals in fulfillSalesOrder().
+      const lockedRows = await tx.$queryRaw<Array<{ id: string }>>`
+        SELECT id FROM "invoices" WHERE id = ${data.invoiceId} AND "tenantId" = ${ctx.tenantId} FOR UPDATE`;
+      if (lockedRows.length === 0) throw ApiError.validation("invoiceId does not belong to this organization");
       invoice = await tx.invoice.findFirst({ where: { id: data.invoiceId, tenantId: ctx.tenantId } });
       if (!invoice) throw ApiError.validation("invoiceId does not belong to this organization");
       if (invoice.status === "DRAFT") throw ApiError.validation("Payments cannot be allocated to draft invoices");
