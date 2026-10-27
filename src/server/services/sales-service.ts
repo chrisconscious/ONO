@@ -2,11 +2,12 @@ import { prisma } from "@/lib/database/prisma";
 import { ApiError } from "@/lib/api/errors";
 import { recordAuditEvent } from "@/server/services/audit-service";
 import { nextNumber } from "@/server/services/numbering";
+import { permissionsForRole } from "@/lib/permissions/rbac";
 import type { TenantContext } from "@/lib/auth/session";
 import { Prisma, type DocumentStatus, type OpportunityStage } from "@prisma/client";
 import { randomUUID } from "node:crypto";
 import { publish } from "@/server/events/event-bus";
-import { recordHandover } from "@/server/workflows/handover-service";
+import { recordHandover, isHandoverProcessed } from "@/server/workflows/handover-service";
 import {
   createOpportunitySchema,
   createQuotationSchema,
@@ -121,9 +122,16 @@ export async function moveOpportunityStage(
   if (!isLegalStageTransition(opp.stage, data.stage)) {
     throw ApiError.validation(`Illegal stage transition: ${opp.stage} -> ${data.stage}`);
   }
-  // Re-opening a lost deal requires manager+.
+  // Re-opening a lost deal requires manager+ (crm.delete is the manager-level
+  // permission marker). Resolve permissions from the CURRENT membership row at
+  // request time — never from a cached/context snapshot — so a role change or
+  // revocation takes effect immediately even if the session predates it.
   if (opp.stage === "CLOSED_LOST" && data.stage !== "CLOSED_LOST") {
-    if (opp.stage === "CLOSED_LOST" && !ctx.permissions.has("crm.delete")) {
+    const current = await prisma.membership.findFirst({
+      where: { userId: ctx.user.id, tenantId: ctx.tenantId, isActive: true },
+      select: { role: true },
+    });
+    if (!current || !permissionsForRole(current.role).has("crm.delete")) {
       throw ApiError.forbidden("Only managers can re-open a lost opportunity");
     }
   }
@@ -433,7 +441,21 @@ export async function fulfillSalesOrder(orderId: string, ctx: TenantContext) {
   const lines = order.lines as unknown as OrderLine[];
   const stockLines = lines.filter((l) => l.productId);
 
+  // Idempotency guard: if this order was already handed over to delivery,
+  // a retried fulfillment must not decrement stock or record movements twice.
+  const handoverKey = `order-fulfillment:${order.id}`;
+  if (await isHandoverProcessed(handoverKey)) {
+    throw ApiError.conflict(`Sales order ${order.number} has already been fulfilled`);
+  }
+
   const updated = await prisma.$transaction(async (tx) => {
+    // Re-check status under the row lock so two concurrent fulfillments
+    // cannot both pass the CONFIRMED check and double-deduct stock.
+    const locked = await tx.$queryRaw<Array<{ status: string }>>`
+      SELECT status FROM "sales_orders" WHERE id = ${order.id} FOR UPDATE`;
+    if (locked[0]?.status !== "CONFIRMED") {
+      throw ApiError.conflict("Order status changed concurrently; reload and retry");
+    }
     for (const line of stockLines) {
       const product = await tx.product.findFirst({
         where: { id: line.productId!, tenantId: ctx.tenantId },
@@ -443,18 +465,21 @@ export async function fulfillSalesOrder(orderId: string, ctx: TenantContext) {
       if (!warehouseId) {
         throw ApiError.validation(`Order has no warehouse; cannot deduct stock for '${line.description}'`);
       }
-      const stockItem = await tx.stockItem.findUnique({
-        where: { productId_warehouseId: { productId: line.productId!, warehouseId } },
-      });
+      // Lock-then-update on the stock row: concurrent withdrawals from the
+      // same SKU/warehouse are serialized, so balances stay consistent.
+      const stockRows = await tx.$queryRaw<Array<{ id: string; quantity: Prisma.Decimal }>>`
+        SELECT id, quantity FROM "stock_items"
+        WHERE "productId" = ${line.productId!} AND "warehouseId" = ${warehouseId} FOR UPDATE`;
+      const stockItem = stockRows[0];
       const available = stockItem?.quantity ?? new Prisma.Decimal(0);
       const requested = new Prisma.Decimal(line.quantity);
-      if (available.lt(requested)) {
+      if (!stockItem || available.lt(requested)) {
         throw ApiError.conflict(
           `Insufficient stock for SKU ${product.sku}: available ${available.toString()}, requested ${requested.toString()}`,
         );
       }
       await tx.stockItem.update({
-        where: { id: stockItem!.id },
+        where: { id: stockItem.id },
         data: { quantity: { decrement: requested } },
       });
       await tx.stockMovement.create({
@@ -470,6 +495,15 @@ export async function fulfillSalesOrder(orderId: string, ctx: TenantContext) {
       });
     }
     return tx.salesOrder.update({ where: { id: order.id }, data: { status: "FULFILLED" } });
+  });
+
+  // Record the delivery handover after commit; unique key makes retries safe.
+  await recordHandover(ctx, {
+    kind: "ORDER_DELIVERY",
+    sourceType: "SalesOrder",
+    sourceId: order.id,
+    targetId: order.id,
+    idempotencyKey: handoverKey,
   });
 
   await recordAuditEvent({

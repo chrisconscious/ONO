@@ -43,12 +43,26 @@ export async function register(input: unknown) {
         name: data.organizationName,
         slug: data.organizationSlug,
         industryKey: data.industryKey ?? null,
+        ownerId: user.id,
+        provisioningStatus: "PENDING_SETUP",
       },
     });
     await tx.membership.create({
       data: { userId: user.id, tenantId: tenant.id, role: "ADMIN" },
     });
-    await tx.subscription.create({ data: { tenantId: tenant.id } });
+    await tx.subscription.create({
+      data: {
+        tenantId: tenant.id,
+        // New self-serve organizations start on a time-boxed trial with an
+        // explicit current period so billing/entitlement logic has real data.
+        plan: "TRIAL",
+        status: "TRIALING",
+        seats: 1,
+        trialEndsAt: new Date(Date.now() + 14 * 24 * 3600 * 1000),
+        currentPeriodStart: new Date(),
+        currentPeriodEnd: new Date(Date.now() + 14 * 24 * 3600 * 1000),
+      },
+    });
     if (data.customIndustryName) {
       await tx.customIndustry.create({
         data: {

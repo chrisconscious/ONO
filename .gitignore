@@ -1,13 +1,2 @@
 node_modules/
-dist/
-build/
-*.tsbuildinfo
-.env
-.env.local
-.env.*.local
-.vscode/
-.idea/
-*.swp
-*.swo
-.DS_Store
-Thumbs.db
+tsconfig.tsbuildinfo
