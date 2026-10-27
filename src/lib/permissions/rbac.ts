@@ -55,7 +55,17 @@ export type Permission =
   | "billing.read"
   | "billing.manage"
   // usage metering visibility
-  | "usage.read";
+  | "usage.read"
+  // data governance (Stage 16) — deliberately granular: reading governance
+  // metadata, changing policies, executing deletion, approving AI data use,
+  // and marketplace release are SEPARATE privileges.
+  | "governance.read"
+  | "governance.policies.manage"
+  | "governance.deletion.execute"
+  | "governance.incidents.manage"
+  | "ai.datause.approve"
+  // platform-level marketplace administration (never granted via tenant roles)
+  | "marketplace.admin";
 
 const VIEWER_PERMISSIONS: Permission[] = [
   "org.read",
@@ -89,6 +99,9 @@ const MEMBER_PERMISSIONS: Permission[] = [
 
 const MANAGER_PERMISSIONS: Permission[] = [
   ...MEMBER_PERMISSIONS,
+  // Governance visibility and incident handling for trusted managers only.
+  "governance.read",
+  "governance.incidents.manage",
   "crm.delete",
   "sales.delete",
   "purchasing.write",
@@ -107,6 +120,12 @@ const ADMIN_PERMISSIONS: Permission[] = [
   "integrations.manage",
   // Only organization admins may change subscription/billing settings.
   "billing.manage",
+  // Organization admins manage their OWN tenant's governance records only;
+  // every governance service re-checks ctx.tenantId server-side. Marketplace
+  // release approval is NOT included here — it is platform-level only.
+  "governance.policies.manage",
+  "governance.deletion.execute",
+  "ai.datause.approve",
 ];
 
 const ROLE_PERMISSIONS: Record<MemberRole, ReadonlySet<Permission>> = {

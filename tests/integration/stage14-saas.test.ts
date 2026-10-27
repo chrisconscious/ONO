@@ -101,7 +101,7 @@ describe("payment event processing", () => {
     expect(paid.totalMinor).toBe(invoice.totalMinor); // unchanged integer amount
 
     const sub = await prisma.subscription.findUniqueOrThrow({ where: { id: s.id } });
-    expect(sub.currentPeriodStart.getTime()).toBe(invoice.periodEnd.getTime());
+    expect(sub.currentPeriodStart!.getTime()).toBe(invoice.periodEnd.getTime());
 
     const attempt = await prisma.paymentAttempt.findFirst({ where: { subscriptionId: s.id } });
     expect(attempt?.status).toBe("SUCCEEDED");
@@ -282,7 +282,7 @@ describe("usage metering service", () => {
   it("snapshot derives ACTIVE_USERS from memberships (authoritative source)", async () => {
     const t = await makeTenantWithUser();
     const { addMember } = await import("../helpers/fixtures");
-    await addMember(t.tenantId, "SALES");
+    await addMember(t.tenantId, "MEMBER");
     const usage = await import("@/server/services/usage-service");
     const snap = await usage.currentUsageSnapshot(t.tenantId);
     expect(snap.usage.ACTIVE_USERS).toBe("2");
@@ -441,7 +441,7 @@ describe("tenant provisioning lifecycle", () => {
     const prov = await import("@/server/services/provisioning-service");
     const { addMember } = await import("../helpers/fixtures");
     const t = await makeTenantWithUser("ADMIN");
-    const salesMember = await addMember(t.tenantId, "SALES");
+    const salesMember = await addMember(t.tenantId, "MEMBER");
     // Removing a SALES member can never orphan administration.
     await expect(prov.assertNotLastAdminRemoval(salesMember.membershipId, t.tenantId)).resolves.toBeUndefined();
   });

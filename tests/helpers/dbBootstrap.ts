@@ -59,6 +59,21 @@ async function truncateAll(): Promise<void> {
   // Children first (models with FKs), then parents. All tables are listed so
   // a fresh file always starts from an empty database.
   const ordered = [
+    // Stage 16 governance tables (children first, FK-safe order)
+    "marketplace_approval_decisions",
+    "marketplace_products",
+    "deletion_steps",
+    "deletion_requests",
+    "export_jobs",
+    "ai_data_use_approvals",
+    "data_incidents",
+    "legal_holds",
+    "retention_policies",
+    "consent_records",
+    "processing_activities",
+    "data_sharing_arrangements",
+    "processing_purposes",
+    "data_categories",
     "workflow_runs",
     "workflow_rules",
     "approval_steps",
