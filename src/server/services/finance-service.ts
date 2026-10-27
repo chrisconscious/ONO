@@ -113,24 +113,54 @@ const INVOICE_EDGES: Record<InvoiceStatus, readonly InvoiceStatus[]> = {
 };
 
 export async function transitionInvoice(invoiceId: string, to: InvoiceStatus, ctx: TenantContext) {
-  const inv = await prisma.invoice.findFirst({ where: { id: invoiceId, tenantId: ctx.tenantId } });
-  if (!inv) throw ApiError.notFound("Invoice not found");
-  if (!INVOICE_EDGES[inv.status].includes(to)) {
-    throw ApiError.validation(`Illegal invoice transition: ${inv.status} -> ${to}`);
+  // Lock the invoice row for the whole check-and-update so concurrent
+  // transitions (or a concurrent payment allocation) cannot interleave and
+  // produce an inconsistent status. This schema uses Prisma's default column
+  // naming (camelCase identifiers quoted in DDL), so the raw row keeps the
+  // model's camelCase field names — verified against the live test database.
+  interface InvoiceLockRow {
+    id: string;
+    number: string;
+    status: InvoiceStatus;
+    total: Prisma.Decimal;
+    amountPaid: Prisma.Decimal;
   }
-  if (to === "PAID" && !inv.amountPaid.equals(inv.total)) {
-    throw ApiError.validation("Cannot mark invoice PAID before payments cover the full total");
-  }
-  if (inv.status === "VOID") throw ApiError.conflict("Void invoices cannot change");
-  const updated = await prisma.invoice.update({ where: { id: inv.id }, data: { status: to } });
+  // Captured inside the transaction so the audit summary can reference the
+  // pre-transition state read under the row lock.
+  let auditSummary = "";
+  const updated = await prisma.$transaction(async (tx) => {
+    const rows = await tx.$queryRaw<InvoiceLockRow[]>`
+      SELECT id, number, status, total, "amountPaid" FROM "invoices"
+      WHERE id = ${invoiceId} AND "tenantId" = ${ctx.tenantId} FOR UPDATE`;
+    const inv = rows[0];
+    if (!inv) throw ApiError.notFound("Invoice not found");
+    if (!INVOICE_EDGES[inv.status].includes(to)) {
+      throw ApiError.validation(`Illegal invoice transition: ${inv.status} -> ${to}`);
+    }
+    if (to === "PAID" && !inv.amountPaid.equals(inv.total)) {
+      throw ApiError.validation("Cannot mark invoice PAID before payments cover the full total");
+    }
+    if (to === "VOID" && inv.amountPaid.gt(0)) {
+      // A voided invoice must not retain settled money — otherwise receivables
+      // reporting would silently drop paid amounts. Callers must refund or
+      // reallocate payments first.
+      throw ApiError.conflict(
+        `Invoice has ${inv.amountPaid.toFixed(2)} allocated in payments; refund or reallocate them before voiding`,
+      );
+    }
+    // Audit summary is built inside the transaction where the locked row data
+    // is in scope; the write itself happens after commit (append-only trail).
+    auditSummary = `Invoice ${inv.number}: ${inv.status} -> ${to}`;
+    return tx.invoice.update({ where: { id: inv.id }, data: { status: to } });
+  });
   await recordAuditEvent({
     tenantId: ctx.tenantId,
     userId: ctx.user.id,
     membershipId: ctx.membershipId,
     action: "finance.invoice.status_change",
     entityType: "Invoice",
-    entityId: inv.id,
-    summary: `Invoice ${inv.number}: ${inv.status} -> ${to}`,
+    entityId: invoiceId,
+    summary: auditSummary,
   });
   return updated;
 }

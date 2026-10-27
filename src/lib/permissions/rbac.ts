@@ -50,7 +50,12 @@ export type Permission =
   | "aiinsights.read"
   | "aiinsights.review"
   // integrations
-  | "integrations.manage";
+  | "integrations.manage"
+  // subscriptions & billing (tenant-facing view of their own subscription)
+  | "billing.read"
+  | "billing.manage"
+  // usage metering visibility
+  | "usage.read";
 
 const VIEWER_PERMISSIONS: Permission[] = [
   "org.read",
@@ -65,6 +70,8 @@ const VIEWER_PERMISSIONS: Permission[] = [
   "notifications.read",
   "analytics.read",
   "aiinsights.read",
+  "billing.read",
+  "usage.read",
 ];
 
 const MEMBER_PERMISSIONS: Permission[] = [
@@ -98,6 +105,8 @@ const ADMIN_PERMISSIONS: Permission[] = [
   "org.members.manage",
   "org.settings.manage",
   "integrations.manage",
+  // Only organization admins may change subscription/billing settings.
+  "billing.manage",
 ];
 
 const ROLE_PERMISSIONS: Record<MemberRole, ReadonlySet<Permission>> = {

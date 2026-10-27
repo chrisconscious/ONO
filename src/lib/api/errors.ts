@@ -39,6 +39,9 @@ export class ApiError extends Error {
   static rateLimited(message = "Too many requests") {
     return new ApiError(429, "rate_limited", message);
   }
+  static internal(message = "An unexpected error occurred") {
+    return new ApiError(500, "internal_error", message);
+  }
 }
 
 export function jsonError(error: unknown): NextResponse {
