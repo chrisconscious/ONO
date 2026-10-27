@@ -139,7 +139,7 @@ describe("plan changes", () => {
     await setSubscription(t.tenantId, { status: "ACTIVE", plan: "GROWTH" });
     // Three active members exceed STARTER's single seat.
     await addMember(t.tenantId, "MANAGER");
-    await addMember(t.tenantId, "SALES");
+    await addMember(t.tenantId, "MEMBER");
 
     // A company record proves tenant business data survives the downgrade.
     const company = await prisma.company.create({
