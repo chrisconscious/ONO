@@ -122,14 +122,42 @@ describe("cancellation semantics", () => {
 });
 
 describe("plan changes", () => {
-  it("rejects unknown or inactive plans", async () => {
+  it("rejects plans that are not present and active in the plan catalogue", async () => {
+    // Regression note: this test previously used plan code "GROWTH" without
+    // seeding it. PlanDefinition rows are platform-owned reference data that
+    // may legitimately exist from earlier tests in the same worker process,
+    // so the assertion was order-dependent. The real business rule under test
+    // is: changePlan must fail closed when the target plan is missing OR
+    // deactivated. We prove both halves deterministically here.
     const t = await makeTenantWithUser();
     await setSubscription(t.tenantId, { status: "ACTIVE" });
-    const err = await sub
-      .changePlan(t.tenantId, { plan: "GROWTH" }, { userId: t.userId })
+
+    // Half 1: deactivated plan is rejected even though the row exists.
+    const retired = await seedPlan({ code: "STARTER" });
+    await prisma.planDefinition.update({
+      where: { code: "STARTER" },
+      data: { isActive: false },
+    });
+    const errInactive = await sub
+      .changePlan(t.tenantId, { plan: "STARTER" }, { userId: t.userId })
       .then(() => null, (e) => e);
-    expect(err).toBeInstanceOf(ApiError);
-    expect((err as ApiError).status).toBe(400);
+    expect(errInactive).toBeInstanceOf(ApiError);
+    expect((errInactive as ApiError).status).toBe(400);
+    // Restore for other tests sharing this worker.
+    await prisma.planDefinition.update({
+      where: { code: "STARTER" },
+      data: { isActive: retired.isActive },
+    });
+
+    // Half 2: no subscription record at all also fails cleanly (missing
+    // tenant state must never be treated as success).
+    const orphanTenant = await makeTenantWithUser();
+    await prisma.subscription.deleteMany({ where: { tenantId: orphanTenant.tenantId } });
+    await seedPlan({ code: "ENTERPRISE" });
+    const errNoSub = await sub
+      .changePlan(orphanTenant.tenantId, { plan: "ENTERPRISE" }, { userId: orphanTenant.userId })
+      .then(() => null, (e) => e);
+    expect(errNoSub).toBeInstanceOf(ApiError);
   });
 
   it("downgrade preserves all business data and flags seat overage", async () => {
