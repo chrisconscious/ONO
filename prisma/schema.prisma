@@ -395,6 +395,35 @@ model Tenant {
   @@map("tenants")
 }
 
+// Public testimonials displayed on the authentication page carousel and
+// moderated from the platform-admin portal. These are marketing records, not
+// tenant business data: they carry no tenantId because they describe ClickIT's
+// own customers, not a tenant's confidential operations. Only rows with
+// isPublished = true are ever served to unauthenticated visitors; publication
+// requires explicit super-admin approval (see testimonial-service).
+model Testimonial {
+  id           String    @id @default(cuid())
+  authorName   String
+  authorTitle  String
+  companyName  String
+  quote        String
+  // Approved public rating, 1..5 stars. Null means "rating not published".
+  rating       Int?
+  // Publication state — fail-closed: new submissions are never public.
+  isPublished  Boolean   @default(false)
+  // Sort order for the carousel; lower numbers appear first.
+  displayOrder Int       @default(0)
+  // Approval audit trail (server-set; never client-supplied).
+  approvedById String?
+  approvedAt   DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  approvedBy   User?     @relation(fields: [approvedById], references: [id], onDelete: SetNull)
+
+  @@index([isPublished, displayOrder])
+  @@map("testimonials")
+}
+
 model DocumentCounter {
   id       String  @id @default(cuid())
   tenantId String
@@ -472,6 +501,7 @@ model User {
   sessions     Session[]
   invitations  Invitation[] @relation("InvitedBy")
   auditLogs    AuditLog[]
+  approvedTestimonials Testimonial[]
   consentRecords ConsentRecord[]
   assignedTasks Task[]
   createdLeads  Lead[] @relation("LeadOwner")
