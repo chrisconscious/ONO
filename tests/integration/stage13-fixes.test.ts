@@ -9,6 +9,7 @@
  *     row lock so a retried or concurrent fulfillment cannot double-deduct
  *     stock.
  */
+import { execFileSync, spawn } from "node:child_process";
 import { describe, expect, it } from "vitest";
 import { ApiError } from "@/lib/api/errors";
 import { prisma } from "@/lib/database/prisma";
@@ -34,36 +35,67 @@ describe("invoice transitions are concurrency-safe and payment-aware", () => {
       t.ctx,
     );
 
-    // Prove the service uses FOR UPDATE at the SQL level. A wall-clock
-    // "did it finish yet?" race is flaky under shared connection pools (the
-    // service may not even reach the locked SELECT within the probe window),
-    // so instead capture the actual statements issued inside the transition
-    // transaction and assert the locking clause is present.
-    const captured: unknown[] = [];
-    await prisma.$transaction(
-      async () => {
-        // no-op body; query logging below records every statement in this tx
-      },
-      { timeout: 5_000 },
-    ).catch(() => undefined);
+    // Prove the service locks the invoice row at the SQL level using a real
+    // blocking test rather than log inspection: the default app client does
+    // not enable query logging, and wall-clock races are flaky. We hold a
+    // FOR UPDATE row lock on the invoice inside a separate long-lived
+    // PostgreSQL session (psql) and assert that transitionInvoice cannot
+    // complete while the lock is held — which can only happen if the service
+    // itself performs a locking read of the same row.
+    const dbName = new URL(process.env.DATABASE_URL!).pathname.replace(/^\//, "");
+    const psqlEnv = { ...process.env, PGCONNECT_TIMEOUT: "5" };
+    const exec = (sql: string) =>
+      execFileSync("psql", [dbName, "-U", "postgres", "-h", "localhost", "-p", "5432", "-v", "ON_ERROR_STOP=1", "-c", sql], {
+        env: { ...psqlEnv, PGPASSWORD: "postgres" },
+        stdio: "pipe",
+      });
 
-    await finance.transitionInvoice(invoice.id, "ISSUED", t.ctx);
-    // Re-run with an event listener to inspect emitted queries for the
-    // locking read. Prisma logs raw queries through the client's $on hook.
-    const unsubscribe = prisma.$on("query" as never, (q: { query: string }) => {
-      captured.push(q.query);
+    // Open a detached background psql session that takes the row lock and
+    // then sleeps, keeping the transaction (and therefore the lock) open.
+    const lockerScript = `SELECT id FROM "invoices" WHERE id = '${invoice.id}' FOR UPDATE; SELECT pg_sleep(8);`;
+    const child = spawn("psql", [dbName, "-U", "postgres", "-h", "localhost", "-p", "5432", "-c", lockerScript], {
+      env: { ...psqlEnv, PGPASSWORD: "postgres" },
+      stdio: "ignore",
+      detached: true,
     });
-    const second = await finance.createInvoice(
-      { companyId: company.id, lines: [{ description: "Second", quantity: 1, unitPrice: "5.00" }] },
-      t.ctx,
-    );
-    await finance.transitionInvoice(second.invoice.id, "VOID", t.ctx);
-    unsubscribe();
-    const sawForUpdate = captured.some((sql) => /FOR UPDATE/i.test(String(sql)));
-    expect(sawForUpdate).toBe(true);
+    child.unref();
 
-    const final = await prisma.invoice.findUniqueOrThrow({ where: { id: invoice.id } });
-    expect(final.status).toBe("ISSUED");
+    try {
+      // Give the locker session time to acquire the row lock.
+      await new Promise((r) => setTimeout(r, 1_500));
+
+      // With the external lock held, the transition must block. If it
+      // "completed" instantly the service would not be taking a row lock.
+      const blocked = await Promise.race([
+        finance.transitionInvoice(invoice.id, "ISSUED", t.ctx).then(() => "done"),
+        new Promise<string>((resolve) => setTimeout(() => resolve("blocked"), 2_500)),
+      ]);
+      expect(blocked).toBe("blocked");
+
+      // The database state must still be unchanged while blocked.
+      const during = await prisma.invoice.findUniqueOrThrow({ where: { id: invoice.id } });
+      expect(during.status).not.toBe("ISSUED");
+    } finally {
+      // Terminate the locker session so its transaction aborts and the row
+      // lock is released; the pending transition then completes.
+      try {
+        exec(`SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE state = 'active' AND query LIKE '%pg_sleep(8)%' AND pid <> pg_backend_pid()`);
+      } catch {
+        // Best-effort cleanup; the sleep ends on its own otherwise.
+      }
+    }
+
+    // After the lock is released the pending transition should complete.
+    let finalStatus = "";
+    for (let i = 0; i < 60; i++) {
+      const row = await prisma.invoice.findUniqueOrThrow({ where: { id: invoice.id } });
+      if (row.status === "ISSUED") {
+        finalStatus = row.status;
+        break;
+      }
+      await new Promise((r) => setTimeout(r, 250));
+    }
+    expect(finalStatus).toBe("ISSUED");
   });
 
   it("rejects VOID when payments are already allocated to the invoice", async () => {
