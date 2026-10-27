@@ -316,27 +316,48 @@ export async function withdrawConsent(
     assertPermission(ctx, "governance.policies.manage");
   }
   const now = new Date();
-  const result = await prisma.consentRecord.updateMany({
-    where: {
-      tenantId: ctx.tenantId,
-      purposeCode: input.purposeCode,
-      subjectType: input.subjectType,
-      userId: input.subjectType === "USER" ? input.userId ?? null : null,
-      withdrawnAt: null,
-      granted: true,
-    },
+  // Append-only ledger: instead of only stamping withdrawnAt on the original
+  // row, we close the active grant AND insert an explicit withdrawal entry.
+  // This preserves a durable, queryable record of WHEN and BY WHOM consent
+  // was withdrawn (regulatory evidence), while the "one active row" invariant
+  // is maintained by closing prior grants first.
+  const activeWhere = {
+    tenantId: ctx.tenantId,
+    purposeCode: input.purposeCode,
+    subjectType: input.subjectType,
+    userId: input.subjectType === "USER" ? input.userId ?? null : null,
+    withdrawnAt: null,
+    granted: true,
+  };
+  const closed = await prisma.consentRecord.updateMany({
+    where: activeWhere,
     data: { withdrawnAt: now },
   });
+  if (closed.count > 0) {
+    await prisma.consentRecord.create({
+      data: {
+        tenantId: ctx.tenantId,
+        userId: input.subjectType === "USER" ? input.userId ?? null : null,
+        subjectType: input.subjectType,
+        purposeCode: input.purposeCode,
+        // Version marker ties the withdrawal to the policy text it applied to.
+        policyVersion: "withdrawal",
+        granted: false,
+        collectionMethod: "consent_withdrawal",
+        withdrawnAt: now,
+      },
+    });
+  }
   await recordAuditEvent({
     tenantId: ctx.tenantId,
     userId: ctx.user.id,
     membershipId: ctx.membershipId,
     action: "governance.consent.withdrawn",
     entityType: "ConsentRecord",
-    summary: `Consent withdrawal processed for purpose '${input.purposeCode}' (${result.count} active record(s) closed)`,
+    summary: `Consent withdrawal processed for purpose '${input.purposeCode}' (${closed.count} active record(s) closed)`,
     severity: "WARNING",
   });
-  return result.count;
+  return closed.count;
 }
 
 export async function hasActiveConsent(

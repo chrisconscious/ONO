@@ -75,17 +75,24 @@ export async function provisionOrganization(input: ProvisionOrgInput) {
   // Fast path: previously completed request — replay the original result.
   const prior = await prisma.idempotencyRecord.findUnique({ where: { key: idempotencyKey } });
   if (prior?.completedAt) {
-    // The record's tenantId column stores "provisioning:<slug>" for these
-    // synthetic claims, so look the tenant up by slug deterministically.
-    const existing = await prisma.tenant.findUnique({ where: { slug } });
-    if (existing) return { tenantId: existing.id, replayed: true as const };
+    // The record's tenantId is backfilled with the real tenant id when the
+    // provisioning transaction commits, so replay resolves authoritatively
+    // from the FK rather than by slug guessing.
+    if (prior.tenantId) {
+      const existing = await prisma.tenant.findUnique({ where: { id: prior.tenantId } });
+      if (existing) return { tenantId: existing.id, replayed: true as const };
+    }
+    const bySlug = await prisma.tenant.findUnique({ where: { slug } });
+    if (bySlug) return { tenantId: bySlug.id, replayed: true as const };
   }
 
   try {
     const result = await prisma.$transaction(async (tx) => {
       // Claim the idempotency key inside the transaction so concurrent
-      // requests serialize on the unique index.
-      await tx.idempotencyRecord.create({ data: { tenantId: "provisioning:" + slug, key: idempotencyKey } });
+      // requests serialize on the unique index. tenantId is left NULL here
+      // because the tenant row does not exist yet; it is backfilled to the
+      // real tenant id once creation succeeds, keeping FK integrity intact.
+      await tx.idempotencyRecord.create({ data: { key: idempotencyKey } });
 
       const slugTaken = await tx.tenant.findUnique({ where: { slug } });
       if (slugTaken) throw ApiError.conflict("That organization URL is already taken");
@@ -105,7 +112,10 @@ export async function provisionOrganization(input: ProvisionOrgInput) {
           currentPeriodEnd: new Date(Date.now() + 14 * 24 * 3600 * 1000),
         },
       });
-      await tx.idempotencyRecord.update({ where: { key: idempotencyKey }, data: { completedAt: new Date() } });
+      await tx.idempotencyRecord.update({
+        where: { key: idempotencyKey },
+        data: { completedAt: new Date(), tenantId: tenant.id },
+      });
       return tenant;
     });
 

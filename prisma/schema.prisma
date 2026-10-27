@@ -407,11 +407,14 @@ model DocumentCounter {
 
 model IdempotencyRecord {
   id          String    @id @default(cuid())
-  tenantId    String
+  // Nullable because pre-tenant operations (organization provisioning) must
+  // claim an idempotency key BEFORE the tenant row exists. A NOT NULL FK here
+  // made first-time provisioning fail with a foreign-key violation.
+  tenantId    String?
   key         String
   completedAt DateTime?
   createdAt   DateTime  @default(now())
-  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   @@unique([key])
   @@index([tenantId, createdAt])
   @@map("idempotency_records")
@@ -1567,21 +1570,21 @@ enum DataIncidentStatus {
 }
 
 model DataCategory {
-  id                 String             @id @default(cuid())
-  tenantId           String
-  code               String
-  name               String
-  classification     DataClassification @default(CONFIDENTIAL)
-  description        String?
-  isPersonalData     Boolean            @default(false)
-  aiUseAllowed       Boolean            @default(false)
-  marketplaceEligible Boolean           @default(false)
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
-  tenant             Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  activities         ProcessingActivity[]
-  retentionPolicies  RetentionPolicy[]
-  legalHolds         LegalHold[]
+  id String             @id @default(cuid()) @map("id")
+  tenantId String @map("tenant_id")
+  code String @map("code")
+  name String @map("name")
+  classification DataClassification @default(CONFIDENTIAL) @map("classification")
+  description String? @map("description")
+  isPersonalData Boolean            @default(false) @map("is_personal_data")
+  aiUseAllowed Boolean            @default(false) @map("ai_use_allowed")
+  marketplaceEligible Boolean           @default(false) @map("marketplace_eligible")
+  createdAt DateTime           @default(now()) @map("created_at")
+  updatedAt DateTime           @updatedAt @map("updated_at")
+  tenant Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  activities ProcessingActivity[]
+  retentionPolicies RetentionPolicy[]
+  legalHolds LegalHold[]
 
   @@unique([tenantId, code])
   @@index([tenantId])
@@ -1589,53 +1592,53 @@ model DataCategory {
 }
 
 model ProcessingPurpose {
-  id                       String              @id @default(cuid())
-  tenantId                 String?
-  code                     String              @unique
-  name                     String
-  description              String?
-  status                   PurposeStatus       @default(ACTIVE)
-  requiresConsent          Boolean             @default(false)
-  externalSharingRestricted Boolean            @default(true)
-  createdAt                DateTime            @default(now())
-  updatedAt                DateTime            @updatedAt
-  tenant                   Tenant?             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  activities               ProcessingActivity[]
-  sharingArrangements      DataSharingArrangement[]
+  id String              @id @default(cuid()) @map("id")
+  tenantId String? @map("tenant_id")
+  code String              @unique @map("code")
+  name String @map("name")
+  description String? @map("description")
+  status PurposeStatus       @default(ACTIVE) @map("status")
+  requiresConsent Boolean             @default(false) @map("requires_consent")
+  externalSharingRestricted Boolean            @default(true) @map("external_sharing_restricted")
+  createdAt DateTime            @default(now()) @map("created_at")
+  updatedAt DateTime            @updatedAt @map("updated_at")
+  tenant Tenant?             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  activities ProcessingActivity[]
+  sharingArrangements DataSharingArrangement[]
 
   @@index([tenantId])
   @@map("processing_purposes")
 }
 
 model ProcessingActivity {
-  id             String                  @id @default(cuid())
-  purposeId      String
-  dataCategoryId String
-  state          ProcessingApprovalState @default(UNAPPROVED)
-  approvedBy     String?
-  approvedAt     DateTime?
-  reason         String?
-  purpose        ProcessingPurpose       @relation(fields: [purposeId], references: [id], onDelete: Cascade)
-  dataCategory   DataCategory            @relation(fields: [dataCategoryId], references: [id], onDelete: Cascade)
+  id String                  @id @default(cuid()) @map("id")
+  purposeId String @map("purpose_id")
+  dataCategoryId String @map("data_category_id")
+  state ProcessingApprovalState @default(UNAPPROVED) @map("state")
+  approvedBy String? @map("approved_by")
+  approvedAt DateTime? @map("approved_at")
+  reason String? @map("reason")
+  purpose ProcessingPurpose       @relation(fields: [purposeId], references: [id], onDelete: Cascade)
+  dataCategory DataCategory            @relation(fields: [dataCategoryId], references: [id], onDelete: Cascade)
 
   @@unique([purposeId, dataCategoryId])
   @@map("processing_activities")
 }
 
 model ConsentRecord {
-  id               String             @id @default(cuid())
-  tenantId         String
-  userId           String?
-  subjectType      ConsentSubjectType
-  purposeCode      String
-  policyVersion    String
-  granted          Boolean
-  collectionMethod String
-  recordedAt       DateTime           @default(now())
-  withdrawnAt      DateTime?
-  evidence         String?
-  tenant           Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  user             User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  id String             @id @default(cuid()) @map("id")
+  tenantId String @map("tenant_id")
+  userId String? @map("user_id")
+  subjectType ConsentSubjectType @map("subject_type")
+  purposeCode String @map("purpose_code")
+  policyVersion String @map("policy_version")
+  granted Boolean @map("granted")
+  collectionMethod String @map("collection_method")
+  recordedAt DateTime           @default(now()) @map("recorded_at")
+  withdrawnAt DateTime? @map("withdrawn_at")
+  evidence String? @map("evidence")
+  tenant Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([tenantId, purposeCode])
   @@index([userId])
@@ -1643,23 +1646,23 @@ model ConsentRecord {
 }
 
 model RetentionPolicy {
-  id                  String          @id @default(cuid())
-  tenantId            String
-  dataCategoryId      String
-  version             Int             @default(1)
+  id String          @id @default(cuid()) @map("id")
+  tenantId String @map("tenant_id")
+  dataCategoryId String @map("data_category_id")
+  version Int             @default(1) @map("version")
   // Null durationDays means the retention period is unresolved pending legal
   // review; eligibility checks must treat null as "no automatic action".
-  durationDays        Int?
-  triggerEvent        String          @default("RECORD_CREATED")
-  action              RetentionAction @default(DELETE)
-  legalBasisReference String?
-  isActive            Boolean         @default(true)
-  approvedBy          String?
-  approvedAt          DateTime?
-  createdAt           DateTime        @default(now())
-  updatedAt           DateTime        @updatedAt
-  tenant              Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  dataCategory        DataCategory    @relation(fields: [dataCategoryId], references: [id], onDelete: Cascade)
+  durationDays Int? @map("duration_days")
+  triggerEvent String          @default("RECORD_CREATED") @map("trigger_event")
+  action RetentionAction @default(DELETE) @map("action")
+  legalBasisReference String? @map("legal_basis_reference")
+  isActive Boolean         @default(true) @map("is_active")
+  approvedBy String? @map("approved_by")
+  approvedAt DateTime? @map("approved_at")
+  createdAt DateTime        @default(now()) @map("created_at")
+  updatedAt DateTime        @updatedAt @map("updated_at")
+  tenant Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  dataCategory DataCategory    @relation(fields: [dataCategoryId], references: [id], onDelete: Cascade)
 
   @@unique([tenantId, dataCategoryId, version])
   @@index([tenantId])
@@ -1667,40 +1670,40 @@ model RetentionPolicy {
 }
 
 model LegalHold {
-  id             String        @id @default(cuid())
-  tenantId       String
-  dataCategoryId String?
-  entityType     String?
-  entityId       String?
-  reason         String
-  placedBy       String
-  placedAt       DateTime      @default(now())
-  releasedAt     DateTime?
-  releasedBy     String?
-  tenant         Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  dataCategory   DataCategory? @relation(fields: [dataCategoryId], references: [id], onDelete: SetNull)
+  id String        @id @default(cuid()) @map("id")
+  tenantId String @map("tenant_id")
+  dataCategoryId String? @map("data_category_id")
+  entityType String? @map("entity_type")
+  entityId String? @map("entity_id")
+  reason String @map("reason")
+  placedBy String @map("placed_by")
+  placedAt DateTime      @default(now()) @map("placed_at")
+  releasedAt DateTime? @map("released_at")
+  releasedBy String? @map("released_by")
+  tenant Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  dataCategory DataCategory? @relation(fields: [dataCategoryId], references: [id], onDelete: SetNull)
 
   @@index([tenantId])
   @@map("legal_holds")
 }
 
 model DeletionRequest {
-  id                        String                @id @default(cuid())
-  tenantId                  String
-  requestedByMembershipId   String
-  scope                     String
-  targetRef                 String?
-  status                    DeletionRequestStatus @default(REQUESTED)
+  id String                @id @default(cuid()) @map("id")
+  tenantId String @map("tenant_id")
+  requestedByMembershipId String @map("requested_by_membership_id")
+  scope String @map("scope")
+  targetRef String? @map("target_ref")
+  status DeletionRequestStatus @default(REQUESTED) @map("status")
   // Unique per tenant at the database level: duplicate submissions of the
   // same logical request can never create two deletion jobs.
-  idempotencyKey            String
-  failureReason             String?
-  completedAt               DateTime?
-  createdAt                 DateTime              @default(now())
-  updatedAt                 DateTime              @updatedAt
-  tenant                    Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  requestedByMembership     Membership            @relation(fields: [requestedByMembershipId], references: [id], onDelete: Restrict)
-  steps                     DeletionStep[]
+  idempotencyKey String @map("idempotency_key")
+  failureReason String? @map("failure_reason")
+  completedAt DateTime? @map("completed_at")
+  createdAt DateTime              @default(now()) @map("created_at")
+  updatedAt DateTime              @updatedAt @map("updated_at")
+  tenant Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  requestedByMembership Membership            @relation(fields: [requestedByMembershipId], references: [id], onDelete: Restrict)
+  steps DeletionStep[]
 
   @@unique([tenantId, idempotencyKey])
   @@index([tenantId, status])
@@ -1708,52 +1711,52 @@ model DeletionRequest {
 }
 
 model DeletionStep {
-  id          String                @id @default(cuid())
-  requestId   String
-  location    String
-  status      DeletionRequestStatus @default(REQUESTED)
-  attempts    Int                   @default(0)
-  error       String?
-  completedAt DateTime?
-  request     DeletionRequest       @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  id String                @id @default(cuid()) @map("id")
+  requestId String @map("request_id")
+  location String @map("location")
+  status DeletionRequestStatus @default(REQUESTED) @map("status")
+  attempts Int                   @default(0) @map("attempts")
+  error String? @map("error")
+  completedAt DateTime? @map("completed_at")
+  request DeletionRequest       @relation(fields: [requestId], references: [id], onDelete: Cascade)
 
   @@unique([requestId, location])
   @@map("deletion_steps")
 }
 
 model ExportJob {
-  id                      String          @id @default(cuid())
-  tenantId                String
-  requestedByMembershipId String
-  scope                   String
-  status                  ExportJobStatus @default(PENDING)
-  artifactPath            String?
-  rowCount                Int?
-  expiresAt               DateTime?
-  failureReason           String?
-  createdAt               DateTime        @default(now())
-  updatedAt               DateTime        @updatedAt
-  tenant                  Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  requestedByMembership   Membership      @relation(fields: [requestedByMembershipId], references: [id], onDelete: Restrict)
+  id String          @id @default(cuid()) @map("id")
+  tenantId String @map("tenant_id")
+  requestedByMembershipId String @map("requested_by_membership_id")
+  scope String @map("scope")
+  status ExportJobStatus @default(PENDING) @map("status")
+  artifactPath String? @map("artifact_path")
+  rowCount Int? @map("row_count")
+  expiresAt DateTime? @map("expires_at")
+  failureReason String? @map("failure_reason")
+  createdAt DateTime        @default(now()) @map("created_at")
+  updatedAt DateTime        @updatedAt @map("updated_at")
+  tenant Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  requestedByMembership Membership      @relation(fields: [requestedByMembershipId], references: [id], onDelete: Restrict)
 
   @@index([tenantId, status])
   @@map("export_jobs")
 }
 
 model AiDataUseApproval {
-  id                      String                  @id @default(cuid())
-  tenantId                String
-  useType                 String
-  dataCategoryIds         Json                    @default("[]")
-  status                  ProcessingApprovalState @default(UNAPPROVED)
-  requestedByMembershipId String
-  decidedBy               String?
-  decidedAt               DateTime?
-  notes                   String?
-  createdAt               DateTime                @default(now())
-  updatedAt               DateTime                @updatedAt
-  tenant                  Tenant                  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  requestedByMembership   Membership              @relation(fields: [requestedByMembershipId], references: [id], onDelete: Restrict)
+  id String                  @id @default(cuid()) @map("id")
+  tenantId String @map("tenant_id")
+  useType String @map("use_type")
+  dataCategoryIds Json                    @default("[]") @map("data_category_ids")
+  status ProcessingApprovalState @default(UNAPPROVED) @map("status")
+  requestedByMembershipId String @map("requested_by_membership_id")
+  decidedBy String? @map("decided_by")
+  decidedAt DateTime? @map("decided_at")
+  notes String? @map("notes")
+  createdAt DateTime                @default(now()) @map("created_at")
+  updatedAt DateTime                @updatedAt @map("updated_at")
+  tenant Tenant                  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  requestedByMembership Membership              @relation(fields: [requestedByMembershipId], references: [id], onDelete: Restrict)
 
   @@unique([tenantId, useType])
   @@index([tenantId])
@@ -1761,33 +1764,33 @@ model AiDataUseApproval {
 }
 
 model MarketplaceProduct {
-  id                         String                   @id @default(cuid())
-  productCode                String
-  version                    Int                      @default(1)
-  title                      String
-  buyerCategory              String?
-  intendedUseCase            String?
-  aggregationMethod          String?
-  includedFields             Json                     @default("[]")
-  excludedFields             Json                     @default("[]")
-  minGroupSize               Int?
-  lineageRefs                Json                     @default("[]")
-  contributingTenantIds      Json                     @default("[]")
-  purposeCodes               Json                     @default("[]")
-  legalReview                ReviewStatus             @default(NOT_STARTED)
-  privacyReview              ReviewStatus             @default(NOT_STARTED)
-  reidentificationRiskReview ReviewStatus             @default(NOT_STARTED)
-  securityReview             ReviewStatus             @default(NOT_STARTED)
-  dataQualityReview          ReviewStatus             @default(NOT_STARTED)
-  commercialDisclosureReview ReviewStatus             @default(NOT_STARTED)
-  status                     MarketplaceProductStatus @default(DRAFT)
-  releaseAuthorizedBy        String?
-  releaseAuthorizedAt        DateTime?
-  withdrawnReason            String?
-  rejectReason               String?
-  createdAt                  DateTime                 @default(now())
-  updatedAt                  DateTime                 @updatedAt
-  decisions                  MarketplaceApprovalDecision[]
+  id String                   @id @default(cuid()) @map("id")
+  productCode String @map("product_code")
+  version Int                      @default(1) @map("version")
+  title String @map("title")
+  buyerCategory String? @map("buyer_category")
+  intendedUseCase String? @map("intended_use_case")
+  aggregationMethod String? @map("aggregation_method")
+  includedFields Json                     @default("[]") @map("included_fields")
+  excludedFields Json                     @default("[]") @map("excluded_fields")
+  minGroupSize Int? @map("min_group_size")
+  lineageRefs Json                     @default("[]") @map("lineage_refs")
+  contributingTenantIds Json                     @default("[]") @map("contributing_tenant_ids")
+  purposeCodes Json                     @default("[]") @map("purpose_codes")
+  legalReview ReviewStatus             @default(NOT_STARTED) @map("legal_review")
+  privacyReview ReviewStatus             @default(NOT_STARTED) @map("privacy_review")
+  reidentificationRiskReview ReviewStatus             @default(NOT_STARTED) @map("reidentification_risk_review")
+  securityReview ReviewStatus             @default(NOT_STARTED) @map("security_review")
+  dataQualityReview ReviewStatus             @default(NOT_STARTED) @map("data_quality_review")
+  commercialDisclosureReview ReviewStatus             @default(NOT_STARTED) @map("commercial_disclosure_review")
+  status MarketplaceProductStatus @default(DRAFT) @map("status")
+  releaseAuthorizedBy String? @map("release_authorized_by")
+  releaseAuthorizedAt DateTime? @map("release_authorized_at")
+  withdrawnReason String? @map("withdrawn_reason")
+  rejectReason String? @map("reject_reason")
+  createdAt DateTime                 @default(now()) @map("created_at")
+  updatedAt DateTime                 @updatedAt @map("updated_at")
+  decisions MarketplaceApprovalDecision[]
 
   @@unique([productCode, version])
   @@index([status])
@@ -1795,55 +1798,55 @@ model MarketplaceProduct {
 }
 
 model MarketplaceApprovalDecision {
-  id            String             @id @default(cuid())
-  productId     String
-  gate          String
-  decision      String
-  reviewer      String
-  policyVersion String?
-  reason        String?
-  decidedAt     DateTime           @default(now())
-  product       MarketplaceProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id String             @id @default(cuid()) @map("id")
+  productId String @map("product_id")
+  gate String @map("gate")
+  decision String @map("decision")
+  reviewer String @map("reviewer")
+  policyVersion String? @map("policy_version")
+  reason String? @map("reason")
+  decidedAt DateTime           @default(now()) @map("decided_at")
+  product MarketplaceProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@index([productId])
   @@map("marketplace_approval_decisions")
 }
 
 model DataSharingArrangement {
-  id                      String                   @id @default(cuid())
-  recipientName           String
-  recipientType           String
-  purposeCode             String
-  dataCategoryCodes       Json                     @default("[]")
-  contractualReviewStatus ReviewStatus             @default(NOT_STARTED)
-  authorizationStatus     ProcessingApprovalState  @default(UNAPPROVED)
-  retentionRestrictions   String?
-  status                  SharingArrangementStatus @default(PROPOSED)
-  createdAt               DateTime                 @default(now())
-  updatedAt               DateTime                 @updatedAt
-  purpose                 ProcessingPurpose        @relation(fields: [purposeCode], references: [code], onDelete: Restrict)
+  id String                   @id @default(cuid()) @map("id")
+  recipientName String @map("recipient_name")
+  recipientType String @map("recipient_type")
+  purposeCode String @map("purpose_code")
+  dataCategoryCodes Json                     @default("[]") @map("data_category_codes")
+  contractualReviewStatus ReviewStatus             @default(NOT_STARTED) @map("contractual_review_status")
+  authorizationStatus ProcessingApprovalState  @default(UNAPPROVED) @map("authorization_status")
+  retentionRestrictions String? @map("retention_restrictions")
+  status SharingArrangementStatus @default(PROPOSED) @map("status")
+  createdAt DateTime                 @default(now()) @map("created_at")
+  updatedAt DateTime                 @updatedAt @map("updated_at")
+  purpose ProcessingPurpose        @relation(fields: [purposeCode], references: [code], onDelete: Restrict)
 
   @@unique([recipientName, purposeCode])
   @@map("data_sharing_arrangements")
 }
 
 model DataIncident {
-  id                      String              @id @default(cuid())
-  tenantId                String?
-  type                    DataIncidentType
-  severity                AuditSeverity       @default(WARNING)
-  status                  DataIncidentStatus  @default(OPEN)
-  summary                 String
-  affectedResourceRefs    Json                @default("[]")
-  containmentStatus       String?
-  assignedToMembershipId  String?
-  openedBy                String
-  openedAt                DateTime            @default(now())
-  resolvedAt              DateTime?
-  remediationNotes        String?
-  updatedAt               DateTime            @updatedAt
-  tenant                  Tenant?             @relation(fields: [tenantId], references: [id], onDelete: SetNull)
-  assignedToMembership    Membership?         @relation(fields: [assignedToMembershipId], references: [id], onDelete: SetNull)
+  id String              @id @default(cuid()) @map("id")
+  tenantId String? @map("tenant_id")
+  type DataIncidentType @map("type")
+  severity AuditSeverity       @default(WARNING) @map("severity")
+  status DataIncidentStatus  @default(OPEN) @map("status")
+  summary String @map("summary")
+  affectedResourceRefs Json                @default("[]") @map("affected_resource_refs")
+  containmentStatus String? @map("containment_status")
+  assignedToMembershipId String? @map("assigned_to_membership_id")
+  openedBy String @map("opened_by")
+  openedAt DateTime            @default(now()) @map("opened_at")
+  resolvedAt DateTime? @map("resolved_at")
+  remediationNotes String? @map("remediation_notes")
+  updatedAt DateTime            @updatedAt @map("updated_at")
+  tenant Tenant?             @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  assignedToMembership Membership?         @relation(fields: [assignedToMembershipId], references: [id], onDelete: SetNull)
 
   @@index([status])
   @@index([tenantId])
