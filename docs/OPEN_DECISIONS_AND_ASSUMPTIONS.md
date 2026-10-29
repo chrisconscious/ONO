@@ -3,10 +3,17 @@
 | Field | Value |
 | --- | --- |
 | Document | Open Decisions and Assumptions |
-| Version | 1.0 |
+| Version | 1.1 |
+| Stage | 2 — Architecture and technical contracts (extends the Stage 1 register) |
 | Date | 2026-10-26 |
 | Status | `Recorded` — every item below needs a human decision or confirmation |
 | Rule | Documentation does not wait for every answer; blocking items are marked. |
+
+> **Stage 2 update.** Every Stage 1 identifier is preserved; nothing is
+> renumbered. New items begin at `OD-037`, `CF-11` and `RISK-016`. Stage 2 also
+> records four approved architecture decisions and two product/market decisions
+> in §6. Items that remain open are still open — the architecture documents do
+> not silently close them.
 
 ---
 
@@ -49,6 +56,14 @@ Items marked **Blocking** stop the phase listed beside them.
 | `OD-010` | Test tooling | Vitest + Playwright; Jest + Cypress | Vitest + Playwright | PH-03 |
 | `OD-011` | CI/CD platform and environment topology | GitHub Actions; other | GitHub Actions with staging and production | PH-03 |
 | `OD-012` | Observability stack | Managed vendor; self-hosted | Managed logs/metrics initially | PH-10 |
+| `OD-037` | Is row-level security enabled in v1, and with which pooling model? | v1; later; never | Enable in v1 as defence in depth with transaction pooling; prove with tests | PH-08 |
+| `OD-038` | What measured threshold justifies introducing a message broker? | No broker; outbox only; broker at volume | Outbox until dispatch lag or volume exceeds a documented threshold; revisit at PH-24 | PH-24 |
+| `OD-039` | How long are outbox events retained, and what is the replay window? | 7/30/90 days | 30 days with operator replay; must exceed the longest planned consumer outage | PH-10 |
+| `OD-040` | What triggers a columnar warehouse or OLAP store? | Never; replica only; warehouse at threshold | Replica plus materialisation first; warehouse only when measured query cost or data volume exceeds a documented threshold | PH-16 |
+| `OD-043` | Is malware scanning required before any file download, and with which service? | Scan all; scan external only; none | Scan all uploads before availability; provider to be selected | PH-10 |
+| `OD-044` | At what size does an export or report become asynchronous? | Row/time threshold | Async above a documented row or time threshold; synchronous small exports only | PH-18 |
+| `OD-045` | What is the API deprecation window and supported-version policy? | 3/6/12 months | 6 months with `Deprecation` and `Sunset` headers, documented announcement | PH-09 |
+| `OD-046` | How long are idempotency keys and responses retained? | 24 h; 7 days; 30 days | 7 days, bounded by storage; replays must be safe within the window | PH-09 |
 
 ### 2.3 Industry and configuration
 
@@ -88,6 +103,8 @@ Items marked **Blocking** stop the phase listed beside them.
 | `OD-027` | LLM/AI providers permitted, and data-processing terms | One; multiple; none | One approved provider with no-training terms; pluggable interface | PH-22 |
 | `OD-028` | Outcome measurement windows per action class | Fixed; per action | Per action class, agreed with pilot tenants | PH-22 |
 | `OD-029` | May tenants disable all AI features? | Yes/no | Yes, with no loss of core function | PH-22 |
+| `OD-041` | Which use cases justify synchronous inference, and what is the latency budget? | Batch only; narrow synchronous set | Batch-first; synchronous only for interactive assistant or decision flows with a hard timeout and deterministic fallback | PH-21 |
+| `OD-042` | Is the model registry built in-house or managed? | In-house database + object storage; managed registry | In-house registry tables plus content-addressed object storage (`ADR-031`); revisit if model volume or compliance demands a managed service | PH-20 |
 
 ---
 
@@ -128,6 +145,8 @@ Items marked **Blocking** stop the phase listed beside them.
 | `CF-08` | "Universal industry support" vs "do not build every industry in v1" | **Clarified:** universality via universal core + custom path; coverage staged |
 | `CF-09` | No native mobile app vs field operations (site assignment, delivery proof) | Open — responsive web first; revisit after `ASM-004` is tested |
 | `CF-10` | "No implementation" instruction vs an existing scaffold in the repo | **Closed 2026-10-26:** scaffold predates Stage 1 authorisation, is documented as such in `PROJECT_STATUS.md`, and was committed as `4f14249` with no further implementation |
+| `CF-11` | The Stage 2 brief again referred to the product as "ClickIT" | **Resolved 2026-10-26:** the product is **ONO**; the Stage 2 brief is recorded as a naming slip. No document uses ClickIT as the product name. |
+| `CF-12` | Stage 1 defined five data-classification labels; early Stage 2 drafts used four | **Resolved 2026-10-26:** canonical labels are `public`, `internal`, `confidential`, `restricted`, `secret`. `secret` is credential-only and never a business record. `ADR-026` and all Stage 2 documents use the five-label model. |
 
 ---
 
@@ -150,6 +169,16 @@ Items marked **Blocking** stop the phase listed beside them.
 | `RISK-013` | Data migration from spreadsheets corrupts trust | Medium | High | Import validation, reconciliation phase (REC-03) | Data |
 | `RISK-014` | Secrets or credentials leak via logs | Low | Critical | Secret scanning, log hygiene, review | Security |
 | `RISK-015` | AI provider changes terms or pricing | Medium | Medium | Pluggable provider interface, fallback rules-only mode | Architecture |
+| `RISK-016` | At-least-once event delivery creates duplicate business effects | Medium | High | Consumer ledger `(consumer, eventId)`, idempotent handlers, duplicate tests | Architecture |
+| `RISK-017` | Module boundaries erode under delivery pressure and the monolith becomes a tangle | High | High | Import lint, graph check, one public entrypoint, PR dependency note (`MD-01`–`MD-12`) | Architecture |
+| `RISK-018` | Row-level security interacts badly with connection pooling and either leaks or blocks | Medium | Critical | `SET LOCAL` per transaction, transaction pooling, tests with the app role (`OD-037`) | Security |
+| `RISK-019` | Custom-field JSONB queries degrade performance or bypass typed validation | Medium | Medium | Declared, indexed fields only; no arbitrary JSONB paths; usage reporting | Data |
+| `RISK-020` | Read-replica lag presents stale analytics as current | Medium | High | Freshness on every value; stale label; replica-lag alert | Analytics |
+| `RISK-021` | Model artefacts or registry state are lost, or serving drifts from the approved version | Low | High | Content-addressed artefacts, immutable versions, pinned serving, restore drill | AI |
+| `RISK-022` | Industry profiles grow into ad-hoc code or unmaintainable complexity | Medium | High | Schema limits, no executable config, profile review, custom path bounded (`ADR-029`, `ADR-030`) | Product |
+| `RISK-023` | One tenant's job backlog starves other tenants | Medium | High | Per-tenant concurrency caps, fairness metrics, queue-age alerts | Architecture |
+| `RISK-024` | Effective-configuration cache goes stale and shows the wrong module set or labels | Medium | Medium | Versioned snapshots, event invalidation, bounded TTL, degradation to universal core | Architecture |
+| `RISK-025` | The future marketplace erodes the boundary and becomes an operational data path | Low | Critical | Separate credentials/schema, aggregates only, governance gate, `ADR-035` review | Product/Security |
 
 ---
 
@@ -161,25 +190,74 @@ Items marked **Blocking** stop the phase listed beside them.
 | — | No public marketing site inside this application | 2026-10-26 | `MASTER_PROJECT_SPECIFICATION.md` §6.2 |
 | — | Stage 1 is documentation only; implementation requires explicit authorisation | 2026-10-26 | `PROJECT_STATUS.md` |
 | — | TypeScript is the primary language; PostgreSQL is the proposed store | 2026-10-26 | `TECHNOLOGY_STACK_AND_GOVERNANCE.md` |
+| — | `ADR-001` modular monolith is approved as the starting architecture | 2026-10-26 | `ARCHITECTURE_DECISION_RECORDS.md` |
+| — | `ADR-016` single server-side, default-deny policy module is approved | 2026-10-26 | `ARCHITECTURE_DECISION_RECORDS.md` |
+| — | `ADR-029` no executable tenant configuration is approved | 2026-10-26 | `ARCHITECTURE_DECISION_RECORDS.md` |
+| — | `ADR-033` AI may never exceed the requesting actor's authority is approved | 2026-10-26 | `ARCHITECTURE_DECISION_RECORDS.md` |
+| — | **Product/market decision:** ONO must support any business, including an industry not in the catalogue, through the universal core plus the custom-industry path | 2026-10-26 | `INDUSTRY_CONFIGURATION_ARCHITECTURE.md` |
+| — | **Product/market decision:** a governed data marketplace may exist only as a future, separately approved programme that exposes aggregated insight, never identifiable tenant or personal records | 2026-10-26 | `DATA_ARCHITECTURE_PLAN.md` §18, `ADR-035` |
 
-> These are recorded from the product owner's Stage 1 instruction. They are not
-> technical ADR approvals.
+> These are recorded from the product owner's Stage 1 and Stage 2 instructions.
+> The four ADR approvals approve a **principle**, not every mechanism chosen to
+> implement it. No other ADR is approved. The two product/market decisions are
+> not ADRs and do not authorise building a marketplace.
 
 ---
 
-## 7. Decisions the product owner must make before Stage 2
+## 7. Decisions required before Stage 3
 
-Ordered by blocking impact:
+Stage 2 is documentation complete. The following decisions are required before
+implementation work can start or continue past a phase gate. A decision may be
+closed with a documented choice; "defer" is not closure for a blocking item.
 
-1. `OD-003` — authentication provider (blocks PH-05).
-2. `OD-002`, `OD-004` — database and ORM confirmation (blocks PH-08).
-3. `OD-022`, `OD-018`, `OD-033`, `OD-034` — jurisdiction, residency and legal roles (blocks launch planning).
-4. `OD-001` — pilot market and industries (shapes PH-04 design work).
-5. `OD-006`, `OD-010`, `OD-011` — component and pipeline choices (blocks PH-03/04).
-6. REC-01…REC-05 — roadmap adjustments (blocks phase planning).
+### 7.1 Blocking a Stage 3 start
+
+| Order | Decision | Blocks | Why it cannot wait |
+| --- | --- | --- | --- |
+| 1 | `OD-003` — authentication provider and session model | PH-05 | No acceptable custom-auth workaround; identity is the first dependency |
+| 2 | `OD-010`, `OD-011` — test tooling, CI/CD and environments | PH-03 | Stage 3 starts by making change safe |
+| 3 | `OD-002`, `OD-004` — database and ORM/SQL boundary | PH-08 | Schema and data access depend on it |
+| 4 | `OD-001` — pilot market and industries | PH-04 | Design and acceptance depend on the pilot cohort |
+| 5 | `OD-006`, `OD-031` — component system and v1 language | PH-04 | Design system cannot be finalised without them |
+
+### 7.2 Required before the named phase
+
+| Decision | Phase | Consequence if late |
+| --- | --- | --- |
+| `OD-005`, `OD-015` | PH-08 | Custom fields cannot be modelled or limited |
+| `OD-037` | PH-08 | RLS and pooling decision affects schema and test design |
+| `OD-016`, `OD-017` | PH-09 | Workflow variants and approval thresholds undefined |
+| `OD-019`, `OD-024` | PH-05 | Permission exposure and session lifetime undefined |
+| `OD-008`, `OD-009`, `OD-043` | PH-10 | Jobs, storage and file scanning undefined |
+| `OD-012`, `OD-021`, `OD-023` | PH-10 | Observability, backup and retention undefined |
+| `OD-039`, `OD-045`, `OD-046` | PH-09/10 | Replay, deprecation and idempotency windows undefined |
+| `OD-044` | PH-18 | Export behaviour undefined |
+| `OD-007`, `OD-026` | PH-19 | ML runtime and cross-tenant pooling undefined |
+| `OD-042` | PH-20 | Model registry approach undefined |
+| `OD-041` | PH-21 | Synchronous inference scope undefined |
+| `OD-027`, `OD-028`, `OD-029` | PH-22 | Provider, measurement and AI opt-out undefined |
+| `OD-013`, `OD-014`, `OD-020` | PH-24 | Catalogue curation and support access undefined |
+| `OD-018`, `OD-022`, `OD-033`, `OD-034` | PH-05/26 | Legal scope, residency and sub-processors undefined (launch planning) |
+| `OD-035` | PH-05 | Special-category data scope affects onboarding, data scopes and the workforce data model |
+| `OD-038` | PH-24/25 | Broker threshold reviewed before scale assumptions harden |
+| `OD-040` | PH-16 | Warehouse trigger reviewed before analytics scale decisions |
+
+### 7.3 Roadmap adjustments still unresolved
+
+`CF-06` remains open: the product owner has not approved or rejected
+`REC-01`–`REC-05`. They adjust **sequencing and delivery**, not the Stage 2
+architecture. They should be decided with the Stage 3 instruction.
+
+### 7.4 Decisions that do not block Stage 3
+
+`OD-025` (marketplace programme) is deferred by design; `OD-030` (dark mode),
+`OD-032` (PDF fidelity) and `OD-036` (multi-currency) affect later phases but do
+not prevent PH-03 or PH-05. `OD-035` (special-category data) is a PH-05 gate and
+also constrains sensitive HR fields in PH-15.
 
 ## 8. Document control
 
 | Version | Date | Change |
 | --- | --- | --- |
 | 1.0 | 2026-10-26 | Initial open decisions, assumptions, conflicts and risks. |
+| 1.1 | 2026-10-26 | Stage 2 extension: added `OD-037`–`OD-046`, `CF-11`–`CF-12`, `RISK-016`–`RISK-025`; recorded four approved ADRs and two product/market decisions; replaced the pre-Stage-2 decision list with pre-Stage-3 gates. All Stage 1 identifiers preserved. |

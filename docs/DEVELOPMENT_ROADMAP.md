@@ -74,7 +74,7 @@ Gate types:
 
 ### PH-02 — Architecture and technical contracts
 **Objective:** convert the proposal into approved technical decisions and contracts.
-**Deliverables:** approved ADRs (`ADR-001`–`ADR-014`), API contract conventions, error model, event model, module boundary rules, tenancy enforcement design, environment topology.
+**Deliverables:** accepted ADRs (`ADR-001`–`ADR-036`; status per record, not blanket approval), API contract conventions, error model, event model, module boundary rules, tenancy enforcement design, environment topology.
 **Dependencies:** PH-01.
 **Acceptance:**
 - AC-02-01 Each ADR has a decision, alternatives, consequences and owner.
