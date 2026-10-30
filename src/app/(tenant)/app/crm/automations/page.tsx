@@ -67,7 +67,7 @@ export default async function AutomationsPage() {
           <Button
             variant="outline"
             size="sm"
-            render={<Link href="/app/crm" />}
+            nativeButton={false} render={<Link href="/app/crm" />}
           >
             <ArrowLeftIcon aria-hidden="true" />
             CRM workspace

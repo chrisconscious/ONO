@@ -50,7 +50,7 @@ export default async function StockLevelsPage() {
         ]}
         actions={
           canAdjust ? (
-            <Button render={<Link href="/app/stock-movements" />}>
+            <Button nativeButton={false} render={<Link href="/app/stock-movements" />}>
               Record movement
             </Button>
           ) : undefined

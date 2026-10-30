@@ -116,7 +116,7 @@ export default async function CrmWorkspacePage() {
               <Button
                 variant="outline"
                 size="sm"
-                render={<Link href="/app/leads" />}
+                nativeButton={false} render={<Link href="/app/leads" />}
               >
                 Leads
               </Button>
@@ -125,7 +125,7 @@ export default async function CrmWorkspacePage() {
               <Button
                 variant="outline"
                 size="sm"
-                render={<Link href="/app/crm/pipeline" />}
+                nativeButton={false} render={<Link href="/app/crm/pipeline" />}
               >
                 Pipeline
                 <ArrowRightIcon aria-hidden="true" />
@@ -421,7 +421,7 @@ export default async function CrmWorkspacePage() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    render={<Link href="/app/tasks" />}
+                    nativeButton={false} render={<Link href="/app/tasks" />}
                   >
                     All tasks
                   </Button>
@@ -567,7 +567,7 @@ export default async function CrmWorkspacePage() {
                   <Button
                     variant="ghost"
                     size="xs"
-                    render={<Link href="#data-quality" />}
+                    nativeButton={false} render={<Link href="#data-quality" />}
                   >
                     On this page
                   </Button>

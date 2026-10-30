@@ -336,7 +336,7 @@ export default async function WorkspaceSettingsPage() {
             Submission, consent choices and moderation status now live on a dedicated
             page. Only approved submissions you consent to publish appear publicly.
           </p>
-          <Button className="mt-4" variant="outline" render={<Link href="/app/testimonials" />}>
+          <Button className="mt-4" variant="outline" nativeButton={false} render={<Link href="/app/testimonials" />}>
             <MessageSquareQuoteIcon aria-hidden="true" />
             Open testimonials
             <ArrowRightIcon aria-hidden="true" />

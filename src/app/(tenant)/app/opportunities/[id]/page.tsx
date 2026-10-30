@@ -107,7 +107,7 @@ export default async function OpportunityDetailPage({
             <Button
               variant="outline"
               size="sm"
-              render={<Link href="/app/opportunities" />}
+              nativeButton={false} render={<Link href="/app/opportunities" />}
             >
               <ArrowLeftIcon aria-hidden="true" />
               All opportunities

@@ -114,14 +114,14 @@ export default async function CrmInsightsPage({
             <Button
               size="sm"
               variant={period === 6 ? "default" : "outline"}
-              render={<Link href="/app/crm/insights" />}
+              nativeButton={false} render={<Link href="/app/crm/insights" />}
             >
               6 months
             </Button>
             <Button
               size="sm"
               variant={period === 12 ? "default" : "outline"}
-              render={<Link href="/app/crm/insights?months=12" />}
+              nativeButton={false} render={<Link href="/app/crm/insights?months=12" />}
             >
               12 months
             </Button>

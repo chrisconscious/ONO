@@ -99,7 +99,7 @@ export async function DocumentPage({
           { label: document.number },
         ]}
         actions={
-          <Button variant="outline" render={<Link href={config.path} />}>
+          <Button variant="outline" nativeButton={false} render={<Link href={config.path} />}>
             <ArrowLeftIcon aria-hidden="true" />
             Back to {definition.title.toLowerCase()}
           </Button>

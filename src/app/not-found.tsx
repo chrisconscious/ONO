@@ -18,8 +18,8 @@ export default function NotFound() {
         </p>
       </div>
       <div className="flex flex-wrap items-center justify-center gap-2">
-        <Button render={<Link href="/app" />}>Back to workspace</Button>
-        <Button variant="outline" render={<Link href="/admin" />}>
+        <Button nativeButton={false} render={<Link href="/app" />}>Back to workspace</Button>
+        <Button variant="outline" nativeButton={false} render={<Link href="/admin" />}>
           Platform console
         </Button>
       </div>

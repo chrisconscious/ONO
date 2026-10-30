@@ -76,13 +76,13 @@ export default async function AccessDeniedPage({
 
           <div className="mt-6 flex flex-wrap items-center gap-2">
             {!actor ? (
-              <Button render={<Link href="/login" />}>Sign in</Button>
+              <Button nativeButton={false} render={<Link href="/login" />}>Sign in</Button>
             ) : null}
             {actor?.memberships.length ? (
-              <Button render={<Link href="/app" />}>Open workspace</Button>
+              <Button nativeButton={false} render={<Link href="/app" />}>Open workspace</Button>
             ) : null}
             {actor?.isPlatformAdmin ? (
-              <Button render={<Link href="/admin" />}>Open platform console</Button>
+              <Button nativeButton={false} render={<Link href="/admin" />}>Open platform console</Button>
             ) : null}
             {actor ? <SignOutButton /> : null}
           </div>

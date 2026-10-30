@@ -65,14 +65,14 @@ export default async function AnalyticsPage({
             <Button
               size="sm"
               variant={period === 6 ? "default" : "outline"}
-              render={<Link href="/app/analytics" />}
+              nativeButton={false} render={<Link href="/app/analytics" />}
             >
               6 months
             </Button>
             <Button
               size="sm"
               variant={period === 12 ? "default" : "outline"}
-              render={<Link href="/app/analytics?months=12" />}
+              nativeButton={false} render={<Link href="/app/analytics?months=12" />}
             >
               12 months
             </Button>

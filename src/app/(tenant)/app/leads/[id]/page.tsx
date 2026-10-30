@@ -100,7 +100,7 @@ export default async function LeadDetailPage({
             <Button
               variant="outline"
               size="sm"
-              render={<Link href="/app/leads" />}
+              nativeButton={false} render={<Link href="/app/leads" />}
             >
               <ArrowLeftIcon aria-hidden="true" />
               All leads

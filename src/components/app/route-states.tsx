@@ -88,7 +88,7 @@ export function RouteError({
           <RotateCcwIcon aria-hidden="true" />
           Try again
         </Button>
-        <Button variant="outline" render={<Link href={homeHref} />}>
+        <Button variant="outline" nativeButton={false} render={<Link href={homeHref} />}>
           {homeLabel}
         </Button>
       </div>

@@ -33,7 +33,7 @@ export default async function AdminOverviewPage() {
         title="Platform overview"
         description="Operational state of every tenant, account and governance queue on the platform."
         actions={
-          <Button render={<Link href="/admin/tenants" />}>
+          <Button nativeButton={false} render={<Link href="/admin/tenants" />}>
             Manage tenants
             <ArrowRightIcon aria-hidden="true" />
           </Button>
@@ -95,7 +95,7 @@ export default async function AdminOverviewPage() {
           title="Recently created tenants"
           description="The newest workspaces provisioned on the platform."
           action={
-            <Button variant="ghost" size="sm" render={<Link href="/admin/tenants" />}>
+            <Button variant="ghost" size="sm" nativeButton={false} render={<Link href="/admin/tenants" />}>
               View all
             </Button>
           }
@@ -151,7 +151,7 @@ export default async function AdminOverviewPage() {
           title="Recent activity"
           description="Latest entries written to the audit trail."
           action={
-            <Button variant="ghost" size="sm" render={<Link href="/admin/audit" />}>
+            <Button variant="ghost" size="sm" nativeButton={false} render={<Link href="/admin/audit" />}>
               Audit log
             </Button>
           }

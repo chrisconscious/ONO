@@ -44,7 +44,7 @@ export default async function WorkspaceOverviewPage() {
         description="Operational picture for this workspace: pipeline, delivery work, customer records and money."
         actions={
           canReadLeads ? (
-            <Button render={<Link href="/app/leads" />}>
+            <Button nativeButton={false} render={<Link href="/app/leads" />}>
               Open leads
               <ArrowRightIcon aria-hidden="true" />
             </Button>
@@ -100,7 +100,7 @@ export default async function WorkspaceOverviewPage() {
           description="The newest enquiries captured in this workspace."
           action={
             canReadLeads ? (
-              <Button variant="ghost" size="sm" render={<Link href="/app/leads" />}>
+              <Button variant="ghost" size="sm" nativeButton={false} render={<Link href="/app/leads" />}>
                 View all
               </Button>
             ) : null
@@ -142,7 +142,7 @@ export default async function WorkspaceOverviewPage() {
           description="Open tasks ordered by due date."
           action={
             canReadTasks ? (
-              <Button variant="ghost" size="sm" render={<Link href="/app/tasks" />}>
+              <Button variant="ghost" size="sm" nativeButton={false} render={<Link href="/app/tasks" />}>
                 View all
               </Button>
             ) : null

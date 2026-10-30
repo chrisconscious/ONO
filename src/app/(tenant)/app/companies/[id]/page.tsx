@@ -96,7 +96,7 @@ export default async function CompanyDetailPage({
           <Button
             variant="outline"
             size="sm"
-            render={<Link href="/app/companies" />}
+            nativeButton={false} render={<Link href="/app/companies" />}
           >
             <ArrowLeftIcon aria-hidden="true" />
             All accounts

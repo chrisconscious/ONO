@@ -92,7 +92,7 @@ export default async function PipelinePage() {
           <Button
             variant="outline"
             size="sm"
-            render={<Link href="/app/opportunities" />}
+            nativeButton={false} render={<Link href="/app/opportunities" />}
           >
             All opportunities
             <ArrowRightIcon aria-hidden="true" />
@@ -169,7 +169,7 @@ export default async function PipelinePage() {
             title="No open opportunities"
             description="Create an opportunity or convert a qualified lead to start building the pipeline."
             action={
-              <Button render={<Link href="/app/opportunities" />}>
+              <Button nativeButton={false} render={<Link href="/app/opportunities" />}>
                 Open opportunities
                 <ArrowRightIcon aria-hidden="true" />
               </Button>

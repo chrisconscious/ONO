@@ -102,7 +102,7 @@ export function Pagination({
           <Button
             variant="outline"
             size="sm"
-            render={<Link href={buildHref(basePath, params, currentPage - 1)} />}
+            nativeButton={false} render={<Link href={buildHref(basePath, params, currentPage - 1)} />}
           >
             <ChevronLeftIcon aria-hidden="true" />
             Previous
@@ -120,7 +120,7 @@ export function Pagination({
           <Button
             variant="outline"
             size="sm"
-            render={<Link href={buildHref(basePath, params, currentPage + 1)} />}
+            nativeButton={false} render={<Link href={buildHref(basePath, params, currentPage + 1)} />}
           >
             Next
             <ChevronRightIcon aria-hidden="true" />

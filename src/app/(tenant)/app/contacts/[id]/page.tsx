@@ -83,7 +83,7 @@ export default async function ContactDetailPage({
           <Button
             variant="outline"
             size="sm"
-            render={<Link href="/app/contacts" />}
+            nativeButton={false} render={<Link href="/app/contacts" />}
           >
             <ArrowLeftIcon aria-hidden="true" />
             All contacts
