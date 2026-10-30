@@ -1,17 +1,18 @@
 # Frontend implementation guide
 
-**Last updated:** 2026-10-27
-**Applies to:** the Frontend Parts 1–3 delivery in this repository.
+**Last updated:** 2026-10-30
+**Applies to:** the Frontend Parts 1–4 delivery in this repository.
 **Status:** implemented and verified against the local PostgreSQL database and a
-production build. All changes remain uncommitted.
+production build. Part 4 is committed to the `crm-intelligence` branch.
 
 This guide is the practical reference for running, navigating and extending the
 frontend. It records only behaviour that exists in the code. The feature matrix
 and per-module blockers are in
 [`FRONTEND_MODULE_STATUS.md`](./FRONTEND_MODULE_STATUS.md); delivery history is in
 [`../changelog/FRONTEND_PART_1.md`](../changelog/FRONTEND_PART_1.md),
-[`FRONTEND_PART_2.md`](../changelog/FRONTEND_PART_2.md) and
-[`FRONTEND_PART_3.md`](../changelog/FRONTEND_PART_3.md).
+[`FRONTEND_PART_2.md`](../changelog/FRONTEND_PART_2.md),
+[`FRONTEND_PART_3.md`](../changelog/FRONTEND_PART_3.md) and
+[`FRONTEND_PART_4.md`](../changelog/FRONTEND_PART_4.md).
 
 ## 1. Stack and commands
 
@@ -51,10 +52,23 @@ reliable against `npm start`, not `next dev`.
 | `DATABASE_URL` | Yes | PostgreSQL connection string used by Prisma. |
 | `AUTH_SECRET` | Yes | Server-only secret used for session token handling. Generate with `openssl rand -base64 32`. |
 | `NEXT_PUBLIC_APP_URL` | Yes | Public base URL used for absolute links and redirects. |
+| `AI_PROVIDER_ENABLED` | No | Set to `true` to enable the optional CRM copilot generative adapter. Disabled by default. |
+| `AI_PROVIDER_API_KEY` | No | Server-only key for the OpenAI-compatible provider. Required when the adapter is enabled. |
+| `AI_PROVIDER_MODEL` | No | Provider model name. Required when the adapter is enabled. |
+| `AI_PROVIDER_BASE_URL` | No | OpenAI-compatible base URL. Defaults to `https://api.openai.com/v1`. |
 
 `.env.example` documents the names with placeholder values. Never commit `.env`
 or a real secret. Only `NEXT_PUBLIC_*` values are exposed to the browser; no
-database credential or auth secret is sent to the client.
+database credential, auth secret or AI key is sent to the client.
+
+The copilot works without any AI variables. When `AI_PROVIDER_ENABLED` is not
+`true`, or the key/model is missing, responses are labelled `DETERMINISTIC` and
+computed from CRM records. An incomplete configuration is reported to the caller
+and falls back to deterministic analysis.
+
+After a schema upgrade, run `node prisma/seed.mjs` to create any new permission
+codes (Part 4 adds `PERM-AUTOMATION.READ/CREATE/UPDATE/DELETE`) and grant them to
+the system workspace-owner role.
 
 ## 3. Route map
 
@@ -66,6 +80,8 @@ Route groups: `(auth)` for public sign-in, `(tenant)` for workspace pages,
 | Public | `/`, `/login`, `/access-denied`, `/not-found` handling |
 | Workspace overview | `/app` |
 | Workspace modules | `/app/{leads,contacts,companies,opportunities,projects,tasks,products,quotations,sales-orders,suppliers,purchase-orders,invoices,payments,expenses,support-cases,warehouses,stock-movements}` |
+| CRM intelligence | `/app/crm`, `/app/crm/pipeline`, `/app/crm/insights`, `/app/crm/automations` |
+| CRM record detail | `/app/{leads,contacts,companies,opportunities}/[id]` |
 | Derived views | `/app/stock-levels`, `/app/analytics` |
 | Document detail | `/app/{quotations,sales-orders,purchase-orders,invoices}/[id]` |
 | Workspace governance | `/app/settings`, `/app/testimonials` |
@@ -83,6 +99,9 @@ navigation and access checks.
 | Tenant resources | `/api/tenant/[resource]`, `/api/tenant/[resource]/[id]` |
 | Document lines | `/api/tenant/[resource]/[id]/lines`, `/api/tenant/[resource]/[id]/lines/[lineId]` |
 | Workspace | `/api/workspace/profile`, `/api/workspace/switch`, `/api/workspace/roles`, `/api/workspace/roles/[id]`, `/api/workspace/members/[id]/roles` |
+| CRM intelligence | `/api/tenant/crm/search`, `/api/tenant/crm/copilot`, `/api/tenant/crm/activities`, `/api/tenant/crm/leads/[id]/convert`, `/api/tenant/crm/opportunities/[id]/stage` |
+| CRM automation | `/api/tenant/crm/automations`, `/api/tenant/crm/automations/[id]`, `/api/tenant/crm/automations/[id]/run`, `/api/tenant/crm/automations/sweep` |
+| Notifications | `/api/tenant/notifications` |
 | Testimonials | `/api/testimonials`, `/api/testimonials/[id]`, `/api/testimonials/mine` |
 | Platform admin | `/api/admin/testimonials`, `/api/admin/testimonials/[id]`, `/api/admin/testimonials/reorder`, `/api/admin/users`, `/api/admin/users/[id]`, `/api/admin/settings`, `/api/tenants`, `/api/tenants/[id]`, `/api/audit-logs` |
 | Reference | `/api/industries` (read-only catalogue) |
@@ -112,6 +131,13 @@ tenant ID or permission that is trusted for authorization.
 | `src/components/workspace/document-lines.tsx` | Responsive line editor for quotations, orders, purchase orders and invoices. |
 | `src/components/workspace/stock-levels-table.tsx` | Derived stock levels with table/card layouts. |
 | `src/components/workspace/testimonial-submission-form.tsx`, `own-testimonials.tsx` | Consent-based submission, revision and withdrawal. |
+| `src/components/workspace/crm-panels.tsx` | Shared CRM detail building blocks: access-denied state, fact rows, score factors, linked tasks and record links. |
+| `src/components/workspace/crm-copilot.tsx` | Client panel that asks the grounded copilot and renders mode, evidence and limitations. It cannot execute actions. |
+| `src/components/workspace/record-timeline.tsx` | Timeline with a human-activity composer; posts to `/api/tenant/crm/activities`. |
+| `src/components/workspace/lead-convert-dialog.tsx` | Two-step lead conversion with explicit confirmation. |
+| `src/components/workspace/opportunity-stage-dialog.tsx` | Audited stage change with required lost reason. |
+| `src/components/workspace/automation-manager.tsx` | Workflow console: create/edit, conditions, actions, activation, manual run, history and delete. |
+| `src/components/app/global-search.tsx`, `notification-bell.tsx` | Header CRM search and in-app notification list. |
 | `src/components/platform/*` | Tenant creation/status, administrator management, platform settings and testimonial moderation controls. |
 | `src/components/auth/*` | Sign-in form, sign-out control and public testimonial carousel. |
 
@@ -153,6 +179,31 @@ client boundaries rather than turning whole pages into client components.
 - Mutations write audit entries where the module supports auditing.
 - Route handlers return opaque error messages; raw Prisma errors and stack traces
   are not rendered in the UI.
+
+### 7.1 CRM intelligence, copilot and automation
+
+- Scoring and forecasting are pure functions in `src/lib/crm/scoring.ts`. The
+  service layer stores the method, factors, sample size, confidence and time on
+  the record so the UI can explain every result.
+- No trained model exists. UI copy and API labels distinguish rule/statistical
+  baselines from a future trained model. Forecasts are per currency and are never
+  summed across currencies.
+- The copilot is deterministic by default. Bounded intents map to predefined
+  queries; answers include evidence and limitations and always report
+  `executed: false`. The optional provider adapter reads server-only environment
+  variables and is disabled unless explicitly enabled.
+- Only human `NOTE`, `CALL`, `MEETING` and `EMAIL` activities update
+  `lastContactedAt`. System, status, stage, conversion and automation events are
+  recorded in the timeline but do not reset contact recency.
+- Automation definitions are stored as validated trigger/conditions/actions
+  JSON. Execution runs server-side, records each run, retries at most twice and
+  relies on a unique `(workflowId, idempotencyKey)` constraint for duplicate
+  suppression. Unsafe actions are rejected before storage.
+- Automation failures are logged and never fail the originating user request.
+- There is no scheduler. The sweep endpoint is permission-protected and must be
+  called by an operator or an external scheduler.
+- CRM writes on the generic resource routes call `processCrmWrite`; CRM events
+  are dispatched after the write commits.
 
 ## 8. Testimonial workflow
 
@@ -196,10 +247,14 @@ Unit tests live beside the pure logic they cover:
 - `src/lib/permissions/catalog.test.ts`
 - `src/lib/resources/registry.test.ts`
 - `src/lib/testimonials/public.test.ts`
+- `src/lib/crm/scoring.test.ts`
+- `src/lib/crm/automation.test.ts`
+- `src/lib/crm/copilot.test.ts`
+- `src/lib/crm/presentation.test.ts`
 
 Run `npm test` for the suite, then `npm run typecheck`, `npm run lint` and
 `npm run build`. Manual database workflows and Lighthouse results are recorded in
-the Part 2 and Part 3 changelogs.
+the Part 2, Part 3 and Part 4 changelogs.
 
 No integration or end-to-end framework is configured. The browser tool available
 in this environment has no viewport emulation, so responsive verification used
@@ -207,10 +262,19 @@ DOM structure and computed styles at desktop width rather than device captures.
 
 ## 11. Known limitations and blocked areas
 
-- HR, workflow automation, AI/ML, integrations/API keys/webhooks,
-  subscriptions/entitlements, the data marketplace, document file storage,
-  notifications/email, module preferences, branches and invitation acceptance
-  remain blocked by absent backend capabilities. No placeholder UI was created.
+- HR, integrations/API keys/webhooks, subscriptions/entitlements, the data
+  marketplace, document file storage, module preferences, branches and
+  invitation acceptance remain blocked by absent backend capabilities. No
+  placeholder UI was created.
+- CRM intelligence is baseline-statistical, not trained ML. There is no model
+  training, registry or inference infrastructure, and not enough outcome data to
+  train one.
+- No AI provider is configured. The deterministic copilot is verified; the
+  optional generative adapter is not verified against a live provider.
+- No email, SMS, WhatsApp or calendar provider exists. Outbound messaging,
+  calendar sync and delivery confirmation are not implemented.
+- CRM automation is server-side and durable, but there is no queue, worker or
+  scheduler. Time-based triggers depend on the protected sweep endpoint.
 - Tenant creation is partial onboarding: the platform can create and suspend a
   tenant, but cannot assign an owner, send an invitation or deliver email.
 - Onboarding dismissal is browser-local, not a persisted user preference.

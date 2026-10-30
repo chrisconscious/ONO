@@ -26,6 +26,9 @@ const OPEN_OPPORTUNITY_STAGES: OpportunityStage[] = [
 
 const CLOSED_LEAD_STATUSES: LeadStatus[] = [LeadStatus.CONVERTED, LeadStatus.LOST];
 
+/** Activity types that represent actual outreach to a person. */
+const CONTACT_ACTIVITY_TYPES = new Set(["NOTE", "CALL", "MEETING", "EMAIL"]);
+
 const DAY = 86_400_000;
 
 export function daysSince(date: Date | null | undefined, now = new Date()) {
@@ -244,31 +247,34 @@ export async function addCrmActivity(params: {
     },
   });
 
-  const now = new Date();
-  if (params.reference.type === "lead") {
+  // Only a logged human interaction counts as contact. Status changes,
+  // conversions and automation events are activity, not outreach.
+  const isContact = CONTACT_ACTIVITY_TYPES.has(params.type);
+
+  if (isContact && params.reference.type === "lead") {
     await prisma.lead.update({
       where: { id: params.reference.id },
-      data: { lastContactedAt: now },
+      data: { lastContactedAt: new Date() },
     });
     await recomputeLeadScore(params.tenantId, params.reference.id);
   }
   if (params.reference.type === "opportunity") {
     await prisma.opportunity.update({
       where: { id: params.reference.id },
-      data: { lastActivityAt: now },
+      data: { lastActivityAt: new Date() },
     });
     await recomputeOpportunityProbability(params.tenantId, params.reference.id);
   }
-  if (params.reference.type === "contact") {
+  if (isContact && params.reference.type === "contact") {
     await prisma.contact.update({
       where: { id: params.reference.id },
-      data: { lastContactedAt: now },
+      data: { lastContactedAt: new Date() },
     });
   }
-  if (params.reference.type === "company") {
+  if (isContact && params.reference.type === "company") {
     await prisma.company.update({
       where: { id: params.reference.id },
-      data: { lastInteractionAt: now },
+      data: { lastInteractionAt: new Date() },
     });
   }
 
@@ -940,6 +946,7 @@ export async function getCrmWorkspace(params: {
             firstName: true,
             lastName: true,
             companyName: true,
+            status: true,
             score: true,
             lastContactedAt: true,
             createdAt: true,

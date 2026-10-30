@@ -3,7 +3,7 @@
 **Project:** ONO — AI-Powered Integrated Business Intelligence & Management Platform
 **Stage:** 2 — Architecture and technical contracts (Stage 1 requirements retained)
 **Status:** Documentation complete for review. No implementation authorised.
-**Last updated:** 2026-10-26
+**Last updated:** 2026-10-30
 
 ---
 
@@ -13,13 +13,17 @@ This is the controlled planning set for ONO. It is the reference of record for
 scope, architecture direction, security expectations and phase boundaries. It
 does not contain implementation.
 
-> **Implementation record (2026-10-27):** Frontend Parts 1–3 were implemented and
+> **Implementation record (2026-10-30):** Frontend Parts 1–4 were implemented and
 > verified against the local backend. Start with
 > [`features/FRONTEND_IMPLEMENTATION_GUIDE.md`](./features/FRONTEND_IMPLEMENTATION_GUIDE.md),
 > then the delivery notes in
 > [`changelog/FRONTEND_PART_1.md`](./changelog/FRONTEND_PART_1.md),
-> [`changelog/FRONTEND_PART_2.md`](./changelog/FRONTEND_PART_2.md) and
-> [`changelog/FRONTEND_PART_3.md`](./changelog/FRONTEND_PART_3.md). The planning
+> [`changelog/FRONTEND_PART_2.md`](./changelog/FRONTEND_PART_2.md),
+> [`changelog/FRONTEND_PART_3.md`](./changelog/FRONTEND_PART_3.md),
+> [`changelog/FRONTEND_PART_4.md`](./changelog/FRONTEND_PART_4.md). Part 4 adds the
+> CRM intelligence layer (grounded copilot, baseline scoring, timelines,
+> lead conversion and server-side automation); it does not add trained ML or
+> outbound communications. The planning
 > status statements below describe the Stage 1/2 document set and remain the
 > design authority.
 
