@@ -2,7 +2,7 @@
 
 **Status:** Implemented and verified against the local production build.
 **Date:** 2026-10-30
-**Branch:** `crm-intelligence`
+**Branch:** `main` (built on `crm-intelligence`, merged into `main` in `0beb672f`)
 
 This note records the fourth delivery: a CRM intelligence layer on top of the
 Part 1–3 frontend and backend. It extends the existing schema, services,
@@ -221,5 +221,10 @@ communications, a scheduler, integrations, billing or the still-blocked HR,
 file-storage, marketplace and invitation areas. The module status matrix remains
 the authority on what works.
 
-Changes are committed to `crm-intelligence` and pushed to the GitHub repository.
+Changes were built and verified on `crm-intelligence`, then merged into `main` and
+pushed to the GitHub repository. `main` previously carried a separate Oct 27
+implementation that reuses the same Prisma model names with incompatible fields,
+so a file-level union could not compile; the merge records that history while
+making this verified tree authoritative. The superseded tree remains recoverable
+from tag `pre-merge-main-20261030`.
 No deployment, payment or real communication was performed.
