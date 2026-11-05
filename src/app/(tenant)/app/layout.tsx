@@ -9,7 +9,8 @@ export default async function WorkspaceLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { actor, membership } = await requireWorkspace("/app");
+  const context = await requireWorkspace("/app");
+  const { actor, membership } = context;
 
   const read = (resource: string) => `PERM-${resource}.READ`;
 
@@ -182,10 +183,17 @@ export default async function WorkspaceLayout({
       contextLabel={membership.tenant.name}
       contextMeta={membership.roles.join(", ") || "Workspace member"}
       currentWorkspaceId={membership.tenantId}
+      theme={actor.preferences.theme}
+      sessionDeadlines={{
+        warningAt: context.view.warningAt.toISOString(),
+        expiresAt: context.view.expiresAt.toISOString(),
+        serverNow: context.now.toISOString(),
+      }}
       user={{
         name: actor.name ?? actor.email,
         email: actor.email,
         roleLabel: membership.roles.join(", ") || "Workspace member",
+        accountHref: "/account/security",
       }}
     >
       {children}

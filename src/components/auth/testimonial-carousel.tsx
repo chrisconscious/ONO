@@ -11,11 +11,28 @@ type TestimonialCarouselProps = {
 };
 
 /**
- * Testimonial card shown over the sign-in image panel.
+ * Reference sample used only when no customer stories have been published yet.
+ * It is marked as a sample for assistive technology; published testimonials
+ * always replace it.
+ */
+const sampleTestimonials: PublicTestimonial[] = [
+  {
+    quote:
+      "Love the simplicity of the service and the prompt customer support. We can't imagine working without it.",
+    authorName: "Felicity Pierre",
+    authorTitle: "Head of Design, Layers",
+    company: "UX Agency",
+    rating: 5,
+  },
+];
+
+/**
+ * Wide glass testimonial panel shown over the authentication image.
  *
- * Only approved testimonials reach this component. When none are published the
- * card falls back to a product statement so the panel stays balanced without
- * inventing customers, quotes or ratings.
+ * The quotation dominates the top of the card. The customer identity sits at
+ * the lower left, the rating sits to the right of the name, and the circular
+ * navigation controls sit in the lower-right corner. All slides share one grid
+ * cell so switching testimonials never changes the card height.
  */
 export function TestimonialCarousel({
   testimonials,
@@ -24,16 +41,39 @@ export function TestimonialCarousel({
   const [index, setIndex] = useState(0);
   const touchStartX = useRef<number | null>(null);
 
-  const total = testimonials.length;
-  const current = total > 0 ? testimonials[index] : null;
+  const usingSample = testimonials.length === 0;
+  const slides = usingSample ? sampleTestimonials : testimonials;
+  const total = slides.length;
+  const activeIndex = Math.min(index, total - 1);
 
   const goTo = useCallback(
     (direction: 1 | -1) => {
       if (total < 2) return;
-      setIndex((previous) => (previous + direction + total) % total);
+      setIndex(
+        (previous) =>
+          (Math.min(previous, total - 1) + direction + total) % total,
+      );
     },
     [total],
   );
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+    if (total < 2) return;
+
+    if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      goTo(-1);
+    } else if (event.key === "ArrowRight") {
+      event.preventDefault();
+      goTo(1);
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      setIndex(0);
+    } else if (event.key === "End") {
+      event.preventDefault();
+      setIndex(total - 1);
+    }
+  };
 
   const handleTouchStart = (event: React.TouchEvent) => {
     touchStartX.current = event.touches[0]?.clientX ?? null;
@@ -54,83 +94,143 @@ export function TestimonialCarousel({
     <figure
       aria-roledescription="carousel"
       aria-label="Customer testimonials"
+      tabIndex={0}
+      data-placeholder={usingSample ? "true" : undefined}
       className={cn(
-        "rounded-2xl border border-white/20 bg-white/10 p-6 shadow-[0_20px_60px_-24px_rgba(2,6,23,0.75)] backdrop-blur-md sm:p-7",
+        "relative rounded-[16px] border border-white/40 bg-[#beb0a0]/50 p-5 text-white shadow-[0_18px_50px_-24px_rgba(2,6,23,0.7)] backdrop-blur-[18px] [-webkit-backdrop-filter:blur(18px)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/80 sm:p-6 sm:pb-10 xl:p-7 xl:pb-10",
         className,
       )}
+      onKeyDown={handleKeyDown}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      {current ? (
-        <div aria-live="polite" aria-atomic="true">
-          <Stars rating={current.rating} />
+      {/*
+        Every slide shares the same grid cell. The panel is always as tall as
+        the tallest quote, so the customer details and controls stay anchored.
+      */}
+      <div className="grid">
+        {slides.map((testimonial, slideIndex) => {
+          const active = slideIndex === activeIndex;
 
-          <blockquote className="mt-4 min-h-[7.5rem] text-lg leading-snug font-semibold text-balance text-white sm:min-h-[6.5rem] sm:text-xl">
-            <span aria-hidden="true">“</span>
-            {current.quote}
-            <span aria-hidden="true">”</span>
-          </blockquote>
-
-          <figcaption className="mt-5">
-            <p className="text-sm font-semibold text-white">
-              {current.authorName}
-            </p>
-            <p className="mt-0.5 text-sm text-white/70">
-              {[current.authorTitle, current.company].filter(Boolean).join(" · ")}
-            </p>
-          </figcaption>
-        </div>
-      ) : (
-        <div>
-          <p className="text-[0.7rem] font-semibold tracking-[0.18em] text-white/60 uppercase">
-            One operating system
-          </p>
-          <p className="mt-3 min-h-[7.5rem] text-lg leading-snug font-semibold text-balance text-white sm:min-h-[6.5rem] sm:text-xl">
-            Customer relationship, commercial, finance, procurement and delivery
-            data in a single tenant-aware workspace.
-          </p>
-          <p className="mt-5 text-sm text-white/70">
-            ONO — business intelligence and management platform
-          </p>
-        </div>
-      )}
-
-      {total > 1 ? (
-        <div className="mt-6 flex items-center justify-between gap-4 border-t border-white/15 pt-4">
-          <p className="text-xs font-medium tracking-wide text-white/60 tabular">
-            {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
-          </p>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => goTo(-1)}
-              aria-label="Previous testimonial"
-              className="inline-flex size-8 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white motion-reduce:transition-none"
+          return (
+            <div
+              key={`${testimonial.authorName}-${slideIndex}`}
+              aria-hidden={active ? undefined : true}
+              inert={!active}
+              className={cn(
+                "col-start-1 row-start-1 transition-[opacity,transform] duration-300 ease-out motion-reduce:transition-none",
+                active
+                  ? "translate-x-0 opacity-100"
+                  : "pointer-events-none translate-x-3 opacity-0",
+              )}
             >
-              <ChevronLeftIcon className="size-4" aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              onClick={() => goTo(1)}
-              aria-label="Next testimonial"
-              className="inline-flex size-8 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white transition-colors hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white motion-reduce:transition-none"
-            >
-              <ChevronRightIcon className="size-4" aria-hidden="true" />
-            </button>
-          </div>
-        </div>
-      ) : null}
+              <blockquote className="text-[1.3rem] leading-[1.42] font-bold tracking-[-0.01em] text-pretty text-white sm:text-[1.55rem] xl:text-[1.8rem]">
+                <span aria-hidden="true">“</span>
+                {testimonial.quote}
+                <span aria-hidden="true">”</span>
+              </blockquote>
+
+              <div className="mt-7 flex flex-col gap-5 sm:mt-8 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+                <figcaption className="min-w-0">
+                  <p className="text-xl leading-tight font-bold text-white sm:text-2xl">
+                    {testimonial.authorName}
+                  </p>
+                  {testimonial.authorTitle ? (
+                    <p className="mt-1 text-[0.95rem] leading-snug font-medium text-white/90 sm:text-base">
+                      {testimonial.authorTitle}
+                    </p>
+                  ) : null}
+                  {testimonial.company ? (
+                    <p className="text-[0.8rem] leading-snug text-white/70 sm:text-sm">
+                      {testimonial.company}
+                    </p>
+                  ) : null}
+                </figcaption>
+
+                <Stars
+                  rating={testimonial.rating}
+                  className="self-end sm:self-auto"
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/*
+        Controls live outside the slide grid. Keeping one stable pair means the
+        keyboard focus ring never disappears when a slide becomes inert.
+      */}
+      <div className="mt-5 flex items-center justify-end gap-3 sm:absolute sm:right-6 sm:bottom-6 xl:right-7 xl:bottom-7">
+        <CarouselButton
+          label="Previous testimonial"
+          inactive={total < 2}
+          onClick={() => goTo(-1)}
+        >
+          <ChevronLeftIcon
+            className="size-5 sm:size-6"
+            strokeWidth={1.75}
+            aria-hidden="true"
+          />
+        </CarouselButton>
+        <CarouselButton
+          label="Next testimonial"
+          inactive={total < 2}
+          onClick={() => goTo(1)}
+        >
+          <ChevronRightIcon
+            className="size-5 sm:size-6"
+            strokeWidth={1.75}
+            aria-hidden="true"
+          />
+        </CarouselButton>
+      </div>
+
+      <p className="sr-only" aria-live="polite" aria-atomic="true">
+        {usingSample
+          ? "Sample testimonial shown until customer stories are published."
+          : `Testimonial ${activeIndex + 1} of ${total}. Use the left and right arrow keys to browse.`}
+      </p>
     </figure>
   );
 }
 
-function Stars({ rating }: { rating: number }) {
+function CarouselButton({
+  label,
+  inactive,
+  onClick,
+  children,
+}: {
+  label: string;
+  inactive: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      aria-disabled={inactive || undefined}
+      className="inline-flex size-11 items-center justify-center rounded-full border border-white/70 bg-transparent text-white transition-colors hover:border-white hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white active:bg-white/15 motion-reduce:transition-none sm:size-14"
+    >
+      {children}
+    </button>
+  );
+}
+
+function Stars({
+  rating,
+  className,
+}: {
+  rating: number;
+  className?: string;
+}) {
   const clamped = Math.max(0, Math.min(5, Math.round(rating)));
-  if (clamped === 0) return null;
 
   return (
     <div
-      className="flex items-center gap-0.5"
+      className={cn("flex items-center gap-1.5", className)}
       role="img"
       aria-label={`Rated ${clamped} out of 5`}
     >
@@ -139,8 +239,8 @@ function Stars({ rating }: { rating: number }) {
           key={position}
           aria-hidden="true"
           className={cn(
-            "size-3.5",
-            position < clamped ? "fill-white text-white" : "text-white/35",
+            "size-[1.05rem] sm:size-5",
+            position < clamped ? "fill-white text-white" : "text-white/40",
           )}
         />
       ))}

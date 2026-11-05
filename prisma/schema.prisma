@@ -13,6 +13,19 @@ enum UserRole {
   MEMBER
 }
 
+/// Account lifecycle. A suspended account cannot authenticate and every live
+/// session for it is rejected on the next request.
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+/// Single-use, hashed tokens for credential recovery and email ownership.
+enum AuthTokenType {
+  PASSWORD_RESET
+  EMAIL_VERIFICATION
+}
+
 enum TenantStatus {
   PROVISIONING
   ACTIVE
@@ -202,19 +215,25 @@ model Tenant {
 }
 
 model User {
-  id           String    @id @default(cuid())
-  email        String    @unique
-  name         String?
-  passwordHash String?
-  role         UserRole  @default(MEMBER)
-  tenantId     String?
-  lastLoginAt  DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id              String     @id @default(cuid())
+  email           String     @unique
+  name            String?
+  passwordHash    String?
+  role            UserRole   @default(MEMBER)
+  status          UserStatus @default(ACTIVE)
+  /// Null until the account owner proves control of the mailbox.
+  emailVerifiedAt DateTime?
+  /// Non-authoritative workspace preferences (theme, locale, time zone, ...).
+  preferences     Json?
+  tenantId        String?
+  lastLoginAt     DateTime?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
 
   tenant                 Tenant?                 @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   memberships            Membership[]
   sessions               Session[]
+  authTokens             AuthToken[]
   assignedLeads          Lead[]                  @relation("LeadOwner")
   assignedContacts       Contact[]               @relation("ContactOwner")
   assignedCompanies      Company[]               @relation("CompanyOwner")
@@ -235,20 +254,58 @@ model User {
 }
 
 model Session {
-  id        String    @id @default(cuid())
-  userId    String
-  tokenHash String    @unique
-  expiresAt DateTime
-  userAgent String?
-  ipAddress String?
-  createdAt DateTime  @default(now())
-  revokedAt DateTime?
+  id                String    @id @default(cuid())
+  userId            String
+  tokenHash         String    @unique
+  /// Hard expiry for the session (equal to absoluteExpiresAt on new sessions).
+  expiresAt         DateTime
+  /// Last authenticated activity. The idle deadline is derived from this.
+  lastActivityAt    DateTime? @default(now())
+  /// Session-wide ceiling that activity can never extend.
+  absoluteExpiresAt DateTime?
+  /// Remembered sessions use the longer idle/absolute policy.
+  rememberMe        Boolean   @default(false)
+  userAgent         String?
+  ipAddress         String?
+  createdAt         DateTime  @default(now())
+  revokedAt         DateTime?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([tokenHash])
+  @@index([expiresAt])
   @@map("sessions")
+}
+
+/// Single-use tokens for password reset and email verification. Only a SHA-256
+/// hash of the token is persisted; the raw value exists solely in the link.
+model AuthToken {
+  id        String        @id @default(cuid())
+  userId    String
+  type      AuthTokenType
+  tokenHash String        @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime      @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, type])
+  @@index([expiresAt])
+  @@map("auth_tokens")
+}
+
+/// Fixed-window counter used for authentication throttling.
+model RateLimitBucket {
+  key          String    @id
+  count        Int       @default(0)
+  resetAt      DateTime
+  blockedUntil DateTime?
+  updatedAt    DateTime  @updatedAt
+
+  @@index([resetAt])
+  @@map("rate_limit_buckets")
 }
 
 model Membership {
@@ -1045,6 +1102,23 @@ model PlatformSetting {
   updatedAt   DateTime @updatedAt
 
   @@map("platform_settings")
+}
+
+/// Binary assets owned by the platform. Bytes live in the database so uploads
+/// never depend on a writable public directory and private files can only be
+/// served through an authorization-checked route.
+model PlatformAsset {
+  id        String   @id @default(cuid())
+  kind      String
+  fileName  String
+  mimeType  String
+  byteSize  Int
+  data      Bytes
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([kind])
+  @@map("platform_assets")
 }
 
 /// Human-entered and system-generated events shown on CRM record timelines.

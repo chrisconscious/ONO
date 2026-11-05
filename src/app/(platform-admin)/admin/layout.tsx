@@ -10,7 +10,8 @@ export default async function PlatformAdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const actor = await requirePlatformAdmin("/admin");
+  const context = await requirePlatformAdmin("/admin");
+  const { actor } = context;
   const testimonialCounts = await countTestimonialsByStatus();
 
   const nav: NavSection[] = [
@@ -38,6 +39,11 @@ export default async function PlatformAdminLayout({
       label: "Governance",
       items: [
         { href: "/admin/audit", label: "Audit log", icon: "audit" },
+        {
+          href: "/admin/authentication",
+          label: "Authentication page",
+          icon: "auth-page",
+        },
         { href: "/admin/settings", label: "Platform settings", icon: "settings" },
       ],
     },
@@ -50,10 +56,17 @@ export default async function PlatformAdminLayout({
       homeHref="/admin"
       contextLabel="Platform administration"
       contextMeta={actor.email}
+      theme={actor.preferences.theme}
+      sessionDeadlines={{
+        warningAt: context.view.warningAt.toISOString(),
+        expiresAt: context.view.expiresAt.toISOString(),
+        serverNow: context.now.toISOString(),
+      }}
       user={{
         name: actor.name ?? actor.email,
         email: actor.email,
         roleLabel: "Platform administrator",
+        accountHref: "/account/security",
       }}
     >
       {children}

@@ -4,6 +4,7 @@ export type NavIcon =
   | "tenants"
   | "administrators"
   | "testimonials"
+  | "auth-page"
   | "audit"
   | "settings"
   | "customers"

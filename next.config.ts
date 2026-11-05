@@ -31,6 +31,28 @@ const securityHeaders = [
     value: "camera=(), microphone=(), geolocation=(), payment=()",
   },
   { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  // Ignored by browsers on plain HTTP, effective on every HTTPS deployment.
+  {
+    key: "Strict-Transport-Security",
+    value: "max-age=31536000; includeSubDomains",
+  },
+];
+
+/** Authenticated and credential-bearing responses must never be cached. */
+const noStore = [{ key: "Cache-Control", value: "no-store, must-revalidate" }];
+
+const noStoreRoutes = [
+  "/sign-in",
+  "/sign-up",
+  "/forgot-password",
+  "/reset-password",
+  "/verify-email",
+  "/session-expired",
+  "/app/:path*",
+  "/admin/:path*",
+  "/account/:path*",
+  "/api/auth/:path*",
+  "/api/workspace/:path*",
 ];
 
 const nextConfig: NextConfig = {
@@ -42,6 +64,7 @@ const nextConfig: NextConfig = {
         source: "/:path*",
         headers: securityHeaders,
       },
+      ...noStoreRoutes.map((source) => ({ source, headers: noStore })),
     ];
   },
 };

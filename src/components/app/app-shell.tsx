@@ -24,6 +24,7 @@ import {
   MenuIcon,
   MessageSquareQuoteIcon,
   PackageIcon,
+  PanelsTopLeftIcon,
   ReceiptIcon,
   SettingsIcon,
   ShieldCheckIcon,
@@ -42,6 +43,9 @@ import { Logo } from "@/components/brand/logo";
 import { GlobalSearch } from "@/components/app/global-search";
 import { NotificationBell } from "@/components/app/notification-bell";
 import { UserMenu, type ShellUser } from "@/components/app/user-menu";
+import { SessionExpiryPrompt } from "@/components/auth/session-expiry-prompt";
+import { PreferenceSync } from "@/components/theme/preference-sync";
+import type { Preferences } from "@/lib/auth/validation";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -65,6 +69,7 @@ const icons: Record<NavIcon, typeof LayoutDashboardIcon> = {
   tenants: Building2Icon,
   administrators: ShieldCheckIcon,
   testimonials: MessageSquareQuoteIcon,
+  "auth-page": PanelsTopLeftIcon,
   audit: ActivityIcon,
   settings: SettingsIcon,
   customers: UsersIcon,
@@ -111,6 +116,13 @@ export type AppShellProps = {
   workspaces?: WorkspaceOption[];
   /** Id of the workspace currently in scope, used by the switcher. */
   currentWorkspaceId?: string;
+  /** Stored theme preference, applied on top of next-themes. */
+  theme?: Preferences["theme"];
+  sessionDeadlines: {
+    warningAt: string;
+    expiresAt: string;
+    serverNow: string;
+  };
   children: React.ReactNode;
 };
 
@@ -128,12 +140,15 @@ export function AppShell({
   contextMeta,
   workspaces = [],
   currentWorkspaceId,
+  theme,
+  sessionDeadlines,
   children,
 }: AppShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
     <div className="flex min-h-svh bg-background">
+      {theme ? <PreferenceSync theme={theme} /> : null}
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:border focus:border-border focus:bg-background focus:px-3 focus:py-2 focus:text-sm focus:font-medium focus:text-foreground focus:shadow-md"
@@ -222,6 +237,10 @@ export function AppShell({
           {children}
         </main>
       </div>
+      <SessionExpiryPrompt
+        key={sessionDeadlines.serverNow}
+        initialSession={sessionDeadlines}
+      />
     </div>
   );
 }

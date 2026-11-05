@@ -89,6 +89,10 @@ async function upsertUser({ email, name, password, role, tenantId }) {
         name,
         role,
         tenantId,
+        status: "ACTIVE",
+        // Seeded accounts are provisioned by an operator, so the mailbox is
+        // treated as verified. Self-registered accounts verify explicitly.
+        emailVerifiedAt: existing.emailVerifiedAt ?? new Date(),
         // Reset the password so a local re-seed always leaves a usable account.
         passwordHash: hashPassword(password),
       },
@@ -101,6 +105,8 @@ async function upsertUser({ email, name, password, role, tenantId }) {
       name,
       role,
       tenantId,
+      status: "ACTIVE",
+      emailVerifiedAt: new Date(),
       passwordHash: hashPassword(password),
     },
   });

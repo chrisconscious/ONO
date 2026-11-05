@@ -148,6 +148,93 @@ export async function listPublishedForOrdering() {
   });
 }
 
+/**
+ * Published testimonials with the editable fields used by the authentication
+ * page settings screen. The public query strips identifiers; this administrator
+ * view keeps what the operator needs to correct display details.
+ */
+export async function listPublishedTestimonialsForAdmin() {
+  return prisma.testimonial.findMany({
+    where: {
+      status: TestimonialStatus.APPROVED,
+      publishedAt: { not: null },
+      consentToPublish: true,
+    },
+    orderBy: [
+      { isFeatured: "desc" },
+      { displayOrder: "asc" },
+      { publishedAt: "desc" },
+      { createdAt: "desc" },
+    ],
+    select: {
+      id: true,
+      authorName: true,
+      authorTitle: true,
+      company: true,
+      quote: true,
+      rating: true,
+      displayOrder: true,
+      isFeatured: true,
+      publishedAt: true,
+      status: true,
+    },
+  });
+}
+
+/**
+ * Creates a platform-authored testimonial directly in the published state.
+ * The actor is recorded as the submitter and full publication consent is
+ * asserted by the platform administrator; the API validates every field.
+ */
+export async function createPlatformTestimonial(params: {
+  actorId: string;
+  authorName: string;
+  authorTitle: string | null;
+  company: string | null;
+  quote: string;
+  rating: number;
+}) {
+  const last = await prisma.testimonial.aggregate({
+    _max: { displayOrder: true },
+    where: {
+      status: TestimonialStatus.APPROVED,
+      publishedAt: { not: null },
+    },
+  });
+
+  return prisma.testimonial.create({
+    data: {
+      tenantId: null,
+      submittedById: params.actorId,
+      authorName: params.authorName,
+      authorTitle: params.authorTitle,
+      company: params.company,
+      quote: params.quote,
+      rating: params.rating,
+      status: TestimonialStatus.APPROVED,
+      consentToPublish: true,
+      consentName: true,
+      consentTitle: true,
+      consentCompany: true,
+      isFeatured: false,
+      displayOrder: (last._max.displayOrder ?? -1) + 1,
+      publishedAt: new Date(),
+    },
+    select: {
+      id: true,
+      authorName: true,
+      authorTitle: true,
+      company: true,
+      quote: true,
+      rating: true,
+      displayOrder: true,
+      isFeatured: true,
+      publishedAt: true,
+      status: true,
+    },
+  });
+}
+
 /** Tenants that have at least one testimonial, used by the moderation filter. */
 export async function listTestimonialTenants() {
   return prisma.tenant.findMany({

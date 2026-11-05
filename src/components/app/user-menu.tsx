@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChevronsUpDownIcon, Loader2Icon, LogOutIcon, UserIcon } from "lucide-react";
 import { toast } from "sonner";
+import { notifySignedOut } from "@/lib/auth/client-events";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -39,7 +40,8 @@ export function UserMenu({ user }: { user: ShellUser }) {
       if (!response.ok) {
         throw new Error("Sign out failed");
       }
-      router.replace("/login");
+      notifySignedOut();
+      router.replace("/sign-in?reason=signed-out");
       router.refresh();
     } catch {
       setIsSigningOut(false);

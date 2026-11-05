@@ -1,4 +1,7 @@
+"use client";
+
 import { Toaster as Sonner, type ToasterProps } from "sonner";
+import { useTheme } from "next-themes";
 import {
   CircleCheckIcon,
   InfoIcon,
@@ -7,14 +10,13 @@ import {
   Loader2Icon,
 } from "lucide-react";
 
-/**
- * Toaster wrapper. ONO renders a single light theme, so the wrapper no longer
- * depends on a theme provider while keeping the same visual contract.
- */
+/** Toaster wrapper that follows the active next-themes theme. */
 const Toaster = (props: ToasterProps) => {
+  const { theme = "system" } = useTheme();
+
   return (
     <Sonner
-      theme="light"
+      theme={theme as ToasterProps["theme"]}
       className="toaster group"
       icons={{
         success: <CircleCheckIcon className="size-4" />,
