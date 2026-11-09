@@ -97,7 +97,10 @@ export function TestimonialCarousel({
       tabIndex={0}
       data-placeholder={usingSample ? "true" : undefined}
       className={cn(
-        "relative rounded-[16px] border border-white/40 bg-[#beb0a0]/50 p-5 text-white shadow-[0_18px_50px_-24px_rgba(2,6,23,0.7)] backdrop-blur-[18px] [-webkit-backdrop-filter:blur(18px)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/80 sm:p-6 sm:pb-10 xl:p-7 xl:pb-10",
+        // Neutral white frosted glass. The tint is pure white so the card takes
+        // its color from the photo behind it, and the blur only affects that
+        // backdrop, never the text or controls sitting on top.
+        "relative rounded-[16px] border border-white/35 bg-[rgba(255,255,255,0.14)] p-5 text-white shadow-[0_8px_32px_rgba(0,0,0,0.10),inset_0_1px_0_rgba(255,255,255,0.15)] backdrop-blur-[20px] backdrop-saturate-140 [-webkit-backdrop-filter:blur(20px)_saturate(140%)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/80 sm:p-6 sm:pb-10 xl:p-7 xl:pb-10",
         className,
       )}
       onKeyDown={handleKeyDown}
