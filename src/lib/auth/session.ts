@@ -22,6 +22,7 @@ export { SESSION_COOKIE, SESSION_REASON_COOKIE };
 const sessionInclude = {
   user: {
     include: {
+      avatar: { select: { updatedAt: true } },
       memberships: {
         include: {
           tenant: true,
@@ -424,6 +425,9 @@ export type CurrentActor = {
   isPlatformAdmin: boolean;
   emailVerifiedAt: Date | null;
   preferences: Preferences;
+  phone: string | null;
+  pendingEmail: string | null;
+  avatarUpdatedAt: Date | null;
   memberships: TenantMembership[];
 };
 
@@ -478,6 +482,9 @@ export function toActor(
     isPlatformAdmin: session.user.role === "PLATFORM_ADMIN",
     emailVerifiedAt: session.user.emailVerifiedAt,
     preferences: parsePreferences(session.user.preferences),
+    phone: session.user.phone ?? null,
+    pendingEmail: session.user.pendingEmail ?? null,
+    avatarUpdatedAt: session.user.avatar?.updatedAt ?? null,
     memberships,
   };
 }

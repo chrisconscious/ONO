@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
-/** Account settings live on a single canonical page. */
+/** The profile is the canonical landing page for account management. */
 export default function AccountPage() {
-  redirect("/account/security");
+  redirect("/account/profile");
 }

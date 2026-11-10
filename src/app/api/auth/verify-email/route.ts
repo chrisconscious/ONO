@@ -12,6 +12,10 @@ import {
 import { AUTH_RATE_LIMITS, consumeRateLimit } from "@/lib/auth/rate-limit";
 import { tokenSchema } from "@/lib/auth/validation";
 import { consumeAuthToken, invalidateAuthTokens } from "@/lib/auth/tokens";
+import {
+  getCurrentSession,
+  revokeSessions,
+} from "@/lib/auth/session";
 import { createAuditLog } from "@/server/services/audit/audit.service";
 
 export const dynamic = "force-dynamic";
@@ -67,8 +71,89 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const user = await prisma.user.update({
+    const currentSession = await getCurrentSession();
+    const account = await prisma.user.findUnique({
       where: { id: consumed.userId },
+      select: { id: true, email: true, tenantId: true, pendingEmail: true },
+    });
+
+    if (!account) {
+      return jsonError(400, "This verification link is not valid.");
+    }
+
+    // A signed-in user changing their address stores the new value on
+    // `pendingEmail`; consuming this token promotes it. Self-registration links
+    // have no pending address and only mark the existing mailbox as verified.
+    if (account.pendingEmail) {
+      const nextEmail = account.pendingEmail;
+
+      const taken = await prisma.user.findFirst({
+        where: { email: nextEmail, NOT: { id: account.id } },
+        select: { id: true },
+      });
+
+      if (taken) {
+        await prisma.user.update({
+          where: { id: account.id },
+          data: { pendingEmail: null },
+        });
+        await invalidateAuthTokens(account.id, "EMAIL_VERIFICATION");
+
+        return jsonError(
+          409,
+          "That email address is no longer available. Update your profile and try again.",
+        );
+      }
+
+      const changed = await prisma.user.update({
+        where: { id: account.id },
+        data: {
+          email: nextEmail,
+          pendingEmail: null,
+          emailVerifiedAt: new Date(),
+        },
+        select: { id: true, email: true, tenantId: true },
+      });
+
+      await invalidateAuthTokens(changed.id, "EMAIL_VERIFICATION");
+
+      // The recovery address changed, so sessions must not outlive it. When the
+      // owner is confirming from a signed-in browser we keep that one session.
+      const signedIn =
+        currentSession && currentSession.user.id === changed.id
+          ? currentSession.id
+          : undefined;
+      const revoked = await revokeSessions(changed.id, {
+        keepSessionId: signedIn,
+      });
+
+      await createAuditLog({
+        tenantId: changed.tenantId,
+        userId: changed.id,
+        action: AuditAction.UPDATE,
+        resource: "user",
+        resourceId: changed.id,
+        ipAddress,
+        metadata: {
+          event: "email_changed",
+          revokedSessions: revoked,
+          keptCurrentSession: Boolean(signedIn),
+        },
+      });
+
+      return jsonNoStore({
+        ok: true,
+        email: changed.email,
+        emailChanged: true,
+        message: "Email address updated.",
+        redirectTo: signedIn
+          ? "/account/profile?emailChanged=1"
+          : "/sign-in?reason=email-changed",
+      });
+    }
+
+    const user = await prisma.user.update({
+      where: { id: account.id },
       data: { emailVerifiedAt: new Date() },
       select: { id: true, email: true, tenantId: true },
     });

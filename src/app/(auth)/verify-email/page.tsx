@@ -13,9 +13,9 @@ export const dynamic = "force-dynamic";
 export default async function VerifyEmailPage({
   searchParams,
 }: {
-  searchParams: Promise<{ token?: string; email?: string }>;
+  searchParams: Promise<{ token?: string; email?: string; mode?: string }>;
 }) {
-  const { token, email } = await searchParams;
+  const { token, email, mode } = await searchParams;
   // Reading the token is safe: it is not consumed until the visitor presses
   // the verification button, so mail scanners cannot verify an address.
   const status = token
@@ -24,7 +24,12 @@ export default async function VerifyEmailPage({
 
   return (
     <AuthShell formId="verify-email-form" skipLabel="Skip to verification">
-      <VerifyEmailForm token={token} email={email} status={status} />
+      <VerifyEmailForm
+        token={token}
+        email={email}
+        status={status}
+        emailChange={mode === "change"}
+      />
     </AuthShell>
   );
 }

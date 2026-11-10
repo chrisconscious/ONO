@@ -1,4 +1,5 @@
 import { requirePlatformAdmin } from "@/lib/auth/guards";
+import { accountAvatarUrl } from "@/lib/auth/account";
 import { AppShell } from "@/components/app/app-shell";
 import type { NavSection } from "@/components/app/nav";
 import { countTestimonialsByStatus } from "@/server/services/testimonials/testimonials.service";
@@ -66,7 +67,7 @@ export default async function PlatformAdminLayout({
         name: actor.name ?? actor.email,
         email: actor.email,
         roleLabel: "Platform administrator",
-        accountHref: "/account/security",
+        avatarUrl: accountAvatarUrl(actor.avatarUpdatedAt),
       }}
     >
       {children}

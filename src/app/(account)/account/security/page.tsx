@@ -1,68 +1,125 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { redirect } from "next/navigation";
-import { requireSession } from "@/lib/auth/guards";
-import { AccountSecurityPanel } from "@/components/auth/account-security-panel";
-import { PreferenceSync } from "@/components/theme/preference-sync";
-import { SessionExpiryPrompt } from "@/components/auth/session-expiry-prompt";
+import {
+  AlertTriangleIcon,
+  HistoryIcon,
+  MonitorSmartphoneIcon,
+  ShieldCheckIcon,
+} from "lucide-react";
+import { PageHeader } from "@/components/app/page-header";
+import { SectionCard } from "@/components/app/states";
+import { PasswordForm } from "@/components/account/password-form";
 import { Button } from "@/components/ui/button";
+import { requireSession } from "@/lib/auth/guards";
+import { formatDateTime } from "@/lib/format";
+import { listSecurityActivity } from "@/server/services/account/security.service";
 
-export const metadata: Metadata = {
-  title: "Account security",
-};
+export const metadata: Metadata = { title: "Security" };
 
 export const dynamic = "force-dynamic";
 
 export default async function AccountSecurityPage() {
-  const { actor, view, now } = await requireSession("/account/security");
-  const homeHref = actor.isPlatformAdmin
-    ? "/admin"
-    : actor.memberships.length > 0
-      ? "/app"
-      : "/sign-in";
-
-  if (homeHref === "/sign-in") redirect(homeHref);
+  const { actor } = await requireSession("/account/security");
+  const activity = await listSecurityActivity(actor.id);
 
   return (
-    <main className="min-h-svh bg-muted/30 px-4 py-8 sm:px-6">
-      <PreferenceSync theme={actor.preferences.theme} />
-      <SessionExpiryPrompt
-        initialSession={{
-          warningAt: view.warningAt.toISOString(),
-          expiresAt: view.expiresAt.toISOString(),
-          serverNow: now.toISOString(),
-        }}
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        title="Security"
+        description="Protect your account with a strong password and review recent security activity."
+        breadcrumbs={[
+          { label: "Account", href: "/account/profile" },
+          { label: "Security" },
+        ]}
       />
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
-        <header className="flex items-center justify-between gap-4">
-          <div>
-            <p className="text-sm font-medium text-primary">ONO account</p>
-            <h1 className="mt-1 text-2xl font-semibold tracking-tight">
-              Profile and security
-            </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Manage your account details, sign-in security and preferences.
-            </p>
-          </div>
+
+      {!actor.emailVerifiedAt ? (
+        <div
+          role="alert"
+          className="flex items-start gap-2 rounded-lg border border-warning/30 bg-warning/10 px-3.5 py-3 text-sm"
+        >
+          <AlertTriangleIcon
+            className="mt-0.5 size-4 shrink-0 text-warning"
+            aria-hidden="true"
+          />
+          <p>
+            Your email address is not verified. Verify it from{" "}
+            <Link
+              href="/account/profile"
+              className="font-medium text-primary underline-offset-4 hover:underline"
+            >
+              My Profile
+            </Link>{" "}
+            to keep access to your account.
+          </p>
+        </div>
+      ) : null}
+
+      <SectionCard
+        title="Password"
+        description="Use at least 12 characters with uppercase, lowercase, a number and a symbol."
+      >
+        <PasswordForm />
+      </SectionCard>
+
+      <SectionCard
+        title="Active sessions"
+        description="Review the devices signed in to your account and revoke anything you do not recognise."
+        action={
           <Button
             variant="outline"
+            size="sm"
             nativeButton={false}
-            render={<Link href={homeHref} />}
+            render={<Link href="/account/sessions" />}
           >
-            {actor.isPlatformAdmin ? "Back to console" : "Back to workspace"}
+            <MonitorSmartphoneIcon aria-hidden="true" />
+            Manage sessions
           </Button>
-        </header>
+        }
+      >
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          Changing your password signs out every other device. You can also sign
+          out other sessions without changing your password.
+        </p>
+      </SectionCard>
 
-        <AccountSecurityPanel
-          user={{
-            name: actor.name ?? "",
-            email: actor.email,
-            emailVerified: Boolean(actor.emailVerifiedAt),
-            status: actor.status,
-            preferences: actor.preferences,
-          }}
-        />
-      </div>
-    </main>
+      <SectionCard
+        title="Recent security activity"
+        description="The latest sign-ins and account changes recorded for this account."
+      >
+        {activity.length === 0 ? (
+          <div className="flex flex-col items-center gap-2 py-6 text-center">
+            <span className="flex size-9 items-center justify-center rounded-full border border-border bg-muted/60 text-muted-foreground">
+              <HistoryIcon className="size-4" aria-hidden="true" />
+            </span>
+            <p className="text-sm font-medium">No security activity yet</p>
+            <p className="max-w-sm text-xs text-muted-foreground">
+              Sign-ins, password changes and profile updates will appear here.
+            </p>
+          </div>
+        ) : (
+          <ul className="divide-y divide-border">
+            {activity.map((event) => (
+              <li
+                key={event.id}
+                className="flex items-start gap-3 py-3 first:pt-0 last:pb-0"
+              >
+                <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                  <ShieldCheckIcon className="size-4" aria-hidden="true" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium">{event.label}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {formatDateTime(event.createdAt)}
+                    {event.detail ? ` · ${event.detail}` : ""}
+                    {event.ipAddress ? ` · ${event.ipAddress}` : ""}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </SectionCard>
+    </div>
   );
 }

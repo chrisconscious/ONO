@@ -17,6 +17,7 @@ type VerifyResponse = {
   message?: string;
   error?: string;
   email?: string;
+  emailChanged?: boolean;
   redirectTo?: string;
 };
 
@@ -30,14 +31,18 @@ export function VerifyEmailForm({
   token,
   email,
   status,
+  emailChange = false,
 }: {
   token?: string;
   email?: string;
   status: AuthTokenStatus;
+  emailChange?: boolean;
 }) {
   const [currentStatus, setCurrentStatus] = useState(status);
   const [verifiedEmail, setVerifiedEmail] = useState<string | undefined>(email);
   const [verified, setVerified] = useState(false);
+  const [changed, setChanged] = useState(false);
+  const [redirectTo, setRedirectTo] = useState<string | undefined>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -61,6 +66,8 @@ export function VerifyEmailForm({
       }
 
       setVerifiedEmail(data.email ?? email);
+      setChanged(Boolean(data.emailChanged));
+      setRedirectTo(data.redirectTo);
       setVerified(true);
       setCurrentStatus("used");
     } catch {
@@ -71,6 +78,11 @@ export function VerifyEmailForm({
   }
 
   if (verified) {
+    const safeRedirect =
+      redirectTo && redirectTo.startsWith("/") && !redirectTo.startsWith("//")
+        ? redirectTo
+        : "/sign-in?reason=verified";
+
     return (
       <div id="verify-email-form" className="flex flex-col gap-5" aria-live="polite">
         <div className="flex size-11 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
@@ -78,10 +90,16 @@ export function VerifyEmailForm({
         </div>
         <div className="flex flex-col gap-1.5">
           <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Email verified
+            {changed ? "Email address updated" : "Email verified"}
           </h1>
           <p className="text-sm leading-relaxed text-muted-foreground">
-            {verifiedEmail ? (
+            {changed ? (
+              <>
+                <span className="font-medium text-foreground">{verifiedEmail}</span>{" "}
+                is now the email address on your account. Other devices have been
+                signed out.
+              </>
+            ) : verifiedEmail ? (
               <>
                 <span className="font-medium text-foreground">{verifiedEmail}</span>{" "}
                 is confirmed. You can sign in now.
@@ -93,11 +111,11 @@ export function VerifyEmailForm({
         </div>
         <Button
           nativeButton={false}
-          render={<Link href="/sign-in?reason=verified" />}
+          render={<Link href={safeRedirect} />}
           size="lg"
           className="h-10 w-full"
         >
-          Continue to sign in
+          {changed ? "Continue to your profile" : "Continue to sign in"}
         </Button>
       </div>
     );
@@ -118,8 +136,13 @@ export function VerifyEmailForm({
             {email ? (
               <>
                 {" "}
-                Request a new link for{" "}
-                <span className="font-medium text-foreground">{email}</span>.
+                {emailChange
+                  ? "Sign in and resend the confirmation from My Profile."
+                  : "Request a new link for "}
+                {emailChange ? null : (
+                  <span className="font-medium text-foreground">{email}</span>
+                )}
+                {emailChange ? null : "."}
               </>
             ) : (
               " Enter your email to request a new verification link."
@@ -127,7 +150,18 @@ export function VerifyEmailForm({
           </p>
         </div>
 
-        <ResendVerificationForm email={email} />
+        {emailChange ? (
+          <Button
+            nativeButton={false}
+            render={<Link href="/account/profile" />}
+            size="lg"
+            className="h-10 w-full"
+          >
+            Go to My Profile
+          </Button>
+        ) : (
+          <ResendVerificationForm email={email} />
+        )}
 
         <p className="border-t border-border pt-5 text-sm text-muted-foreground">
           <Link
@@ -148,14 +182,17 @@ export function VerifyEmailForm({
       </div>
       <div className="flex flex-col gap-1.5">
         <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Confirm your email address
+          {emailChange ? "Confirm your new email address" : "Confirm your email address"}
         </h1>
         <p className="text-sm leading-relaxed text-muted-foreground">
           {email ? (
             <>
               Confirm that{" "}
               <span className="font-medium text-foreground">{email}</span> belongs
-              to you. This link works once and expires after 24 hours.
+              to you.{" "}
+              {emailChange
+                ? "Confirming replaces the email address currently on your account and signs out other devices."
+                : "This link works once and expires after 24 hours."}
             </>
           ) : (
             "Confirm that this email address belongs to you. This link works once."

@@ -1,4 +1,5 @@
 import { requireWorkspace, can } from "@/lib/auth/guards";
+import { accountAvatarUrl } from "@/lib/auth/account";
 import { AppShell } from "@/components/app/app-shell";
 import type { NavItem, NavSection } from "@/components/app/nav";
 
@@ -193,7 +194,7 @@ export default async function WorkspaceLayout({
         name: actor.name ?? actor.email,
         email: actor.email,
         roleLabel: membership.roles.join(", ") || "Workspace member",
-        accountHref: "/account/security",
+        avatarUrl: accountAvatarUrl(actor.avatarUpdatedAt),
       }}
     >
       {children}

@@ -154,12 +154,23 @@ export const changePasswordSchema = z
     path: ["password"],
   });
 
+export const phoneSchema = z
+  .string()
+  .trim()
+  .max(32, "Use 32 characters or fewer.")
+  .refine(
+    (value) => value === "" || /^\+?[0-9][0-9\s().-]{5,30}$/.test(value),
+    "Enter a valid phone number, including the country code.",
+  );
+
 export const profileSchema = z.object({
   name: z
     .string()
     .trim()
     .min(2, "Enter your full name.")
     .max(80, "Use 80 characters or fewer."),
+  phone: phoneSchema.optional(),
+  email: emailSchema.optional(),
 });
 
 /**

@@ -225,12 +225,18 @@ model User {
   emailVerifiedAt DateTime?
   /// Non-authoritative workspace preferences (theme, locale, time zone, ...).
   preferences     Json?
+  /// Optional contact number supplied by the account owner.
+  phone           String?
+  /// Address awaiting confirmation. It only replaces `email` after the
+  /// single-use verification token is consumed.
+  pendingEmail    String?
   tenantId        String?
   lastLoginAt     DateTime?
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
 
   tenant                 Tenant?                 @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  avatar                 UserAvatar?
   memberships            Membership[]
   sessions               Session[]
   authTokens             AuthToken[]
@@ -250,7 +256,23 @@ model User {
   opportunityStageEvents OpportunityStageEvent[]
 
   @@index([tenantId])
+  @@index([pendingEmail])
   @@map("users")
+}
+
+/// Avatar bytes stored separately so normal user queries never load them.
+model UserAvatar {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  mimeType  String
+  byteSize  Int
+  data      Bytes
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_avatars")
 }
 
 model Session {
