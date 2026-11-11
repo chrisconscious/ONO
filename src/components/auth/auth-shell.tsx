@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Logo } from "@/components/brand/logo";
+import { TypewriterHeading } from "@/components/auth/typewriter-heading";
 import {
   getAuthPagePreview,
   getPublishedAuthPage,
@@ -111,8 +112,8 @@ export async function AuthShell({
           <div className="w-full">
             <div className="max-w-xl">
               {content.heading ? (
-                <h2 className="text-3xl leading-tight font-semibold text-balance text-white xl:text-[2.1rem]">
-                  {content.heading}
+                <h2 className="relative text-3xl leading-tight font-semibold text-balance text-white xl:text-[2.1rem]">
+                  <TypewriterHeading text={content.heading} />
                 </h2>
               ) : null}
               {content.supportingText ? (
